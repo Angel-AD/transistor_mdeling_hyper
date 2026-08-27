@@ -100,8 +100,10 @@ DEFAULT_ACTIVATION_WEIGHTS = (0.6, 0.3, 0.1)  # (tanh, swish, linear), must sum 
 F_ARCH_CSV_FIELDS = ["arch_hash", "architecture", "n_layers", "n_neurons_total", "n_params", "tanh_only"]
 H_ARCH_CSV_FIELDS = ["h_arch_hash", "h_hidden", "h_layers"]
 RESULTS_CSV_FIELDS = [
-    "combo_id", "f_arch_hash", "h_arch_hash", "strategy", "gm1_weight", "delta_reg_weight",
-    "epochs", "lbfgs_epochs", "n_params_f", "h_hidden", "h_layers",
+    "combo_id", "f_arch_hash", "h_arch_hash", "strategy", "hp_hash",
+    "gm1_weight", "delta_reg_weight", "epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter",
+    "base_epochs", "base_lr", "base_lbfgs_epochs", "seed",
+    "n_params_f", "h_hidden", "h_layers",
     "loo_mean_rel_rmse", "loo_n_points", "loo_worst_rel_rmse", "full_fit_mean_rel_rmse",
     "loo_per_point_json", "model_dir", "status", "error_msg", "wall_time_seconds", "timestamp",
 ]
@@ -500,8 +502,28 @@ def fit_theta_base_job(f_arch_hash, architecture, n_params, data, base_epochs, b
 
 # ============================== run orchestration ==============================
 
-def combo_id_of(f_row, h_row, strategy):
-    return f"{f_row['arch_hash']}_{h_row['h_arch_hash']}_{strategy}"
+# Every hyperparameter that can change what a combo's TRAINING actually produces (not
+# execution mechanics like --workers/--batch_size, which don't affect the trained result).
+# Generic on purpose: hyperparams_hash_of just hashes whatever args attributes are named
+# here, so adding a new training hyperparameter to `run` later only requires adding its name
+# to this list, not touching the hashing logic itself.
+HYPERPARAM_ARGS = ["epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter", "gm1_weight",
+                   "delta_reg_weight", "base_epochs", "base_lr", "base_lbfgs_epochs", "seed"]
+
+
+def hyperparams_hash_of(args):
+    """Short deterministic hash of every HYPERPARAM_ARGS value on `args`. Included in every
+    combo_id so that re-running with different hyperparameters against the SAME --models_dir
+    gets its OWN separate combo directories, instead of combo_is_done silently treating the
+    old run's (now stale, different-hyperparameter) metrics.json as still valid and skipping
+    the new one entirely (see the gm1_weight=0.075 vs 0.2 test that motivated this)."""
+    hp = {name: getattr(args, name) for name in HYPERPARAM_ARGS}
+    s = json.dumps(hp, sort_keys=True)
+    return hashlib.sha1(s.encode()).hexdigest()[:8]
+
+
+def combo_id_of(f_row, h_row, strategy, hp_hash):
+    return f"{f_row['arch_hash']}_{h_row['h_arch_hash']}_{strategy}_{hp_hash}"
 
 
 def combo_is_done(models_dir, combo_id):
@@ -512,13 +534,14 @@ def combo_is_done(models_dir, combo_id):
     return os.path.exists(os.path.join(models_dir, combo_id, "metrics.json"))
 
 
-def _run_combo_batch(combos, data, keys, other_keys, args):
+def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
     """Runs the full pipeline (theta_base fit, LOO folds, full-fit) for ONE batch of
     (f_row, h_row, strategy) combos. Writes each combo's own models_dir/<combo_id>/metrics.json
     directly (no results.csv involved at all -- that's built separately, see cmd_populate) and
     returns nothing. --batch_size exists purely to bound ProcessPoolExecutor pool size /
     parallelism grain -- it has no bearing on resumability, since each combo's metrics.json is
-    an independent file write, not a buffered/batched one."""
+    an independent file write, not a buffered/batched one. `hp_hash` (see hyperparams_hash_of)
+    is folded into every combo_id so this exact hyperparameter set gets its own directory."""
     t0 = time.time()
 
     # --- Step 1: fit theta_base once per DISTINCT f-architecture in this batch needing "delta" ---
@@ -573,7 +596,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args):
             architecture = json.loads(f_row["architecture"])
             n_params = int(f_row["n_params"])
             h_hidden, h_layers = int(h_row["h_hidden"]), int(h_row["h_layers"])
-            combo_id = combo_id_of(f_row, h_row, strategy)
+            combo_id = combo_id_of(f_row, h_row, strategy, hp_hash)
             save_dir = os.path.join(args.models_dir, combo_id)
             if strategy == "original":
                 fut = ex.submit(run_full_fit_original, f_row["arch_hash"], h_row["h_arch_hash"],
@@ -602,7 +625,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args):
     # combo_is_done / cmd_populate): a combo's own directory name is already self-describing.
     n_done = 0
     for f_row, h_row, strategy in combos:
-        combo_id = combo_id_of(f_row, h_row, strategy)
+        combo_id = combo_id_of(f_row, h_row, strategy, hp_hash)
         key = (f_row["arch_hash"], h_row["h_arch_hash"], strategy)
         errs_by_point = per_combo_errs.get(key, {})
         n_expected = len(keys) if strategy == "original" else len(other_keys)
@@ -614,10 +637,17 @@ def _run_combo_batch(combos, data, keys, other_keys, args):
             f_arch_hash=f_row["arch_hash"],
             h_arch_hash=h_row["h_arch_hash"],
             strategy=strategy,
+            hp_hash=hp_hash,
             gm1_weight=args.gm1_weight,
             delta_reg_weight=args.delta_reg_weight if strategy == "delta" else "",
             epochs=args.epochs,
+            lr=args.lr,
             lbfgs_epochs=args.lbfgs_epochs,
+            lbfgs_max_iter=args.lbfgs_max_iter,
+            base_epochs=args.base_epochs if strategy == "delta" else "",
+            base_lr=args.base_lr if strategy == "delta" else "",
+            base_lbfgs_epochs=args.base_lbfgs_epochs if strategy == "delta" else "",
+            seed=args.seed,
             n_params_f=f_row["n_params"],
             h_hidden=h_row["h_hidden"],
             h_layers=h_row["h_layers"],
@@ -660,10 +690,14 @@ def cmd_run(args):
     if args.n_f_architectures is not None:
         f_rows_all = f_rows_all[:args.n_f_architectures]
     h_rows = read_csv(args.h_csv)
+    hp_hash = hyperparams_hash_of(args)
     print(f"Loaded {len(f_rows_all)} f-architectures from {args.f_csv}, "
           f"{len(h_rows)} H-architectures from {args.h_csv}")
+    print(f"Hyperparameter hash for this run: {hp_hash} "
+          f"({ {name: getattr(args, name) for name in HYPERPARAM_ARGS} })")
     print(f"Resume check is filesystem-based: a combo is skipped if "
-          f"{args.models_dir}/<combo_id>/metrics.json already exists.")
+          f"{args.models_dir}/<combo_id>/metrics.json already exists -- combo_id includes "
+          f"{hp_hash}, so a DIFFERENT hyperparameter set never collides with or hides this one.")
 
     data = load_all(args.csv_dir)
     keys = sorted(data.keys())
@@ -680,7 +714,7 @@ def cmd_run(args):
         for f_row in f_rows_batch:
             for h_row in h_rows:
                 for strategy in ("original", "delta"):
-                    combo_id = combo_id_of(f_row, h_row, strategy)
+                    combo_id = combo_id_of(f_row, h_row, strategy, hp_hash)
                     if combo_is_done(args.models_dir, combo_id):
                         skipped += 1
                     else:
@@ -690,7 +724,7 @@ def cmd_run(args):
             continue
         print(f"\n--- Batch {b+1}/{n_batches}: {len(f_rows_batch)} f-architectures, "
               f"{len(combos)} new combos, {skipped} already done ({time.time()-t_start:.0f}s elapsed total) ---")
-        _run_combo_batch(combos, data, keys, other_keys, args)
+        _run_combo_batch(combos, data, keys, other_keys, args, hp_hash)
         total_done += len(combos)
 
     print(f"\nDone. Trained {total_done} new combos this run ({total_skipped} were already done "
