@@ -368,48 +368,19 @@ def fit_theta_base_job(f_arch_hash, architecture, n_params, data, base_epochs, b
 
 # ============================== run orchestration ==============================
 
-def cmd_run(args):
-    f_rows = read_csv(args.f_csv)
-    if args.n_f_architectures is not None:
-        f_rows = f_rows[:args.n_f_architectures]
-    h_rows = read_csv(args.h_csv)
-    print(f"Loaded {len(f_rows)} f-architectures from {args.f_csv}, "
-          f"{len(h_rows)} H-architectures from {args.h_csv}")
+def _run_combo_batch(combos, data, keys, other_keys, args, results_csv_dir):
+    """Runs the full pipeline (theta_base fit, LOO folds, full-fit) for ONE batch of
+    (f_row, h_row, strategy) combos and returns a list of result-row dicts, ready to append
+    to results.csv. Nothing is written to disk here -- the caller appends+flushes immediately
+    after each batch, which is what makes a mid-run interruption only lose at most one
+    batch's worth of work (see cmd_run)."""
+    t0 = time.time()
 
-    existing = set()
-    if os.path.exists(args.results_csv):
-        for r in read_csv(args.results_csv):
-            existing.add((r["f_arch_hash"], r["h_arch_hash"], r["strategy"]))
-        print(f"{len(existing)} combos already in {args.results_csv} -- will be skipped")
-
-    data = load_all(args.csv_dir)
-    keys = sorted(data.keys())
-    other_keys = [k for k in keys if k != BASE_KEY]
-    print("Quiescent points found:", keys, " BASE_KEY:", BASE_KEY)
-
-    combos = []  # (f_row, h_row, strategy)
-    for f_row in f_rows:
-        for h_row in h_rows:
-            for strategy in ("original", "delta"):
-                if (f_row["arch_hash"], h_row["h_arch_hash"], strategy) in existing:
-                    continue
-                combos.append((f_row, h_row, strategy))
-    print(f"{len(combos)} new combos to run "
-          f"({len(f_rows)} f-archs x {len(h_rows)} H-archs x 2 strategies, minus already-done)")
-    if not combos:
-        print("Nothing to do.")
-        return
-
-    # --- Step 1: fit theta_base once per DISTINCT f-architecture that needs the "delta" strategy ---
-    f_archs_needing_base = {}
-    for f_row, h_row, strategy in combos:
-        if strategy == "delta":
-            f_archs_needing_base[f_row["arch_hash"]] = f_row
+    # --- Step 1: fit theta_base once per DISTINCT f-architecture in this batch needing "delta" ---
+    f_archs_needing_base = {f_row["arch_hash"]: f_row for f_row, h_row, strategy in combos
+                             if strategy == "delta"}
     theta_base_by_farch = {}
-    base_err_by_farch = {}
     if f_archs_needing_base:
-        print(f"\nFitting theta_base for {len(f_archs_needing_base)} distinct f-architectures "
-              f"({args.base_epochs} epochs + {args.base_lbfgs_epochs} L-BFGS)...")
         with ProcessPoolExecutor(max_workers=args.workers) as ex:
             futs = {
                 ex.submit(fit_theta_base_job, arch_hash, json.loads(f_row["architecture"]),
@@ -420,11 +391,8 @@ def cmd_run(args):
             for fut in as_completed(futs):
                 arch_hash, theta_base, base_err = fut.result()
                 theta_base_by_farch[arch_hash] = theta_base
-                base_err_by_farch[arch_hash] = base_err
-        print(f"  done ({len(theta_base_by_farch)} theta_base vectors fit).")
 
     # --- Step 2: submit fold-level jobs (max parallelism) for LOO scoring ---
-    t0 = time.time()
     fold_futures = {}
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
         for f_row, h_row, strategy in combos:
@@ -436,7 +404,7 @@ def cmd_run(args):
                     fut = ex.submit(run_fold_original, f_row["arch_hash"], h_row["h_arch_hash"],
                                      architecture, n_params, h_hidden, h_layers, held_out, data,
                                      args.epochs, args.lr, args.gm1_weight, args.lbfgs_epochs, args.seed)
-                    fold_futures[fut] = (f_row["arch_hash"], h_row["h_arch_hash"], strategy)
+                    fold_futures[fut] = None
             else:
                 theta_base = theta_base_by_farch[f_row["arch_hash"]]
                 for held_out in other_keys:
@@ -444,21 +412,15 @@ def cmd_run(args):
                                      architecture, n_params, h_hidden, h_layers, held_out, data,
                                      theta_base, args.epochs, args.lr, args.gm1_weight,
                                      args.delta_reg_weight, args.lbfgs_epochs, args.seed)
-                    fold_futures[fut] = (f_row["arch_hash"], h_row["h_arch_hash"], strategy)
+                    fold_futures[fut] = None
 
-        print(f"\nSubmitted {len(fold_futures)} LOO-fold jobs across {args.workers} workers "
-              f"({args.epochs} epochs each, fast proxy) ...")
         per_combo_errs = {}
-        done = 0
         for fut in as_completed(fold_futures):
             f_arch_hash, h_arch_hash, strategy, held_out, err = fut.result()
             per_combo_errs.setdefault((f_arch_hash, h_arch_hash, strategy), {})[held_out] = err
-            done += 1
-            if done % 100 == 0 or done == len(fold_futures):
-                print(f"  {done}/{len(fold_futures)} folds done ({time.time()-t0:.0f}s elapsed)")
+        print(f"  {len(fold_futures)} LOO folds done ({time.time()-t0:.0f}s)")
 
     # --- Step 3: full-fit job per combo (for the saved/reconstructable model) ---
-    print(f"\nRunning {len(combos)} full-fit jobs (saved models) ...")
     fullfit_by_combo = {}
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
         futs = {}
@@ -486,51 +448,118 @@ def cmd_run(args):
                 fullfit_by_combo[combo_id] = (full_fit_mean, save_dir, None)
             except Exception as e:
                 fullfit_by_combo[combo_id] = (float("nan"), save_dir, str(e))
+        print(f"  {len(futs)} full-fit models saved ({time.time()-t0:.0f}s)")
 
-    # --- Step 4: assemble + append results.csv ---
+    # --- Step 4: assemble result rows (caller writes+flushes them to results.csv) ---
     # model_dir is stored RELATIVE to results.csv's own directory (not absolute) so the whole
     # output tree (results.csv + models_dir) stays valid if copied/moved elsewhere together --
     # an absolute path here would silently go stale on any copy-paste to a new location/machine.
+    rows = []
+    for f_row, h_row, strategy in combos:
+        combo_id = f"{f_row['arch_hash']}_{h_row['h_arch_hash']}_{strategy}"
+        key = (f_row["arch_hash"], h_row["h_arch_hash"], strategy)
+        errs_by_point = per_combo_errs.get(key, {})
+        n_expected = len(keys) if strategy == "original" else len(other_keys)
+        status = "ok" if len(errs_by_point) == n_expected else "incomplete"
+        errs = list(errs_by_point.values())
+        full_fit_mean, save_dir, err_msg = fullfit_by_combo.get(combo_id, (float("nan"), "", "missing"))
+        model_dir_rel = os.path.relpath(save_dir, results_csv_dir) if save_dir else ""
+        rows.append(dict(
+            combo_id=combo_id,
+            f_arch_hash=f_row["arch_hash"],
+            h_arch_hash=h_row["h_arch_hash"],
+            strategy=strategy,
+            gm1_weight=args.gm1_weight,
+            delta_reg_weight=args.delta_reg_weight if strategy == "delta" else "",
+            epochs=args.epochs,
+            lbfgs_epochs=args.lbfgs_epochs,
+            n_params_f=f_row["n_params"],
+            h_hidden=h_row["h_hidden"],
+            h_layers=h_row["h_layers"],
+            loo_mean_rel_rmse=float(np.mean(errs)) if errs else "",
+            loo_n_points=len(errs),
+            loo_worst_rel_rmse=float(np.max(errs)) if errs else "",
+            full_fit_mean_rel_rmse=full_fit_mean,
+            loo_per_point_json=json.dumps({qtag_local(*k): v for k, v in errs_by_point.items()}),
+            model_dir=model_dir_rel,
+            status=status if err_msg is None else "error",
+            error_msg=err_msg or "",
+            wall_time_seconds=round(time.time() - t0, 1),
+            timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
+        ))
+    return rows
+
+
+def cmd_run(args):
+    """Processes f-architectures in batches of --batch_size (default 20 -> 20*4*2=160 combos
+    per batch), writing+flushing that batch's rows to results.csv immediately after it
+    finishes -- NOT once at the very end of the whole sweep. This means:
+      - Pausing: Ctrl+C at any point loses at most the CURRENTLY IN-PROGRESS batch, never
+        earlier ones -- re-running the exact same command later picks up where it left off
+        (already-done combos are skipped via results.csv).
+      - Moving machines mid-sweep: copy results.csv + models_dir (keeping their relative
+        position to each other -- see model_dir's relpath comment below) to the other
+        computer, then run the same `run` command there (pointing --results_csv/--models_dir
+        at the copied location, and --csv_dir at wherever the measurement data lives on that
+        machine) -- it resumes from the same already-done set. configs/arch_search_1000/'s
+        f_architectures.csv/h_architectures.csv are committed to the repo, so arch_hash values
+        match exactly on both machines as long as both cloned the same commit.
+    """
+    f_rows_all = read_csv(args.f_csv)
+    if args.n_f_architectures is not None:
+        f_rows_all = f_rows_all[:args.n_f_architectures]
+    h_rows = read_csv(args.h_csv)
+    print(f"Loaded {len(f_rows_all)} f-architectures from {args.f_csv}, "
+          f"{len(h_rows)} H-architectures from {args.h_csv}")
+
+    existing = set()
+    if os.path.exists(args.results_csv):
+        for r in read_csv(args.results_csv):
+            existing.add((r["f_arch_hash"], r["h_arch_hash"], r["strategy"]))
+        print(f"{len(existing)} combos already in {args.results_csv} -- will be skipped "
+              f"(safe to Ctrl+C and re-run this exact command any time -- progress is saved "
+              f"after every batch of {args.batch_size} f-architectures, not just at the end)")
+
+    data = load_all(args.csv_dir)
+    keys = sorted(data.keys())
+    other_keys = [k for k in keys if k != BASE_KEY]
+    print("Quiescent points found:", keys, " BASE_KEY:", BASE_KEY)
+
     results_csv_dir = os.path.dirname(os.path.abspath(args.results_csv))
+    os.makedirs(results_csv_dir, exist_ok=True)
     write_header = not os.path.exists(args.results_csv)
+
+    n_batches = (len(f_rows_all) + args.batch_size - 1) // args.batch_size
+    t_start = time.time()
+    total_written = 0
     with open(args.results_csv, "a", newline="") as f:
         w = csv.DictWriter(f, fieldnames=RESULTS_CSV_FIELDS)
         if write_header:
             w.writeheader()
-        for f_row, h_row, strategy in combos:
-            combo_id = f"{f_row['arch_hash']}_{h_row['h_arch_hash']}_{strategy}"
-            key = (f_row["arch_hash"], h_row["h_arch_hash"], strategy)
-            errs_by_point = per_combo_errs.get(key, {})
-            n_expected = len(keys) if strategy == "original" else len(other_keys)
-            status = "ok" if len(errs_by_point) == n_expected else "incomplete"
-            errs = list(errs_by_point.values())
-            full_fit_mean, save_dir, err_msg = fullfit_by_combo.get(combo_id, (float("nan"), "", "missing"))
-            model_dir_rel = os.path.relpath(save_dir, results_csv_dir) if save_dir else ""
-            w.writerow(dict(
-                combo_id=combo_id,
-                f_arch_hash=f_row["arch_hash"],
-                h_arch_hash=h_row["h_arch_hash"],
-                strategy=strategy,
-                gm1_weight=args.gm1_weight,
-                delta_reg_weight=args.delta_reg_weight if strategy == "delta" else "",
-                epochs=args.epochs,
-                lbfgs_epochs=args.lbfgs_epochs,
-                n_params_f=f_row["n_params"],
-                h_hidden=h_row["h_hidden"],
-                h_layers=h_row["h_layers"],
-                loo_mean_rel_rmse=float(np.mean(errs)) if errs else "",
-                loo_n_points=len(errs),
-                loo_worst_rel_rmse=float(np.max(errs)) if errs else "",
-                full_fit_mean_rel_rmse=full_fit_mean,
-                loo_per_point_json=json.dumps({qtag_local(*k): v for k, v in errs_by_point.items()}),
-                model_dir=model_dir_rel,
-                status=status if err_msg is None else "error",
-                error_msg=err_msg or "",
-                wall_time_seconds=round(time.time() - t0, 1),
-                timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
-            ))
+            f.flush()
 
-    print(f"\nAppended {len(combos)} rows to {args.results_csv}")
+        for b in range(n_batches):
+            f_rows_batch = f_rows_all[b * args.batch_size:(b + 1) * args.batch_size]
+            combos = [
+                (f_row, h_row, strategy)
+                for f_row in f_rows_batch
+                for h_row in h_rows
+                for strategy in ("original", "delta")
+                if (f_row["arch_hash"], h_row["h_arch_hash"], strategy) not in existing
+            ]
+            if not combos:
+                continue
+            print(f"\n--- Batch {b+1}/{n_batches}: {len(f_rows_batch)} f-architectures, "
+                  f"{len(combos)} new combos ({time.time()-t_start:.0f}s elapsed total) ---")
+            rows = _run_combo_batch(combos, data, keys, other_keys, args, results_csv_dir)
+            for row in rows:
+                w.writerow(row)
+                existing.add((row["f_arch_hash"], row["h_arch_hash"], row["strategy"]))
+            f.flush()
+            total_written += len(rows)
+            print(f"  wrote {len(rows)} rows to {args.results_csv} ({total_written} total this run)")
+
+    print(f"\nDone. Appended {total_written} rows to {args.results_csv} across {n_batches} batches.")
     print(f"Saved models under {args.models_dir}/<combo_id>/")
 
 
@@ -575,6 +604,12 @@ def main():
                     help="Limit to the first N rows of f_csv (e.g. 5 for a smoke test). "
                          "Default: use all rows in f_csv.")
     r.add_argument("--workers", type=int, required=True)
+    r.add_argument("--batch_size", type=int, default=20,
+                    help="f-architectures processed (and results.csv rows written+flushed) "
+                         "per batch, before moving to the next batch. Smaller = safer to "
+                         "interrupt (less work redone on resume) but more ProcessPoolExecutor "
+                         "startup overhead; larger = more efficient but more work lost if "
+                         "killed mid-batch. Default 20 (-> 20*len(h_csv)*2 combos/batch).")
     r.add_argument("--epochs", type=int, default=1000,
                     help="Fast-proxy epoch count for LOO-fold ranking (no L-BFGS by default).")
     r.add_argument("--lr", type=float, default=3e-3)
