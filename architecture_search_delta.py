@@ -71,6 +71,7 @@ Usage:
 import argparse
 import csv
 import hashlib
+import itertools
 import json
 import os
 import time
@@ -89,6 +90,12 @@ VDS_SCALE = 45.0
 BASE_KEY = (-2.9, 0.0)  # only used by the "delta" strategy -- same reference as
                         # train_loo_basediff.py / train_loo_deltaweights_*.py
 ACTIVATIONS_FOR_SEARCH = ("tanh", "swish", "linear")
+# Fixed per-LAYER composition for "mixed" (non-tanh_only) architectures: each layer's neurons
+# are split tanh/swish/linear as close to these percentages as its neuron count allows (exact
+# counts, not random per-neuron draws -- see layer_composition). Which neuron position gets
+# which activation is irrelevant (order doesn't affect the network), only the resulting counts
+# do, so positions are just filled tanh-block, then swish-block, then linear-block.
+DEFAULT_ACTIVATION_WEIGHTS = (0.6, 0.3, 0.1)  # (tanh, swish, linear), must sum to 1.0
 
 F_ARCH_CSV_FIELDS = ["arch_hash", "architecture", "n_layers", "n_neurons_total", "n_params", "tanh_only"]
 H_ARCH_CSV_FIELDS = ["h_arch_hash", "h_hidden", "h_layers"]
@@ -107,23 +114,101 @@ def arch_hash_of(obj):
     return hashlib.sha1(s.encode()).hexdigest()[:12]
 
 
-def random_f_architecture(rng, min_layers, max_layers, min_neurons, max_neurons, tanh_only):
-    n_layers = int(rng.integers(min_layers, max_layers + 1))
-    acts = ("tanh",) if tanh_only else ACTIVATIONS_FOR_SEARCH
+def layer_composition(n_neurons, weights):
+    """Splits n_neurons into (n_tanh, n_swish, n_linear) counts as close to `weights` (a
+    (tanh,swish,linear) fraction triple) as integer counts allow. Uses floor() for each
+    target then hands out the few leftover neurons one at a time, tanh first then swish then
+    linear, which keeps tanh/swish counts >= their floor share (matters most for small layers,
+    e.g. a 6-neuron layer at (0.6,0.3,0.1) floors to (3,1,0) with 2 left over -> (4,2,0))."""
+    tanh_w, swish_w, linear_w = weights
+    n_tanh = int(n_neurons * tanh_w)
+    n_swish = int(n_neurons * swish_w)
+    n_linear = int(n_neurons * linear_w)
+    remainder = n_neurons - (n_tanh + n_swish + n_linear)
+    counts = [n_tanh, n_swish, n_linear]
+    for i in range(remainder):
+        counts[i % 3] += 1
+    return tuple(counts)
+
+
+FALLBACK_ACTIVATION_WEIGHTS = (0.6, 0.2, 0.2)  # (tanh, swish, linear) -- used only once the
+# primary weights (DEFAULT_ACTIVATION_WEIGHTS) exhaust the distinct-size-tuple space below
+# 1000 unique architectures; a different weight triple gives the SAME size-tuples a different
+# (still deterministic) composition, so re-visiting them under fallback weights yields new,
+# still-unique architectures instead of duplicates.
+
+
+def enumerate_size_tuples(min_layers, max_layers, min_neurons, max_neurons):
+    """Every distinct (n1, n2, ..., n_k) neuron-count-per-layer combination, k from min_layers
+    to max_layers, order-sensitive (layer 1's size differs positionally from layer 2's -- a
+    network is sequential, so (6,10) and (10,6) are genuinely different architectures).
+    Returned GROUPED by depth ({n_layers: [tuple, ...]}), not flattened -- the possible-tuple
+    count grows combinatorially with depth (11 for 1 layer, 121 for 2, 1331 for 3 at the
+    default 6-16 neuron range), so a flat pooled shuffle statistically drowns the shallow
+    depths out; callers should sample depth-stratified (see round_robin_size_tuples)."""
+    sizes = list(range(min_neurons, max_neurons + 1))
+    return {n_layers: list(itertools.product(sizes, repeat=n_layers))
+            for n_layers in range(min_layers, max_layers + 1)}
+
+
+def round_robin_size_tuples(by_depth, rng):
+    """Yields size-tuples round-robin across depths (each depth's own pool shuffled
+    independently first), so the much smaller shallow-depth pools (11 one-layer, 121
+    two-layer vs. 1331 three-layer at the default range) are fully exhausted before the
+    combinatorially larger deep pool dominates purely by volume -- guarantees every possible
+    1- and 2-layer architecture gets tried instead of them being statistically drowned out."""
+    pools = {depth: list(tuples) for depth, tuples in by_depth.items()}
+    for pool in pools.values():
+        rng.shuffle(pool)
+    depths = sorted(pools.keys())
+    idxs = {d: 0 for d in depths}
+    while True:
+        progressed = False
+        for d in depths:
+            if idxs[d] < len(pools[d]):
+                yield pools[d][idxs[d]]
+                idxs[d] += 1
+                progressed = True
+        if not progressed:
+            return
+
+
+def build_arch(sizes, tanh_only, activation_weights=None):
+    """sizes: tuple of neuron-counts, one per layer. Composition per layer is a DETERMINISTIC
+    function of (n_neurons, activation_weights) -- see layer_composition -- neuron order within
+    a layer is fixed (tanh-block, swish-block, linear-block) since order carries no meaning."""
+    if tanh_only:
+        return [["tanh"] * n for n in sizes]
     arch = []
-    for _ in range(n_layers):
-        n_neurons = int(rng.integers(min_neurons, max_neurons + 1))
-        layer = [acts[i] for i in rng.integers(0, len(acts), size=n_neurons)]
-        arch.append(layer)
+    for n in sizes:
+        n_tanh, n_swish, n_linear = layer_composition(n, activation_weights)
+        arch.append(["tanh"] * n_tanh + ["swish"] * n_swish + ["linear"] * n_linear)
     return arch
 
 
-def generate_f_architectures(n, n_tanh_only, seed, min_layers=1, max_layers=3, min_neurons=6, max_neurons=16):
+def generate_f_architectures(n, n_tanh_only, seed, min_layers=1, max_layers=3, min_neurons=6,
+                              max_neurons=16, primary_weights=DEFAULT_ACTIVATION_WEIGHTS,
+                              fallback_weights=FALLBACK_ACTIVATION_WEIGHTS):
+    """Builds n architectures (n_tanh_only of them 100% tanh, the rest mixed) via depth-
+    stratified round-robin over every distinct layer-size combination (see
+    enumerate_size_tuples/round_robin_size_tuples) -- NOT independent random sampling with
+    reject-on-duplicate (which wastes draws, isn't guaranteed to terminate, AND would still
+    let the combinatorially larger deep-network pool statistically dominate). The tanh_only
+    bucket and the mixed bucket each get their OWN independent round-robin pass over the full
+    by-depth pools (freshly shuffled), so BOTH buckets separately get full depth coverage --
+    reusing the same underlying size-tuples across buckets is fine and intentional (a
+    tanh_only architecture and a mixed one built from the same sizes are never the same
+    architecture, since their actual per-layer composition differs). If primary_weights can't
+    reach n mixed architectures even after exhausting every depth's pool, a second
+    (independently shuffled) round-robin pass is run under fallback_weights -- a different
+    weight triple gives the SAME sizes a different, still-deterministic composition, so this
+    yields genuinely new architectures rather than duplicates."""
     rng = np.random.default_rng(seed)
+    by_depth = enumerate_size_tuples(min_layers, max_layers, min_neurons, max_neurons)
+
     rows, seen = [], set()
 
-    def try_add(tanh_only):
-        arch = random_f_architecture(rng, min_layers, max_layers, min_neurons, max_neurons, tanh_only)
+    def add_row(arch):
         h = arch_hash_of(arch)
         if h in seen:
             return False
@@ -135,12 +220,38 @@ def generate_f_architectures(n, n_tanh_only, seed, min_layers=1, max_layers=3, m
         ))
         return True
 
+    # 1. n_tanh_only architectures (100% tanh), own depth-stratified pass
     n_forced_tanh = 0
-    while n_forced_tanh < n_tanh_only:
-        if try_add(tanh_only=True):
+    for sizes in round_robin_size_tuples(by_depth, rng):
+        if n_forced_tanh >= n_tanh_only:
+            break
+        if add_row(build_arch(sizes, tanh_only=True)):
             n_forced_tanh += 1
-    while len(rows) < n:
-        try_add(tanh_only=False)
+    if n_forced_tanh < n_tanh_only:
+        raise RuntimeError(f"Only {n_forced_tanh}/{n_tanh_only} tanh-only architectures were "
+                            f"reachable -- widen --min_neurons/--max_neurons/--max_layers.")
+
+    # 2. mixed architectures: primary weights first (own depth-stratified pass), falling back
+    # to a second depth-stratified pass under fallback_weights if that alone isn't enough
+    n_mixed_needed = n - n_tanh_only
+    n_mixed_added = 0
+    for sizes in round_robin_size_tuples(by_depth, rng):
+        if n_mixed_added >= n_mixed_needed:
+            break
+        if add_row(build_arch(sizes, tanh_only=False, activation_weights=primary_weights)):
+            n_mixed_added += 1
+    if n_mixed_added < n_mixed_needed:
+        print(f"  primary weights {primary_weights} exhausted the size-tuple space at "
+              f"{len(rows)}/{n} architectures -- switching to fallback weights "
+              f"{fallback_weights} for the remaining {n_mixed_needed - n_mixed_added}")
+        for sizes in round_robin_size_tuples(by_depth, rng):
+            if n_mixed_added >= n_mixed_needed:
+                break
+            if add_row(build_arch(sizes, tanh_only=False, activation_weights=fallback_weights)):
+                n_mixed_added += 1
+    if n_mixed_added < n_mixed_needed:
+        raise RuntimeError(f"Only reached {len(rows)}/{n} architectures even after falling back "
+                            f"to {fallback_weights} -- widen the size ranges or lower --n_f_architectures.")
     return rows
 
 
