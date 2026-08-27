@@ -21,7 +21,7 @@ import torch
 
 from data_loader import load_all
 from model import HyperNetwork, main_net_forward, main_net_n_params, ARCHITECTURES
-from physics_features import extract_angelov_features, predict_physics_features
+from physics_features import extract_angelov_features, predict_physics_features, _transfer_curve
 from plotting import qtag, build_iv_curves, plot_iv_grid, build_html_report
 from signal_utils import smooth_derivative
 
@@ -169,9 +169,25 @@ def build_tensors(data, device, gm_n_vds_targets=4, ids_region_frac=0.05,
         gm_vds_t = torch.tensor(gm_vds_np / VDS_SCALE, dtype=torch.float32, device=device)
         gm1_true_t = torch.tensor(gm1_true_np, dtype=torch.float32, device=device)
 
+        # Ipk/Vpk (peak-transconductance point: Vpk = Vgs at max gm1 on the high-Vds transfer
+        # curve, Ipk = Ids there), extracted the SAME way physics_features.extract_angelov_features
+        # does -- used here as an auxiliary LOSS TARGET (--ipk_weight/--vpk_weight), unlike the
+        # earlier --h_physics, which fed these as EXTRA INPUTS to H (tried, made LOO worse in
+        # every variant -- more input dims = more overfitting capacity with only 5-6 training
+        # points). A loss target instead constrains f's existing capacity rather than adding
+        # more, and has no leakage concern even for LOO: it's only ever computed from a training
+        # point's OWN real data, exactly like the Ids/gm1 targets already are (the held-out
+        # point is never in train_keys, so its features are never touched).
+        feats = extract_angelov_features(df)
+        vds_hi = float(df["Vds"].max())
+        ipk_curve_vgs_np, _ = _transfer_curve(df, vds_hi)
+        ipk_curve_vgs_t = torch.tensor(ipk_curve_vgs_np, dtype=torch.float32, device=device)  # raw volts
+
         out[(vgsq, vdsq)] = dict(qpoint=qpoint, vgs=vgs_t, vds=vds_t, ids=ids_t,
                                   ids_np=ids_np, low_current_mask=low_current_mask,
-                                  gm_vgs=gm_vgs_t, gm_vds=gm_vds_t, gm1_true=gm1_true_t)
+                                  gm_vgs=gm_vgs_t, gm_vds=gm_vds_t, gm1_true=gm1_true_t,
+                                  vpk_real=feats["Vpk"], ipk_real=feats["Ipk"], vds_hi=vds_hi,
+                                  ipk_curve_vgs=ipk_curve_vgs_t)
     return out
 
 
@@ -220,7 +236,8 @@ def smoothness_penalty(hyper, qpoint, relative=False):
 
 def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_norm, ids_region_weight,
                  ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
-                 smoothness_weight=0.0, smoothness_relative=False):
+                 smoothness_weight=0.0, smoothness_relative=False,
+                 ipk_weight=0.0, vpk_weight=0.0, ipk_norm=None, vpk_softmax_temp=30.0):
     """Sum over train_keys of the (optionally gm1- and cutoff-region-weighted) per-point
     normalized MSE. Shared by the Adam loop and the L-BFGS closure so both optimize the
     exact same objective."""
@@ -261,6 +278,33 @@ def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_
         if smoothness_weight > 0:
             loss = loss + smoothness_weight * smoothness_penalty(hyper, t["qpoint"], relative=smoothness_relative)
 
+        if ipk_weight > 0 or vpk_weight > 0:
+            # Vpk_pred and Ipk_pred both come from ONE shared gm1-of-the-model computation
+            # on the real high-Vds transfer curve -- a single derivative (dIds/dVgs along
+            # that curve), not two separate ones. argmax itself isn't usefully
+            # differentiable, so instead of a hard argmax we use a softmax-weighted
+            # centroid over gm1_pred: vpk_pred = weighted-mean(Vgs), ipk_pred =
+            # weighted-mean(Ids), both under the SAME weights -- i.e. "where AND how high
+            # the model's own curve currently peaks". Approaches the true argmax as
+            # vpk_softmax_temp grows, while staying smooth for gradient descent.
+            curve_vgs_req = t["ipk_curve_vgs"].clone().requires_grad_(True)
+            vdshi_curve = torch.full_like(curve_vgs_req, t["vds_hi"]) / VDS_SCALE
+            ids_curve = main_net_forward(theta, curve_vgs_req / VGS_SCALE, vdshi_curve, architecture)
+            gm1_curve_pred = torch.autograd.grad(ids_curve, curve_vgs_req,
+                                                   grad_outputs=torch.ones_like(ids_curve),
+                                                   create_graph=True)[0]
+            weights = torch.softmax(gm1_curve_pred * vpk_softmax_temp, dim=0)
+
+            if vpk_weight > 0:
+                vpk_pred = (weights * curve_vgs_req).sum()
+                loss_vpk = (vpk_pred - t["vpk_real"]) ** 2 / VGS_SCALE ** 2
+                loss = loss + vpk_weight * loss_vpk
+
+            if ipk_weight > 0:
+                ipk_pred = (weights * ids_curve).sum()
+                loss_ipk = torch.mean((ipk_pred - t["ipk_real"]) ** 2) / ipk_norm[k]
+                loss = loss + ipk_weight * loss_ipk
+
         total_loss = total_loss + loss
     return total_loss
 
@@ -269,7 +313,8 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
                     gm1_weight=0.0, ids_region_weight=0.0, lbfgs_epochs=5, lbfgs_max_iter=200,
                     h_hidden=32, h_layers=2, n_in=2, log_every=500, seed=27,
                     ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
-                    weight_decay=0.0, smoothness_weight=0.0, smoothness_relative=False):
+                    weight_decay=0.0, smoothness_weight=0.0, smoothness_relative=False,
+                    ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0):
     torch.manual_seed(seed)
     hyper = HyperNetwork(n_params, hidden=h_hidden, n_hidden_layers=h_layers, n_in=n_in).to(device)
     # AdamW, not Adam -- with weight_decay=0.0 (the default) its decoupled-decay term vanishes
@@ -288,13 +333,17 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
     gm1_norm = {}
     if gm1_weight > 0:
         gm1_norm = {k: (tensors[k]["gm1_true"].abs().max().item() + 1e-6) ** 2 for k in train_keys}
+    ipk_norm = {}
+    if ipk_weight > 0:
+        ipk_norm = {k: (abs(tensors[k]["ipk_real"]) + 1e-6) ** 2 for k in train_keys}
 
     for epoch in range(epochs):
         opt.zero_grad()
         total_loss = _total_loss(hyper, train_keys, tensors, architecture, norm,
                                   gm1_weight, gm1_norm, ids_region_weight,
                                   ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac,
-                                  smoothness_weight, smoothness_relative)
+                                  smoothness_weight, smoothness_relative,
+                                  ipk_weight, vpk_weight, ipk_norm, vpk_softmax_temp)
         total_loss.backward()
         opt.step()
         if log_every and (epoch % log_every == 0 or epoch == epochs - 1):
@@ -313,7 +362,8 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
             loss = _total_loss(hyper, train_keys, tensors, architecture, norm,
                                 gm1_weight, gm1_norm, ids_region_weight,
                                 ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac,
-                                smoothness_weight, smoothness_relative)
+                                smoothness_weight, smoothness_relative,
+                                ipk_weight, vpk_weight, ipk_norm, vpk_softmax_temp)
             loss.backward()
             return loss
 
@@ -351,7 +401,7 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
                       h_hidden, h_layers, h_physics, seed, models_dir, plots_dir,
                       ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                       gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0,
-                      smoothness_relative=False):
+                      smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0):
     """Runs in its own process: train jointly on all quiescent points, evaluate + plot
     each in-sample, save the model. Independent of the LOO jobs -> safe to parallelize."""
     torch.set_num_threads(1)  # tiny model/data -> intra-op threading only adds overhead;
@@ -371,7 +421,9 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
                             ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
                             relative_norm_floor_frac=relative_norm_floor_frac,
                             weight_decay=weight_decay, smoothness_weight=smoothness_weight,
-                            smoothness_relative=smoothness_relative)
+                            smoothness_relative=smoothness_relative,
+                            ipk_weight=ipk_weight, vpk_weight=vpk_weight,
+                            vpk_softmax_temp=vpk_softmax_temp)
 
     errs = {}
     for k in keys:
@@ -391,7 +443,7 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
                  h_hidden, h_layers, h_physics, h_physics_oracle, seed, models_dir, plots_dir,
                  ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                  gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0,
-                 smoothness_relative=False):
+                 smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0):
     """Runs in its own process: train on the other 5 quiescent points, evaluate + plot the
     held-out one, save the model. Each held_out fold is fully independent of the others."""
     torch.set_num_threads(1)
@@ -412,7 +464,9 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
                             ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
                             relative_norm_floor_frac=relative_norm_floor_frac,
                             weight_decay=weight_decay, smoothness_weight=smoothness_weight,
-                            smoothness_relative=smoothness_relative)
+                            smoothness_relative=smoothness_relative,
+                            ipk_weight=ipk_weight, vpk_weight=vpk_weight,
+                            vpk_softmax_temp=vpk_softmax_temp)
 
     err, pred = evaluate(hyper, held_out, tensors, architecture, device)
     tag = qtag(*held_out)
@@ -502,6 +556,25 @@ def main():
                           "effective strength stays roughly constant regardless of H's current "
                           "output scale, instead of tracking theta's own (growing-over-training) "
                           "magnitude like the plain version does. Off by default.")
+    ap.add_argument("--ipk_weight", type=float, default=0.0,
+                     help="Weight of an auxiliary loss matching PREDICTED Ids, evaluated at "
+                          "the REAL Vpk (peak-gm1 Vgs, from the high-Vds transfer curve) and "
+                          "the real max Vds, against the REAL Ipk there -- extracted via "
+                          "physics_features.extract_angelov_features, same technique as the "
+                          "shelved --h_physics but used as a LOSS TARGET (constrains f) instead "
+                          "of an EXTRA INPUT to H (added capacity, made LOO worse in every "
+                          "--h_physics variant tried). No leakage: only ever computed from a "
+                          "training point's own data, held-out points are never in train_keys. "
+                          "0.0 (default) = off.")
+    ap.add_argument("--vpk_weight", type=float, default=0.0,
+                     help="Weight of an auxiliary loss matching the LOCATION of the predicted "
+                          "curve's own peak-gm1 (softmax-weighted centroid over gm1_pred on the "
+                          "same high-Vds transfer curve -- argmax itself isn't usefully "
+                          "differentiable) against the real Vpk. 0.0 (default) = off.")
+    ap.add_argument("--vpk_softmax_temp", type=float, default=30.0,
+                     help="Temperature for --vpk_weight's softmax centroid -- higher = closer "
+                          "to a true (but non-differentiable) argmax, lower = smoother/more "
+                          "spread out. Only relevant if --vpk_weight > 0.")
     ap.add_argument("--lbfgs_epochs", type=int, default=5,
                      help="L-BFGS polishing steps run after the Adam phase (outer steps; each runs "
                           "up to --lbfgs_max_iter iterations with a strong-Wolfe line search), same "
@@ -575,7 +648,7 @@ def main():
                                  args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
                                  args.h_physics, args.seed, models_dir, plots_dir,
                                  args.ids_relative_norm, args.gm1_relative_norm, args.relative_norm_floor_frac,
-                                 args.gm_vgs_min, args.gm_vds_min, args.weight_decay, args.smoothness_weight, args.smoothness_relative)
+                                 args.gm_vgs_min, args.gm_vds_min, args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp)
         loo_futures = {ex.submit(run_loo_job, k, data, n_params, architecture, args.epochs, args.lr,
                                   args.gm1_weight, args.ids_region_weight, args.ids_region_frac,
                                   args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
@@ -584,7 +657,7 @@ def main():
                                   args.ids_relative_norm, args.gm1_relative_norm,
                                   args.relative_norm_floor_frac,
                                   args.gm_vgs_min, args.gm_vds_min,
-                                  args.weight_decay, args.smoothness_weight, args.smoothness_relative): k for k in keys}
+                                  args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp): k for k in keys}
 
         full_errs_by_key = full_future.result()
         print("\n=== Full-fit sanity check (train on all 6, evaluate in-sample) ===")
@@ -622,6 +695,9 @@ def main():
         "weight_decay": args.weight_decay,
         "smoothness_weight": args.smoothness_weight,
         "smoothness_relative": args.smoothness_relative,
+        "ipk_weight": args.ipk_weight,
+        "vpk_weight": args.vpk_weight,
+        "vpk_softmax_temp": args.vpk_softmax_temp,
         "lbfgs_epochs": args.lbfgs_epochs,
         "lbfgs_max_iter": args.lbfgs_max_iter,
         "h_hidden": args.h_hidden,
