@@ -32,7 +32,10 @@ row per combo to results.csv (safe to re-run/extend: existing arch_hash+h_arch_h
 rows are skipped). Each combo's full-fit model (trained on ALL quiescent points, not a LOO
 fold) is saved under --models_dir/<combo_id>/ along with a meta.json with everything needed
 to reconstruct it (architecture, h_hidden, h_layers, n_params, strategy, gm1_weight,
-delta_reg_weight, base_key) -- results.csv points to that directory.
+delta_reg_weight, base_key) -- results.csv's model_dir column points to that directory as a
+path RELATIVE TO results.csv's own location (not absolute), so the whole output tree
+(results.csv + models_dir) stays valid if copied/moved to a new location or machine, as long
+as the two are moved together and keep their relative position to each other.
 
 Usage:
   # 1. generate the two config files (1000 f-architectures, 4 H sizes)
@@ -482,6 +485,10 @@ def cmd_run(args):
                 fullfit_by_combo[combo_id] = (float("nan"), save_dir, str(e))
 
     # --- Step 4: assemble + append results.csv ---
+    # model_dir is stored RELATIVE to results.csv's own directory (not absolute) so the whole
+    # output tree (results.csv + models_dir) stays valid if copied/moved elsewhere together --
+    # an absolute path here would silently go stale on any copy-paste to a new location/machine.
+    results_csv_dir = os.path.dirname(os.path.abspath(args.results_csv))
     write_header = not os.path.exists(args.results_csv)
     with open(args.results_csv, "a", newline="") as f:
         w = csv.DictWriter(f, fieldnames=RESULTS_CSV_FIELDS)
@@ -495,6 +502,7 @@ def cmd_run(args):
             status = "ok" if len(errs_by_point) == n_expected else "incomplete"
             errs = list(errs_by_point.values())
             full_fit_mean, save_dir, err_msg = fullfit_by_combo.get(combo_id, (float("nan"), "", "missing"))
+            model_dir_rel = os.path.relpath(save_dir, results_csv_dir) if save_dir else ""
             w.writerow(dict(
                 combo_id=combo_id,
                 f_arch_hash=f_row["arch_hash"],
@@ -512,7 +520,7 @@ def cmd_run(args):
                 loo_worst_rel_rmse=float(np.max(errs)) if errs else "",
                 full_fit_mean_rel_rmse=full_fit_mean,
                 loo_per_point_json=json.dumps({qtag_local(*k): v for k, v in errs_by_point.items()}),
-                model_dir=save_dir,
+                model_dir=model_dir_rel,
                 status=status if err_msg is None else "error",
                 error_msg=err_msg or "",
                 wall_time_seconds=round(time.time() - t0, 1),
