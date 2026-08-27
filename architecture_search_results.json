@@ -1,0 +1,3047 @@
+{
+  "epochs": 1500,
+  "lr": 0.003,
+  "seed": 42,
+  "results": [
+    {
+      "arch_id": "rand032",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 87,
+      "loo_mean_rel_rmse": 0.02119156992198953,
+      "loo_worst_rel_rmse": 0.028565734186083283,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02662564894425898,
+        "Vgsq-2.9_Vdsq28": 0.027076126725071877,
+        "Vgsq-2.5_Vdsq0": 0.014633016811421715,
+        "Vgsq-2.5_Vdsq20": 0.028565734186083283,
+        "Vgsq-2.4_Vdsq5": 0.01887492578551241,
+        "Vgsq-2.2_Vdsq5": 0.011373967079588909
+      }
+    },
+    {
+      "arch_id": "rand016",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 72,
+      "loo_mean_rel_rmse": 0.02248203328396668,
+      "loo_worst_rel_rmse": 0.03935758880305196,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.024778917954512827,
+        "Vgsq-2.9_Vdsq28": 0.03935758880305196,
+        "Vgsq-2.5_Vdsq0": 0.01456578608587151,
+        "Vgsq-2.5_Vdsq20": 0.027527858690733466,
+        "Vgsq-2.4_Vdsq5": 0.016525712443791186,
+        "Vgsq-2.2_Vdsq5": 0.012136335725839135
+      }
+    },
+    {
+      "arch_id": "rand019",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 76,
+      "loo_mean_rel_rmse": 0.022831129433210588,
+      "loo_worst_rel_rmse": 0.04205538847717769,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.030622494764819184,
+        "Vgsq-2.9_Vdsq28": 0.04205538847717769,
+        "Vgsq-2.5_Vdsq0": 0.01305423713867859,
+        "Vgsq-2.5_Vdsq20": 0.0261740777939141,
+        "Vgsq-2.4_Vdsq5": 0.013943555280552274,
+        "Vgsq-2.2_Vdsq5": 0.011137023144121688
+      }
+    },
+    {
+      "arch_id": "rand025",
+      "architecture": [
+        [
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 29,
+      "loo_mean_rel_rmse": 0.023263689475706187,
+      "loo_worst_rel_rmse": 0.039708022541410294,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02550566179113423,
+        "Vgsq-2.9_Vdsq28": 0.039708022541410294,
+        "Vgsq-2.5_Vdsq0": 0.013551568426949266,
+        "Vgsq-2.5_Vdsq20": 0.029283328152374114,
+        "Vgsq-2.4_Vdsq5": 0.018421956980794168,
+        "Vgsq-2.2_Vdsq5": 0.013111598961575044
+      }
+    },
+    {
+      "arch_id": "rand083",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 130,
+      "loo_mean_rel_rmse": 0.023319002471388114,
+      "loo_worst_rel_rmse": 0.04058087966921089,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.029019751215205836,
+        "Vgsq-2.9_Vdsq28": 0.04058087966921089,
+        "Vgsq-2.5_Vdsq0": 0.013941735960844005,
+        "Vgsq-2.5_Vdsq20": 0.027710227039667867,
+        "Vgsq-2.4_Vdsq5": 0.0150467199180211,
+        "Vgsq-2.2_Vdsq5": 0.013614701025378978
+      }
+    },
+    {
+      "arch_id": "rand086",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 121,
+      "loo_mean_rel_rmse": 0.023342508436655713,
+      "loo_worst_rel_rmse": 0.03626548657353543,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.029453825095424335,
+        "Vgsq-2.9_Vdsq28": 0.03626548657353543,
+        "Vgsq-2.5_Vdsq0": 0.01488117414366455,
+        "Vgsq-2.5_Vdsq20": 0.026128120545743816,
+        "Vgsq-2.4_Vdsq5": 0.019788330894610576,
+        "Vgsq-2.2_Vdsq5": 0.013538113366955578
+      }
+    },
+    {
+      "arch_id": "rand082",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 55,
+      "loo_mean_rel_rmse": 0.023555457546900305,
+      "loo_worst_rel_rmse": 0.04302412792835501,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03189129798079806,
+        "Vgsq-2.9_Vdsq28": 0.04302412792835501,
+        "Vgsq-2.5_Vdsq0": 0.014647970858707383,
+        "Vgsq-2.5_Vdsq20": 0.027829335597722143,
+        "Vgsq-2.4_Vdsq5": 0.0103946815972024,
+        "Vgsq-2.2_Vdsq5": 0.013545331318616863
+      }
+    },
+    {
+      "arch_id": "rand051",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 157,
+      "loo_mean_rel_rmse": 0.023765213344944514,
+      "loo_worst_rel_rmse": 0.03657287174911788,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03657287174911788,
+        "Vgsq-2.9_Vdsq28": 0.034649051037833514,
+        "Vgsq-2.5_Vdsq0": 0.01240975742166739,
+        "Vgsq-2.5_Vdsq20": 0.027524831896074593,
+        "Vgsq-2.4_Vdsq5": 0.01878845959019353,
+        "Vgsq-2.2_Vdsq5": 0.012646308374780204
+      }
+    },
+    {
+      "arch_id": "rand006",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 75,
+      "loo_mean_rel_rmse": 0.023876984299341097,
+      "loo_worst_rel_rmse": 0.041630297270517355,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.029390995191558668,
+        "Vgsq-2.9_Vdsq28": 0.041630297270517355,
+        "Vgsq-2.5_Vdsq0": 0.010877776828487505,
+        "Vgsq-2.5_Vdsq20": 0.027013093463505517,
+        "Vgsq-2.4_Vdsq5": 0.01803595389109609,
+        "Vgsq-2.2_Vdsq5": 0.016313789150881434
+      }
+    },
+    {
+      "arch_id": "rand008",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 69,
+      "loo_mean_rel_rmse": 0.02395374458469512,
+      "loo_worst_rel_rmse": 0.041626818282140286,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.027649266132781933,
+        "Vgsq-2.9_Vdsq28": 0.041626818282140286,
+        "Vgsq-2.5_Vdsq0": 0.015112573836456214,
+        "Vgsq-2.5_Vdsq20": 0.02643291406866022,
+        "Vgsq-2.4_Vdsq5": 0.018687839137814702,
+        "Vgsq-2.2_Vdsq5": 0.01421305605031736
+      }
+    },
+    {
+      "arch_id": "rand044",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 72,
+      "loo_mean_rel_rmse": 0.023983126311306974,
+      "loo_worst_rel_rmse": 0.03905385877197821,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.027326057935693687,
+        "Vgsq-2.9_Vdsq28": 0.03905385877197821,
+        "Vgsq-2.5_Vdsq0": 0.012919669478828912,
+        "Vgsq-2.5_Vdsq20": 0.0314416556282371,
+        "Vgsq-2.4_Vdsq5": 0.01826175358865833,
+        "Vgsq-2.2_Vdsq5": 0.014895762464445595
+      }
+    },
+    {
+      "arch_id": "rand092",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 124,
+      "loo_mean_rel_rmse": 0.023989770845545873,
+      "loo_worst_rel_rmse": 0.03860516902920588,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03158408973562512,
+        "Vgsq-2.9_Vdsq28": 0.03860516902920588,
+        "Vgsq-2.5_Vdsq0": 0.01371241736197028,
+        "Vgsq-2.5_Vdsq20": 0.025802146588856982,
+        "Vgsq-2.4_Vdsq5": 0.01995115748373151,
+        "Vgsq-2.2_Vdsq5": 0.014283644873885473
+      }
+    },
+    {
+      "arch_id": "rand048",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 119,
+      "loo_mean_rel_rmse": 0.024019858645742413,
+      "loo_worst_rel_rmse": 0.0413957051318976,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.027040971297376756,
+        "Vgsq-2.9_Vdsq28": 0.0413957051318976,
+        "Vgsq-2.5_Vdsq0": 0.011926139739623849,
+        "Vgsq-2.5_Vdsq20": 0.026184448712785868,
+        "Vgsq-2.4_Vdsq5": 0.025233502713695236,
+        "Vgsq-2.2_Vdsq5": 0.012338384279075151
+      }
+    },
+    {
+      "arch_id": "rand066",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 46,
+      "loo_mean_rel_rmse": 0.024166906063013735,
+      "loo_worst_rel_rmse": 0.04605444977928719,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.019701552758861016,
+        "Vgsq-2.9_Vdsq28": 0.04605444977928719,
+        "Vgsq-2.5_Vdsq0": 0.01533679834771357,
+        "Vgsq-2.5_Vdsq20": 0.028645886830020676,
+        "Vgsq-2.4_Vdsq5": 0.018805110264922768,
+        "Vgsq-2.2_Vdsq5": 0.016457638397277197
+      }
+    },
+    {
+      "arch_id": "rand072",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 58,
+      "loo_mean_rel_rmse": 0.024233718832511783,
+      "loo_worst_rel_rmse": 0.04328903179025172,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02594774960458748,
+        "Vgsq-2.9_Vdsq28": 0.04328903179025172,
+        "Vgsq-2.5_Vdsq0": 0.01634803529877908,
+        "Vgsq-2.5_Vdsq20": 0.023062904522877754,
+        "Vgsq-2.4_Vdsq5": 0.018727982443885953,
+        "Vgsq-2.2_Vdsq5": 0.01802660933468871
+      }
+    },
+    {
+      "arch_id": "rand029",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 105,
+      "loo_mean_rel_rmse": 0.024251197744653712,
+      "loo_worst_rel_rmse": 0.03828670690508503,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.034214965004185346,
+        "Vgsq-2.9_Vdsq28": 0.03828670690508503,
+        "Vgsq-2.5_Vdsq0": 0.01312459258688169,
+        "Vgsq-2.5_Vdsq20": 0.026555422316564936,
+        "Vgsq-2.4_Vdsq5": 0.018872069281263795,
+        "Vgsq-2.2_Vdsq5": 0.014453430373941485
+      }
+    },
+    {
+      "arch_id": "rand038",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 50,
+      "loo_mean_rel_rmse": 0.024283835948780308,
+      "loo_worst_rel_rmse": 0.039534558395005456,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02890566298882102,
+        "Vgsq-2.9_Vdsq28": 0.039534558395005456,
+        "Vgsq-2.5_Vdsq0": 0.016896046620950934,
+        "Vgsq-2.5_Vdsq20": 0.02764038356129988,
+        "Vgsq-2.4_Vdsq5": 0.017643049475590408,
+        "Vgsq-2.2_Vdsq5": 0.015083314651014135
+      }
+    },
+    {
+      "arch_id": "rand037",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 85,
+      "loo_mean_rel_rmse": 0.02429261725395015,
+      "loo_worst_rel_rmse": 0.04033871836754206,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.0310601604554427,
+        "Vgsq-2.9_Vdsq28": 0.04033871836754206,
+        "Vgsq-2.5_Vdsq0": 0.015293523723843273,
+        "Vgsq-2.5_Vdsq20": 0.027014037672812793,
+        "Vgsq-2.4_Vdsq5": 0.01838417326038552,
+        "Vgsq-2.2_Vdsq5": 0.013665090043674558
+      }
+    },
+    {
+      "arch_id": "rand078",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 85,
+      "loo_mean_rel_rmse": 0.02435303024256225,
+      "loo_worst_rel_rmse": 0.04511355740637819,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.024880196253643648,
+        "Vgsq-2.9_Vdsq28": 0.04511355740637819,
+        "Vgsq-2.5_Vdsq0": 0.014472587097808312,
+        "Vgsq-2.5_Vdsq20": 0.02794097586644079,
+        "Vgsq-2.4_Vdsq5": 0.018959380880013667,
+        "Vgsq-2.2_Vdsq5": 0.014751483951088907
+      }
+    },
+    {
+      "arch_id": "rand041",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 115,
+      "loo_mean_rel_rmse": 0.024377447458886523,
+      "loo_worst_rel_rmse": 0.03932029172931921,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.028335244361631956,
+        "Vgsq-2.9_Vdsq28": 0.03932029172931921,
+        "Vgsq-2.5_Vdsq0": 0.01995099103290177,
+        "Vgsq-2.5_Vdsq20": 0.02590840815004685,
+        "Vgsq-2.4_Vdsq5": 0.019095309369767343,
+        "Vgsq-2.2_Vdsq5": 0.013654440109652017
+      }
+    },
+    {
+      "arch_id": "rand088",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 94,
+      "loo_mean_rel_rmse": 0.024433432970955016,
+      "loo_worst_rel_rmse": 0.04010456282627772,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.04010456282627772,
+        "Vgsq-2.9_Vdsq28": 0.03568138673157662,
+        "Vgsq-2.5_Vdsq0": 0.014015256533115982,
+        "Vgsq-2.5_Vdsq20": 0.025129925945121565,
+        "Vgsq-2.4_Vdsq5": 0.017110087364917422,
+        "Vgsq-2.2_Vdsq5": 0.014559378424720801
+      }
+    },
+    {
+      "arch_id": "rand014",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 49,
+      "loo_mean_rel_rmse": 0.024583461159144962,
+      "loo_worst_rel_rmse": 0.032793563526947636,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.032793563526947636,
+        "Vgsq-2.9_Vdsq28": 0.02660315879788219,
+        "Vgsq-2.5_Vdsq0": 0.014587658535041974,
+        "Vgsq-2.5_Vdsq20": 0.03255642137400326,
+        "Vgsq-2.4_Vdsq5": 0.01937929960221342,
+        "Vgsq-2.2_Vdsq5": 0.02158066511878129
+      }
+    },
+    {
+      "arch_id": "rand053",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 76,
+      "loo_mean_rel_rmse": 0.024644977507130874,
+      "loo_worst_rel_rmse": 0.04150585753979031,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.0332390454168885,
+        "Vgsq-2.9_Vdsq28": 0.04150585753979031,
+        "Vgsq-2.5_Vdsq0": 0.01418774028752515,
+        "Vgsq-2.5_Vdsq20": 0.02697244963475981,
+        "Vgsq-2.4_Vdsq5": 0.01877461409693132,
+        "Vgsq-2.2_Vdsq5": 0.013190158066890141
+      }
+    },
+    {
+      "arch_id": "rand052",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 67,
+      "loo_mean_rel_rmse": 0.024751437105975216,
+      "loo_worst_rel_rmse": 0.040284902546548665,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.030359207545076535,
+        "Vgsq-2.9_Vdsq28": 0.040284902546548665,
+        "Vgsq-2.5_Vdsq0": 0.014973862560766417,
+        "Vgsq-2.5_Vdsq20": 0.027323078493384802,
+        "Vgsq-2.4_Vdsq5": 0.020103485269153426,
+        "Vgsq-2.2_Vdsq5": 0.015464086220921438
+      }
+    },
+    {
+      "arch_id": "rand057",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 105,
+      "loo_mean_rel_rmse": 0.024800121013653347,
+      "loo_worst_rel_rmse": 0.04548181634496987,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.0268098083884796,
+        "Vgsq-2.9_Vdsq28": 0.04548181634496987,
+        "Vgsq-2.5_Vdsq0": 0.013095175513485012,
+        "Vgsq-2.5_Vdsq20": 0.027437163605410715,
+        "Vgsq-2.4_Vdsq5": 0.018655112825640148,
+        "Vgsq-2.2_Vdsq5": 0.017321649403934748
+      }
+    },
+    {
+      "arch_id": "rand081",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 58,
+      "loo_mean_rel_rmse": 0.024842950912310285,
+      "loo_worst_rel_rmse": 0.03446419019019027,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.031060741992393066,
+        "Vgsq-2.9_Vdsq28": 0.03446419019019027,
+        "Vgsq-2.5_Vdsq0": 0.016778525182796555,
+        "Vgsq-2.5_Vdsq20": 0.03208641256740219,
+        "Vgsq-2.4_Vdsq5": 0.0204223139867061,
+        "Vgsq-2.2_Vdsq5": 0.014245521554373527
+      }
+    },
+    {
+      "arch_id": "rand049",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 59,
+      "loo_mean_rel_rmse": 0.024945134506544574,
+      "loo_worst_rel_rmse": 0.04370938551458323,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.028675943188672292,
+        "Vgsq-2.9_Vdsq28": 0.04370938551458323,
+        "Vgsq-2.5_Vdsq0": 0.013639423825968498,
+        "Vgsq-2.5_Vdsq20": 0.027573439914740323,
+        "Vgsq-2.4_Vdsq5": 0.019736178055398585,
+        "Vgsq-2.2_Vdsq5": 0.016336436539904478
+      }
+    },
+    {
+      "arch_id": "rand070",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 66,
+      "loo_mean_rel_rmse": 0.02496629190364628,
+      "loo_worst_rel_rmse": 0.04416184209491214,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02845606444777409,
+        "Vgsq-2.9_Vdsq28": 0.04416184209491214,
+        "Vgsq-2.5_Vdsq0": 0.016029550259774324,
+        "Vgsq-2.5_Vdsq20": 0.029258884850525812,
+        "Vgsq-2.4_Vdsq5": 0.017815545450125814,
+        "Vgsq-2.2_Vdsq5": 0.014075864318765511
+      }
+    },
+    {
+      "arch_id": "rand058",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 54,
+      "loo_mean_rel_rmse": 0.02501911825873705,
+      "loo_worst_rel_rmse": 0.04002000493495492,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.033756635738998966,
+        "Vgsq-2.9_Vdsq28": 0.04002000493495492,
+        "Vgsq-2.5_Vdsq0": 0.013270591918921826,
+        "Vgsq-2.5_Vdsq20": 0.027171757752643872,
+        "Vgsq-2.4_Vdsq5": 0.020867445833248944,
+        "Vgsq-2.2_Vdsq5": 0.01502827337365377
+      }
+    },
+    {
+      "arch_id": "rand096",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 94,
+      "loo_mean_rel_rmse": 0.025171670924162493,
+      "loo_worst_rel_rmse": 0.045420856454934676,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.027024311064420877,
+        "Vgsq-2.9_Vdsq28": 0.045420856454934676,
+        "Vgsq-2.5_Vdsq0": 0.014405468237473693,
+        "Vgsq-2.5_Vdsq20": 0.030694359548722985,
+        "Vgsq-2.4_Vdsq5": 0.017020262265011542,
+        "Vgsq-2.2_Vdsq5": 0.01646476797441117
+      }
+    },
+    {
+      "arch_id": "rand007",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 35,
+      "loo_mean_rel_rmse": 0.025172907127972755,
+      "loo_worst_rel_rmse": 0.0453692107454656,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02767772050059681,
+        "Vgsq-2.9_Vdsq28": 0.0453692107454656,
+        "Vgsq-2.5_Vdsq0": 0.01541074634092299,
+        "Vgsq-2.5_Vdsq20": 0.024752968595989227,
+        "Vgsq-2.4_Vdsq5": 0.018201713000858627,
+        "Vgsq-2.2_Vdsq5": 0.019625083584003264
+      }
+    },
+    {
+      "arch_id": "rand077",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 59,
+      "loo_mean_rel_rmse": 0.02526054202505301,
+      "loo_worst_rel_rmse": 0.04217997909050723,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.030197201199950223,
+        "Vgsq-2.9_Vdsq28": 0.04217997909050723,
+        "Vgsq-2.5_Vdsq0": 0.016529543509363236,
+        "Vgsq-2.5_Vdsq20": 0.02699601817867989,
+        "Vgsq-2.4_Vdsq5": 0.02046775206654308,
+        "Vgsq-2.2_Vdsq5": 0.015192758105274401
+      }
+    },
+    {
+      "arch_id": "rand091",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 105,
+      "loo_mean_rel_rmse": 0.025329939869462376,
+      "loo_worst_rel_rmse": 0.04600589142014734,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03218899082973893,
+        "Vgsq-2.9_Vdsq28": 0.04600589142014734,
+        "Vgsq-2.5_Vdsq0": 0.01303211268534071,
+        "Vgsq-2.5_Vdsq20": 0.027770782552992448,
+        "Vgsq-2.4_Vdsq5": 0.019078857039298423,
+        "Vgsq-2.2_Vdsq5": 0.013903004689256399
+      }
+    },
+    {
+      "arch_id": "rand013",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 65,
+      "loo_mean_rel_rmse": 0.025339158891933406,
+      "loo_worst_rel_rmse": 0.037723046270598706,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.031245107924992167,
+        "Vgsq-2.9_Vdsq28": 0.037723046270598706,
+        "Vgsq-2.5_Vdsq0": 0.014609477078732246,
+        "Vgsq-2.5_Vdsq20": 0.029808209491856863,
+        "Vgsq-2.4_Vdsq5": 0.01882107048377756,
+        "Vgsq-2.2_Vdsq5": 0.01982804210164287
+      }
+    },
+    {
+      "arch_id": "rand073",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 58,
+      "loo_mean_rel_rmse": 0.02538583400393819,
+      "loo_worst_rel_rmse": 0.04217745277601813,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.033075169039669484,
+        "Vgsq-2.9_Vdsq28": 0.04217745277601813,
+        "Vgsq-2.5_Vdsq0": 0.013461350398633132,
+        "Vgsq-2.5_Vdsq20": 0.02908345284419103,
+        "Vgsq-2.4_Vdsq5": 0.021958696214969747,
+        "Vgsq-2.2_Vdsq5": 0.012558882750147599
+      }
+    },
+    {
+      "arch_id": "rand050",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 37,
+      "loo_mean_rel_rmse": 0.025404801865258012,
+      "loo_worst_rel_rmse": 0.03978239260519643,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03269735945145419,
+        "Vgsq-2.9_Vdsq28": 0.03978239260519643,
+        "Vgsq-2.5_Vdsq0": 0.014164961829972187,
+        "Vgsq-2.5_Vdsq20": 0.030712363493028607,
+        "Vgsq-2.4_Vdsq5": 0.018137423154875248,
+        "Vgsq-2.2_Vdsq5": 0.016934310657021428
+      }
+    },
+    {
+      "arch_id": "rand054",
+      "architecture": [
+        [
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 31,
+      "loo_mean_rel_rmse": 0.025512245876117143,
+      "loo_worst_rel_rmse": 0.03770704379491678,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03138344388612508,
+        "Vgsq-2.9_Vdsq28": 0.03770704379491678,
+        "Vgsq-2.5_Vdsq0": 0.017902364499368665,
+        "Vgsq-2.5_Vdsq20": 0.027795555264555214,
+        "Vgsq-2.4_Vdsq5": 0.02309003921073987,
+        "Vgsq-2.2_Vdsq5": 0.015195028600997253
+      }
+    },
+    {
+      "arch_id": "rand005",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 75,
+      "loo_mean_rel_rmse": 0.025565900498242644,
+      "loo_worst_rel_rmse": 0.046015789696132896,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.028577099367943688,
+        "Vgsq-2.9_Vdsq28": 0.046015789696132896,
+        "Vgsq-2.5_Vdsq0": 0.014899944668595896,
+        "Vgsq-2.5_Vdsq20": 0.02899924164000898,
+        "Vgsq-2.4_Vdsq5": 0.019845727675445145,
+        "Vgsq-2.2_Vdsq5": 0.015057599941329243
+      }
+    },
+    {
+      "arch_id": "rand039",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 58,
+      "loo_mean_rel_rmse": 0.025566194512475698,
+      "loo_worst_rel_rmse": 0.05029346211530669,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.030841810338448437,
+        "Vgsq-2.9_Vdsq28": 0.05029346211530669,
+        "Vgsq-2.5_Vdsq0": 0.014302476499965588,
+        "Vgsq-2.5_Vdsq20": 0.02754813994747037,
+        "Vgsq-2.4_Vdsq5": 0.01633211435359259,
+        "Vgsq-2.2_Vdsq5": 0.01407916382007053
+      }
+    },
+    {
+      "arch_id": "rand093",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 79,
+      "loo_mean_rel_rmse": 0.02566469412925972,
+      "loo_worst_rel_rmse": 0.04850000571624098,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.033708402113966286,
+        "Vgsq-2.9_Vdsq28": 0.04850000571624098,
+        "Vgsq-2.5_Vdsq0": 0.012151784369702117,
+        "Vgsq-2.5_Vdsq20": 0.02817125403244367,
+        "Vgsq-2.4_Vdsq5": 0.017878125119643644,
+        "Vgsq-2.2_Vdsq5": 0.013578593423561635
+      }
+    },
+    {
+      "arch_id": "rand067",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 141,
+      "loo_mean_rel_rmse": 0.02574372440521779,
+      "loo_worst_rel_rmse": 0.043958899917310786,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.029285770158966697,
+        "Vgsq-2.9_Vdsq28": 0.043958899917310786,
+        "Vgsq-2.5_Vdsq0": 0.013878289483440975,
+        "Vgsq-2.5_Vdsq20": 0.026781225232750464,
+        "Vgsq-2.4_Vdsq5": 0.0183234995002873,
+        "Vgsq-2.2_Vdsq5": 0.022234662138550534
+      }
+    },
+    {
+      "arch_id": "rand097",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 53,
+      "loo_mean_rel_rmse": 0.025824813085226817,
+      "loo_worst_rel_rmse": 0.04839982602890319,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.031818717183012726,
+        "Vgsq-2.9_Vdsq28": 0.04839982602890319,
+        "Vgsq-2.5_Vdsq0": 0.013262692261441202,
+        "Vgsq-2.5_Vdsq20": 0.028260387622535327,
+        "Vgsq-2.4_Vdsq5": 0.018537762263070603,
+        "Vgsq-2.2_Vdsq5": 0.014669493152397845
+      }
+    },
+    {
+      "arch_id": "rand098",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 145,
+      "loo_mean_rel_rmse": 0.025826412781775204,
+      "loo_worst_rel_rmse": 0.04559277470924933,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.038630485470859496,
+        "Vgsq-2.9_Vdsq28": 0.04559277470924933,
+        "Vgsq-2.5_Vdsq0": 0.011750851241769689,
+        "Vgsq-2.5_Vdsq20": 0.027425933669237366,
+        "Vgsq-2.4_Vdsq5": 0.01948732963629915,
+        "Vgsq-2.2_Vdsq5": 0.012071101963236184
+      }
+    },
+    {
+      "arch_id": "rand059",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 35,
+      "loo_mean_rel_rmse": 0.025877487141684526,
+      "loo_worst_rel_rmse": 0.03977342093516652,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.029534206422635673,
+        "Vgsq-2.9_Vdsq28": 0.03977342093516652,
+        "Vgsq-2.5_Vdsq0": 0.01535658651872791,
+        "Vgsq-2.5_Vdsq20": 0.030763295909897983,
+        "Vgsq-2.4_Vdsq5": 0.02088865266388455,
+        "Vgsq-2.2_Vdsq5": 0.01894876039979452
+      }
+    },
+    {
+      "arch_id": "rand080",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 29,
+      "loo_mean_rel_rmse": 0.02595986249274562,
+      "loo_worst_rel_rmse": 0.04505868632666263,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.01896176346732978,
+        "Vgsq-2.9_Vdsq28": 0.04505868632666263,
+        "Vgsq-2.5_Vdsq0": 0.019039232874339004,
+        "Vgsq-2.5_Vdsq20": 0.029857236937536107,
+        "Vgsq-2.4_Vdsq5": 0.021947310430151176,
+        "Vgsq-2.2_Vdsq5": 0.020894944920455
+      }
+    },
+    {
+      "arch_id": "rand018",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 114,
+      "loo_mean_rel_rmse": 0.026053738374061358,
+      "loo_worst_rel_rmse": 0.042254761262219886,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.029935948230434467,
+        "Vgsq-2.9_Vdsq28": 0.042254761262219886,
+        "Vgsq-2.5_Vdsq0": 0.01211460323170754,
+        "Vgsq-2.5_Vdsq20": 0.03395444462753314,
+        "Vgsq-2.4_Vdsq5": 0.01939510989653832,
+        "Vgsq-2.2_Vdsq5": 0.018667562995934816
+      }
+    },
+    {
+      "arch_id": "rand060",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 89,
+      "loo_mean_rel_rmse": 0.02624641104919247,
+      "loo_worst_rel_rmse": 0.04364342559968144,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03176896782313505,
+        "Vgsq-2.9_Vdsq28": 0.04364342559968144,
+        "Vgsq-2.5_Vdsq0": 0.023280213245471373,
+        "Vgsq-2.5_Vdsq20": 0.027420773442454208,
+        "Vgsq-2.4_Vdsq5": 0.017237038131648112,
+        "Vgsq-2.2_Vdsq5": 0.01412804805276463
+      }
+    },
+    {
+      "arch_id": "rand024",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 81,
+      "loo_mean_rel_rmse": 0.026858711952810064,
+      "loo_worst_rel_rmse": 0.047244747710316566,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.020949387062547835,
+        "Vgsq-2.9_Vdsq28": 0.047244747710316566,
+        "Vgsq-2.5_Vdsq0": 0.020593061403907348,
+        "Vgsq-2.5_Vdsq20": 0.027395056340161195,
+        "Vgsq-2.4_Vdsq5": 0.018096832935470063,
+        "Vgsq-2.2_Vdsq5": 0.026873186264457394
+      }
+    },
+    {
+      "arch_id": "rand047",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 45,
+      "loo_mean_rel_rmse": 0.026997617201198643,
+      "loo_worst_rel_rmse": 0.05045345896188553,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02366466777746857,
+        "Vgsq-2.9_Vdsq28": 0.05045345896188553,
+        "Vgsq-2.5_Vdsq0": 0.014696952639868139,
+        "Vgsq-2.5_Vdsq20": 0.03118052134938453,
+        "Vgsq-2.4_Vdsq5": 0.022636516038969105,
+        "Vgsq-2.2_Vdsq5": 0.019353586439615975
+      }
+    },
+    {
+      "arch_id": "rand017",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 55,
+      "loo_mean_rel_rmse": 0.027293811415080083,
+      "loo_worst_rel_rmse": 0.045465043223363484,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.028057403470225964,
+        "Vgsq-2.9_Vdsq28": 0.045465043223363484,
+        "Vgsq-2.5_Vdsq0": 0.017780097151601552,
+        "Vgsq-2.5_Vdsq20": 0.03381252150720867,
+        "Vgsq-2.4_Vdsq5": 0.019575381594319794,
+        "Vgsq-2.2_Vdsq5": 0.019072421543761004
+      }
+    },
+    {
+      "arch_id": "rand040",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 25,
+      "loo_mean_rel_rmse": 0.027407477685863445,
+      "loo_worst_rel_rmse": 0.041356306638833426,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.024639826921556526,
+        "Vgsq-2.9_Vdsq28": 0.041356306638833426,
+        "Vgsq-2.5_Vdsq0": 0.018081609548668897,
+        "Vgsq-2.5_Vdsq20": 0.032019398809745185,
+        "Vgsq-2.4_Vdsq5": 0.02536289000732213,
+        "Vgsq-2.2_Vdsq5": 0.02298483418905447
+      }
+    },
+    {
+      "arch_id": "rand075",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 65,
+      "loo_mean_rel_rmse": 0.02750478806204804,
+      "loo_worst_rel_rmse": 0.04436127848075962,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02872276173971086,
+        "Vgsq-2.9_Vdsq28": 0.04436127848075962,
+        "Vgsq-2.5_Vdsq0": 0.023099897079981654,
+        "Vgsq-2.5_Vdsq20": 0.03037684786952703,
+        "Vgsq-2.4_Vdsq5": 0.021143417674779477,
+        "Vgsq-2.2_Vdsq5": 0.017324525527529607
+      }
+    },
+    {
+      "arch_id": "rand079",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 65,
+      "loo_mean_rel_rmse": 0.027541887984240076,
+      "loo_worst_rel_rmse": 0.04249688419656594,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03006903575444842,
+        "Vgsq-2.9_Vdsq28": 0.04249688419656594,
+        "Vgsq-2.5_Vdsq0": 0.02115113336537077,
+        "Vgsq-2.5_Vdsq20": 0.028020429871756368,
+        "Vgsq-2.4_Vdsq5": 0.02278844795269036,
+        "Vgsq-2.2_Vdsq5": 0.020725396764608564
+      }
+    },
+    {
+      "arch_id": "rand027",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 58,
+      "loo_mean_rel_rmse": 0.027603428085706695,
+      "loo_worst_rel_rmse": 0.04589410306854306,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02812429051403314,
+        "Vgsq-2.9_Vdsq28": 0.04589410306854306,
+        "Vgsq-2.5_Vdsq0": 0.019368325304629598,
+        "Vgsq-2.5_Vdsq20": 0.032396370636536144,
+        "Vgsq-2.4_Vdsq5": 0.02103779636933581,
+        "Vgsq-2.2_Vdsq5": 0.018799682621162432
+      }
+    },
+    {
+      "arch_id": "rand094",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 33,
+      "loo_mean_rel_rmse": 0.027610298351223198,
+      "loo_worst_rel_rmse": 0.055062102955045954,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02044883571468104,
+        "Vgsq-2.9_Vdsq28": 0.055062102955045954,
+        "Vgsq-2.5_Vdsq0": 0.017117261057806393,
+        "Vgsq-2.5_Vdsq20": 0.03159627789376473,
+        "Vgsq-2.4_Vdsq5": 0.021598997836640786,
+        "Vgsq-2.2_Vdsq5": 0.01983831464940027
+      }
+    },
+    {
+      "arch_id": "rand087",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 75,
+      "loo_mean_rel_rmse": 0.027630729696419623,
+      "loo_worst_rel_rmse": 0.046162711546624054,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03105132350590404,
+        "Vgsq-2.9_Vdsq28": 0.046162711546624054,
+        "Vgsq-2.5_Vdsq0": 0.01610740955134292,
+        "Vgsq-2.5_Vdsq20": 0.02835406200830945,
+        "Vgsq-2.4_Vdsq5": 0.02988583582077162,
+        "Vgsq-2.2_Vdsq5": 0.01422303574556565
+      }
+    },
+    {
+      "arch_id": "rand002",
+      "architecture": [
+        [
+          "swish",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 27,
+      "loo_mean_rel_rmse": 0.02767822315541331,
+      "loo_worst_rel_rmse": 0.05097556294849275,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03312095953202778,
+        "Vgsq-2.9_Vdsq28": 0.05097556294849275,
+        "Vgsq-2.5_Vdsq0": 0.016930737089755905,
+        "Vgsq-2.5_Vdsq20": 0.03250158633293113,
+        "Vgsq-2.4_Vdsq5": 0.017081003416618168,
+        "Vgsq-2.2_Vdsq5": 0.015459489612654122
+      }
+    },
+    {
+      "arch_id": "rand030",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 37,
+      "loo_mean_rel_rmse": 0.02814201388886059,
+      "loo_worst_rel_rmse": 0.0564581032908827,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02350658324936955,
+        "Vgsq-2.9_Vdsq28": 0.0564581032908827,
+        "Vgsq-2.5_Vdsq0": 0.017690442974449105,
+        "Vgsq-2.5_Vdsq20": 0.029047923681102532,
+        "Vgsq-2.4_Vdsq5": 0.023018800852084634,
+        "Vgsq-2.2_Vdsq5": 0.019130229285275028
+      }
+    },
+    {
+      "arch_id": "rand028",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 67,
+      "loo_mean_rel_rmse": 0.028371341598653007,
+      "loo_worst_rel_rmse": 0.044332114752662334,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03654712372530276,
+        "Vgsq-2.9_Vdsq28": 0.044332114752662334,
+        "Vgsq-2.5_Vdsq0": 0.013666482223193575,
+        "Vgsq-2.5_Vdsq20": 0.03995494347741112,
+        "Vgsq-2.4_Vdsq5": 0.020238995153286227,
+        "Vgsq-2.2_Vdsq5": 0.015488390260061978
+      }
+    },
+    {
+      "arch_id": "rand055",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 65,
+      "loo_mean_rel_rmse": 0.028469070005159913,
+      "loo_worst_rel_rmse": 0.046586414282330214,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.032944473158380276,
+        "Vgsq-2.9_Vdsq28": 0.046586414282330214,
+        "Vgsq-2.5_Vdsq0": 0.015955273016990137,
+        "Vgsq-2.5_Vdsq20": 0.027341754156905738,
+        "Vgsq-2.4_Vdsq5": 0.01986020029285659,
+        "Vgsq-2.2_Vdsq5": 0.028126305123496523
+      }
+    },
+    {
+      "arch_id": "rand036",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 65,
+      "loo_mean_rel_rmse": 0.028560799209105283,
+      "loo_worst_rel_rmse": 0.04894873296981128,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02955044616167371,
+        "Vgsq-2.9_Vdsq28": 0.04894873296981128,
+        "Vgsq-2.5_Vdsq0": 0.01639819901938814,
+        "Vgsq-2.5_Vdsq20": 0.03833853128343005,
+        "Vgsq-2.4_Vdsq5": 0.020341446247301283,
+        "Vgsq-2.2_Vdsq5": 0.017787439573027215
+      }
+    },
+    {
+      "arch_id": "rand076",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 51,
+      "loo_mean_rel_rmse": 0.02867401255955024,
+      "loo_worst_rel_rmse": 0.05081886861348834,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03283652516679334,
+        "Vgsq-2.9_Vdsq28": 0.05081886861348834,
+        "Vgsq-2.5_Vdsq0": 0.017429051734610027,
+        "Vgsq-2.5_Vdsq20": 0.027532577042415022,
+        "Vgsq-2.4_Vdsq5": 0.023736504411696134,
+        "Vgsq-2.2_Vdsq5": 0.01969054838829859
+      }
+    },
+    {
+      "arch_id": "rand064",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 25,
+      "loo_mean_rel_rmse": 0.028919445451418353,
+      "loo_worst_rel_rmse": 0.05066896500801552,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02754162905053462,
+        "Vgsq-2.9_Vdsq28": 0.05066896500801552,
+        "Vgsq-2.5_Vdsq0": 0.017611318123128175,
+        "Vgsq-2.5_Vdsq20": 0.03335265941350036,
+        "Vgsq-2.4_Vdsq5": 0.02364194646205861,
+        "Vgsq-2.2_Vdsq5": 0.020700154651272847
+      }
+    },
+    {
+      "arch_id": "rand068",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 51,
+      "loo_mean_rel_rmse": 0.028931013948814824,
+      "loo_worst_rel_rmse": 0.0539041545234567,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.043113292340200865,
+        "Vgsq-2.9_Vdsq28": 0.0539041545234567,
+        "Vgsq-2.5_Vdsq0": 0.014816748042838982,
+        "Vgsq-2.5_Vdsq20": 0.027555419157777476,
+        "Vgsq-2.4_Vdsq5": 0.019778858639919565,
+        "Vgsq-2.2_Vdsq5": 0.014417610988695335
+      }
+    },
+    {
+      "arch_id": "rand034",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 25,
+      "loo_mean_rel_rmse": 0.029428406550303824,
+      "loo_worst_rel_rmse": 0.0520992969357922,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02537740805792427,
+        "Vgsq-2.9_Vdsq28": 0.0520992969357922,
+        "Vgsq-2.5_Vdsq0": 0.018313574399786252,
+        "Vgsq-2.5_Vdsq20": 0.03540317330588644,
+        "Vgsq-2.4_Vdsq5": 0.02422105698720435,
+        "Vgsq-2.2_Vdsq5": 0.02115592961522946
+      }
+    },
+    {
+      "arch_id": "rand033",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 13,
+      "loo_mean_rel_rmse": 0.029444157966216026,
+      "loo_worst_rel_rmse": 0.04264297647951823,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02683780684968417,
+        "Vgsq-2.9_Vdsq28": 0.04264297647951823,
+        "Vgsq-2.5_Vdsq0": 0.023297373856284852,
+        "Vgsq-2.5_Vdsq20": 0.03255336634475941,
+        "Vgsq-2.4_Vdsq5": 0.02432954641953799,
+        "Vgsq-2.2_Vdsq5": 0.027003877847511477
+      }
+    },
+    {
+      "arch_id": "rand001",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 21,
+      "loo_mean_rel_rmse": 0.02959692092548087,
+      "loo_worst_rel_rmse": 0.053516911261410484,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.0256180522936088,
+        "Vgsq-2.9_Vdsq28": 0.053516911261410484,
+        "Vgsq-2.5_Vdsq0": 0.021160321761667652,
+        "Vgsq-2.5_Vdsq20": 0.032191125770040685,
+        "Vgsq-2.4_Vdsq5": 0.02260865004742618,
+        "Vgsq-2.2_Vdsq5": 0.02248646441873143
+      }
+    },
+    {
+      "arch_id": "rand063",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 29,
+      "loo_mean_rel_rmse": 0.02965456031693284,
+      "loo_worst_rel_rmse": 0.049483894250618034,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03327536556793715,
+        "Vgsq-2.9_Vdsq28": 0.049483894250618034,
+        "Vgsq-2.5_Vdsq0": 0.01977230512738841,
+        "Vgsq-2.5_Vdsq20": 0.034186228571629125,
+        "Vgsq-2.4_Vdsq5": 0.02257036223027771,
+        "Vgsq-2.2_Vdsq5": 0.018639206153746608
+      }
+    },
+    {
+      "arch_id": "rand022",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 33,
+      "loo_mean_rel_rmse": 0.02965586812192147,
+      "loo_worst_rel_rmse": 0.05126763064361299,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.026813523466245225,
+        "Vgsq-2.9_Vdsq28": 0.05126763064361299,
+        "Vgsq-2.5_Vdsq0": 0.019406241343605753,
+        "Vgsq-2.5_Vdsq20": 0.033686785827306484,
+        "Vgsq-2.4_Vdsq5": 0.023701553929917997,
+        "Vgsq-2.2_Vdsq5": 0.02305947352084036
+      }
+    },
+    {
+      "arch_id": "rand045",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 33,
+      "loo_mean_rel_rmse": 0.02979423127303592,
+      "loo_worst_rel_rmse": 0.05322178102549205,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02668963715759743,
+        "Vgsq-2.9_Vdsq28": 0.05322178102549205,
+        "Vgsq-2.5_Vdsq0": 0.021835890392513137,
+        "Vgsq-2.5_Vdsq20": 0.033649077534642184,
+        "Vgsq-2.4_Vdsq5": 0.024289116339837453,
+        "Vgsq-2.2_Vdsq5": 0.01907988518813327
+      }
+    },
+    {
+      "arch_id": "rand084",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ],
+        [
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 56,
+      "loo_mean_rel_rmse": 0.030272402849207996,
+      "loo_worst_rel_rmse": 0.04856018341599266,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03294884525420186,
+        "Vgsq-2.9_Vdsq28": 0.04856018341599266,
+        "Vgsq-2.5_Vdsq0": 0.01949561705342301,
+        "Vgsq-2.5_Vdsq20": 0.03507857941905035,
+        "Vgsq-2.4_Vdsq5": 0.026285178886277648,
+        "Vgsq-2.2_Vdsq5": 0.019266013066302434
+      }
+    },
+    {
+      "arch_id": "rand012",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 25,
+      "loo_mean_rel_rmse": 0.03036701086120427,
+      "loo_worst_rel_rmse": 0.05204324299382699,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.027058664774944875,
+        "Vgsq-2.9_Vdsq28": 0.05204324299382699,
+        "Vgsq-2.5_Vdsq0": 0.02098757166512891,
+        "Vgsq-2.5_Vdsq20": 0.03413289397771471,
+        "Vgsq-2.4_Vdsq5": 0.02462200277964765,
+        "Vgsq-2.2_Vdsq5": 0.023357688975962503
+      }
+    },
+    {
+      "arch_id": "rand004",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 25,
+      "loo_mean_rel_rmse": 0.030546890466030905,
+      "loo_worst_rel_rmse": 0.05497588583882076,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.023785543769102045,
+        "Vgsq-2.9_Vdsq28": 0.05497588583882076,
+        "Vgsq-2.5_Vdsq0": 0.01710946484939176,
+        "Vgsq-2.5_Vdsq20": 0.03907070601071265,
+        "Vgsq-2.4_Vdsq5": 0.026118364884348568,
+        "Vgsq-2.2_Vdsq5": 0.022221377443809635
+      }
+    },
+    {
+      "arch_id": "rand000",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 29,
+      "loo_mean_rel_rmse": 0.0312831664318726,
+      "loo_worst_rel_rmse": 0.0561470771822633,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03115525313180878,
+        "Vgsq-2.9_Vdsq28": 0.0561470771822633,
+        "Vgsq-2.5_Vdsq0": 0.02415448890952841,
+        "Vgsq-2.5_Vdsq20": 0.0351339145841797,
+        "Vgsq-2.4_Vdsq5": 0.020938733576329447,
+        "Vgsq-2.2_Vdsq5": 0.020169531207125984
+      }
+    },
+    {
+      "arch_id": "rand003",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 40,
+      "loo_mean_rel_rmse": 0.03134027698717428,
+      "loo_worst_rel_rmse": 0.05727875892111771,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.017360535405941055,
+        "Vgsq-2.9_Vdsq28": 0.05727875892111771,
+        "Vgsq-2.5_Vdsq0": 0.019588747196375832,
+        "Vgsq-2.5_Vdsq20": 0.031117158213552824,
+        "Vgsq-2.4_Vdsq5": 0.022700254502235027,
+        "Vgsq-2.2_Vdsq5": 0.03999620768382319
+      }
+    },
+    {
+      "arch_id": "rand020",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 21,
+      "loo_mean_rel_rmse": 0.031742829951046964,
+      "loo_worst_rel_rmse": 0.04960306248345073,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.022773915286770807,
+        "Vgsq-2.9_Vdsq28": 0.04960306248345073,
+        "Vgsq-2.5_Vdsq0": 0.03558746401322429,
+        "Vgsq-2.5_Vdsq20": 0.030861988249603935,
+        "Vgsq-2.4_Vdsq5": 0.02339843142300447,
+        "Vgsq-2.2_Vdsq5": 0.028232118250227548
+      }
+    },
+    {
+      "arch_id": "rand035",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 41,
+      "loo_mean_rel_rmse": 0.03186004345792847,
+      "loo_worst_rel_rmse": 0.051084108698414496,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03108523705490189,
+        "Vgsq-2.9_Vdsq28": 0.051084108698414496,
+        "Vgsq-2.5_Vdsq0": 0.022303128014220963,
+        "Vgsq-2.5_Vdsq20": 0.03744824172559861,
+        "Vgsq-2.4_Vdsq5": 0.025247046829339828,
+        "Vgsq-2.2_Vdsq5": 0.023992498425095054
+      }
+    },
+    {
+      "arch_id": "rand095",
+      "architecture": [
+        [
+          "swish",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 35,
+      "loo_mean_rel_rmse": 0.03235678669069266,
+      "loo_worst_rel_rmse": 0.04570468643699186,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.036431450863662736,
+        "Vgsq-2.9_Vdsq28": 0.045293615860359564,
+        "Vgsq-2.5_Vdsq0": 0.04570468643699186,
+        "Vgsq-2.5_Vdsq20": 0.03165321284797396,
+        "Vgsq-2.4_Vdsq5": 0.017874198296963004,
+        "Vgsq-2.2_Vdsq5": 0.01718355583820487
+      }
+    },
+    {
+      "arch_id": "rand056",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 29,
+      "loo_mean_rel_rmse": 0.0325579441756697,
+      "loo_worst_rel_rmse": 0.05076469414600522,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.025216576922490203,
+        "Vgsq-2.9_Vdsq28": 0.05076469414600522,
+        "Vgsq-2.5_Vdsq0": 0.02121603342560661,
+        "Vgsq-2.5_Vdsq20": 0.03798337026525004,
+        "Vgsq-2.4_Vdsq5": 0.033190343844633124,
+        "Vgsq-2.2_Vdsq5": 0.026976646450032997
+      }
+    },
+    {
+      "arch_id": "rand074",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 33,
+      "loo_mean_rel_rmse": 0.03258464871695198,
+      "loo_worst_rel_rmse": 0.05300225289009766,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.026659820370681486,
+        "Vgsq-2.9_Vdsq28": 0.05300225289009766,
+        "Vgsq-2.5_Vdsq0": 0.01618741215858572,
+        "Vgsq-2.5_Vdsq20": 0.03290858214155241,
+        "Vgsq-2.4_Vdsq5": 0.021304861711127727,
+        "Vgsq-2.2_Vdsq5": 0.04544496302966688
+      }
+    },
+    {
+      "arch_id": "rand015",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 29,
+      "loo_mean_rel_rmse": 0.03323621521596931,
+      "loo_worst_rel_rmse": 0.05701023753790213,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02536676849136161,
+        "Vgsq-2.9_Vdsq28": 0.05701023753790213,
+        "Vgsq-2.5_Vdsq0": 0.026865380782885712,
+        "Vgsq-2.5_Vdsq20": 0.045566500793229034,
+        "Vgsq-2.4_Vdsq5": 0.023936602274868445,
+        "Vgsq-2.2_Vdsq5": 0.020671801415568954
+      }
+    },
+    {
+      "arch_id": "rand009",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 35,
+      "loo_mean_rel_rmse": 0.03349034101291196,
+      "loo_worst_rel_rmse": 0.06442317015319102,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.027275413829891966,
+        "Vgsq-2.9_Vdsq28": 0.043658480161139476,
+        "Vgsq-2.5_Vdsq0": 0.0177630438972262,
+        "Vgsq-2.5_Vdsq20": 0.06442317015319102,
+        "Vgsq-2.4_Vdsq5": 0.029545896729174334,
+        "Vgsq-2.2_Vdsq5": 0.018276041306848758
+      }
+    },
+    {
+      "arch_id": "rand062",
+      "architecture": [
+        [
+          "tanh",
+          "swish"
+        ],
+        [
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 15,
+      "loo_mean_rel_rmse": 0.03481198373058592,
+      "loo_worst_rel_rmse": 0.053279587823416456,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03010096549164308,
+        "Vgsq-2.9_Vdsq28": 0.053279587823416456,
+        "Vgsq-2.5_Vdsq0": 0.029380368690806517,
+        "Vgsq-2.5_Vdsq20": 0.03589315532958659,
+        "Vgsq-2.4_Vdsq5": 0.03125558789083091,
+        "Vgsq-2.2_Vdsq5": 0.028962237157231972
+      }
+    },
+    {
+      "arch_id": "rand011",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 29,
+      "loo_mean_rel_rmse": 0.03518377368768796,
+      "loo_worst_rel_rmse": 0.04585748477930627,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.035477622394940705,
+        "Vgsq-2.9_Vdsq28": 0.04585748477930627,
+        "Vgsq-2.5_Vdsq0": 0.03258149357500544,
+        "Vgsq-2.5_Vdsq20": 0.02943734610868913,
+        "Vgsq-2.4_Vdsq5": 0.03465979013262961,
+        "Vgsq-2.2_Vdsq5": 0.033088905135556575
+      }
+    },
+    {
+      "arch_id": "rand065",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 13,
+      "loo_mean_rel_rmse": 0.035340839725965724,
+      "loo_worst_rel_rmse": 0.0527956210789582,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.029151872534539807,
+        "Vgsq-2.9_Vdsq28": 0.0527956210789582,
+        "Vgsq-2.5_Vdsq0": 0.02688848908564427,
+        "Vgsq-2.5_Vdsq20": 0.04907695263355097,
+        "Vgsq-2.4_Vdsq5": 0.02670377781786224,
+        "Vgsq-2.2_Vdsq5": 0.027428325205238867
+      }
+    },
+    {
+      "arch_id": "rand023",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "tanh",
+          "tanh",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 33,
+      "loo_mean_rel_rmse": 0.03587242351085598,
+      "loo_worst_rel_rmse": 0.056155338311339134,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.03002638561153694,
+        "Vgsq-2.9_Vdsq28": 0.054234615243167,
+        "Vgsq-2.5_Vdsq0": 0.018771532654799212,
+        "Vgsq-2.5_Vdsq20": 0.03544832322554552,
+        "Vgsq-2.4_Vdsq5": 0.056155338311339134,
+        "Vgsq-2.2_Vdsq5": 0.020598346018748118
+      }
+    },
+    {
+      "arch_id": "rand090",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ],
+        [
+          "tanh",
+          "tanh"
+        ],
+        [
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 40,
+      "loo_mean_rel_rmse": 0.03767550073513869,
+      "loo_worst_rel_rmse": 0.0671256385383343,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.033413390902396554,
+        "Vgsq-2.9_Vdsq28": 0.0671256385383343,
+        "Vgsq-2.5_Vdsq0": 0.01639813019296904,
+        "Vgsq-2.5_Vdsq20": 0.05538699823700318,
+        "Vgsq-2.4_Vdsq5": 0.018987567173826266,
+        "Vgsq-2.2_Vdsq5": 0.03474127936630277
+      }
+    },
+    {
+      "arch_id": "rand021",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 13,
+      "loo_mean_rel_rmse": 0.03951000991815542,
+      "loo_worst_rel_rmse": 0.04190919010244125,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.04060163996441203,
+        "Vgsq-2.9_Vdsq28": 0.038307638777668476,
+        "Vgsq-2.5_Vdsq0": 0.038787107762068215,
+        "Vgsq-2.5_Vdsq20": 0.04190919010244125,
+        "Vgsq-2.4_Vdsq5": 0.037008841504327886,
+        "Vgsq-2.2_Vdsq5": 0.04044564139801466
+      }
+    },
+    {
+      "arch_id": "rand043",
+      "architecture": [
+        [
+          "swish",
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 13,
+      "loo_mean_rel_rmse": 0.04065423546038718,
+      "loo_worst_rel_rmse": 0.052743356852629195,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.02960813385723504,
+        "Vgsq-2.9_Vdsq28": 0.052743356852629195,
+        "Vgsq-2.5_Vdsq0": 0.03839267729097627,
+        "Vgsq-2.5_Vdsq20": 0.046565853652998146,
+        "Vgsq-2.4_Vdsq5": 0.03965701691585145,
+        "Vgsq-2.2_Vdsq5": 0.03695837419263297
+      }
+    },
+    {
+      "arch_id": "rand042",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "tanh",
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 21,
+      "loo_mean_rel_rmse": 0.04580919400782868,
+      "loo_worst_rel_rmse": 0.07011445758162964,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.05540984094072312,
+        "Vgsq-2.9_Vdsq28": 0.07011445758162964,
+        "Vgsq-2.5_Vdsq0": 0.038937680648414436,
+        "Vgsq-2.5_Vdsq20": 0.05519911072290698,
+        "Vgsq-2.4_Vdsq5": 0.02959722121678805,
+        "Vgsq-2.2_Vdsq5": 0.02559685293650988
+      }
+    },
+    {
+      "arch_id": "rand046",
+      "architecture": [
+        [
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 9,
+      "loo_mean_rel_rmse": 0.046262519638341375,
+      "loo_worst_rel_rmse": 0.0656469848771829,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.043004554967322396,
+        "Vgsq-2.9_Vdsq28": 0.0656469848771829,
+        "Vgsq-2.5_Vdsq0": 0.0408335914410618,
+        "Vgsq-2.5_Vdsq20": 0.04578318896100478,
+        "Vgsq-2.4_Vdsq5": 0.04170392090174018,
+        "Vgsq-2.2_Vdsq5": 0.04060287668173617
+      }
+    },
+    {
+      "arch_id": "rand069",
+      "architecture": [
+        [
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 13,
+      "loo_mean_rel_rmse": 0.04853729274759455,
+      "loo_worst_rel_rmse": 0.07787610455246753,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.036054765349758225,
+        "Vgsq-2.9_Vdsq28": 0.07787610455246753,
+        "Vgsq-2.5_Vdsq0": 0.029314151504517688,
+        "Vgsq-2.5_Vdsq20": 0.060967610970041,
+        "Vgsq-2.4_Vdsq5": 0.04074287100838455,
+        "Vgsq-2.2_Vdsq5": 0.04626825310039833
+      }
+    },
+    {
+      "arch_id": "rand085",
+      "architecture": [
+        [
+          "tanh",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 17,
+      "loo_mean_rel_rmse": 0.05338143155240965,
+      "loo_worst_rel_rmse": 0.058539933815948096,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.05734507483718062,
+        "Vgsq-2.9_Vdsq28": 0.058539933815948096,
+        "Vgsq-2.5_Vdsq0": 0.055833376773646574,
+        "Vgsq-2.5_Vdsq20": 0.04038609596098696,
+        "Vgsq-2.4_Vdsq5": 0.05408524273119441,
+        "Vgsq-2.2_Vdsq5": 0.05409886519550125
+      }
+    },
+    {
+      "arch_id": "rand071",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish"
+        ]
+      ],
+      "n_params": 17,
+      "loo_mean_rel_rmse": 0.05671995539126714,
+      "loo_worst_rel_rmse": 0.06705974670516326,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.05520340522860054,
+        "Vgsq-2.9_Vdsq28": 0.06705974670516326,
+        "Vgsq-2.5_Vdsq0": 0.05416414784837709,
+        "Vgsq-2.5_Vdsq20": 0.0543186659225046,
+        "Vgsq-2.4_Vdsq5": 0.05761447845605459,
+        "Vgsq-2.2_Vdsq5": 0.05195928818690268
+      }
+    },
+    {
+      "arch_id": "rand026",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 13,
+      "loo_mean_rel_rmse": 0.056905631749779306,
+      "loo_worst_rel_rmse": 0.103049549201914,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.041159771776571354,
+        "Vgsq-2.9_Vdsq28": 0.06057600860625997,
+        "Vgsq-2.5_Vdsq0": 0.03892392753135329,
+        "Vgsq-2.5_Vdsq20": 0.103049549201914,
+        "Vgsq-2.4_Vdsq5": 0.04886717305251862,
+        "Vgsq-2.2_Vdsq5": 0.04885736033005863
+      }
+    },
+    {
+      "arch_id": "rand061",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 17,
+      "loo_mean_rel_rmse": 0.05722319786634069,
+      "loo_worst_rel_rmse": 0.061958552095512216,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.057233122168503285,
+        "Vgsq-2.9_Vdsq28": 0.045529187907048525,
+        "Vgsq-2.5_Vdsq0": 0.05720658777179574,
+        "Vgsq-2.5_Vdsq20": 0.05970369763864695,
+        "Vgsq-2.4_Vdsq5": 0.061958552095512216,
+        "Vgsq-2.2_Vdsq5": 0.06170803961653745
+      }
+    },
+    {
+      "arch_id": "rand010",
+      "architecture": [
+        [
+          "swish",
+          "swish",
+          "tanh",
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 21,
+      "loo_mean_rel_rmse": 0.05767710106953385,
+      "loo_worst_rel_rmse": 0.0711397855443553,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.05447990241630415,
+        "Vgsq-2.9_Vdsq28": 0.0711397855443553,
+        "Vgsq-2.5_Vdsq0": 0.05220541085458205,
+        "Vgsq-2.5_Vdsq20": 0.05623444632651131,
+        "Vgsq-2.4_Vdsq5": 0.054671974734516085,
+        "Vgsq-2.2_Vdsq5": 0.05733108654093423
+      }
+    },
+    {
+      "arch_id": "rand099",
+      "architecture": [
+        [
+          "swish",
+          "tanh"
+        ]
+      ],
+      "n_params": 9,
+      "loo_mean_rel_rmse": 0.07071825191994287,
+      "loo_worst_rel_rmse": 0.08056774562411144,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.06925624120945086,
+        "Vgsq-2.9_Vdsq28": 0.08056774562411144,
+        "Vgsq-2.5_Vdsq0": 0.06683325264849145,
+        "Vgsq-2.5_Vdsq20": 0.06680651071071135,
+        "Vgsq-2.4_Vdsq5": 0.07023070107361422,
+        "Vgsq-2.2_Vdsq5": 0.07061506025327793
+      }
+    },
+    {
+      "arch_id": "rand031",
+      "architecture": [
+        [
+          "tanh",
+          "tanh"
+        ]
+      ],
+      "n_params": 9,
+      "loo_mean_rel_rmse": 0.0768706657331032,
+      "loo_worst_rel_rmse": 0.08031711879783014,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.08031711879783014,
+        "Vgsq-2.9_Vdsq28": 0.07673825644525488,
+        "Vgsq-2.5_Vdsq0": 0.07630956858079796,
+        "Vgsq-2.5_Vdsq20": 0.06949922453230394,
+        "Vgsq-2.4_Vdsq5": 0.07957580769383629,
+        "Vgsq-2.2_Vdsq5": 0.07878401834859593
+      }
+    },
+    {
+      "arch_id": "rand089",
+      "architecture": [
+        [
+          "swish",
+          "swish"
+        ]
+      ],
+      "n_params": 9,
+      "loo_mean_rel_rmse": 0.09630065801935046,
+      "loo_worst_rel_rmse": 0.10207587136383249,
+      "loo_per_point": {
+        "Vgsq-2.9_Vdsq0": 0.09960041697087743,
+        "Vgsq-2.9_Vdsq28": 0.08570499358597941,
+        "Vgsq-2.5_Vdsq0": 0.09991716427659493,
+        "Vgsq-2.5_Vdsq20": 0.08876865270443571,
+        "Vgsq-2.4_Vdsq5": 0.10207587136383249,
+        "Vgsq-2.2_Vdsq5": 0.10173684921438284
+      }
+    }
+  ]
+}
