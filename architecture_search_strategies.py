@@ -57,16 +57,16 @@ Training and result-aggregation are deliberately TWO SEPARATE steps/subcommands,
 
 Usage:
   # 1. generate the two config files (1000 f-architectures, 4 H sizes)
-  python architecture_search_delta.py generate --n_f_architectures 1000 --n_tanh_only 150
+  python architecture_search_strategies.py generate --n_f_architectures 1000 --n_tanh_only 150
 
   # 2. smoke test: only the first 5 rows of f_architectures.csv x 4 H sizes x 2 strategies = 40 combos
-  python architecture_search_delta.py run --n_f_architectures 5 --workers 12 --gm1_weight 0.075
+  python architecture_search_strategies.py run --n_f_architectures 5 --workers 12 --gm1_weight 0.075
 
   # 3. (NOT run automatically) the full sweep: all 1000 f-architectures
-  python architecture_search_delta.py run --workers 15 --gm1_weight 0.075
+  python architecture_search_strategies.py run --workers 15 --gm1_weight 0.075
 
   # 4. any time (before, during, or after the sweep finishes) -- (re)build results.csv
-  python architecture_search_delta.py populate
+  python architecture_search_strategies.py populate
 """
 import argparse
 import csv
@@ -101,7 +101,7 @@ F_ARCH_CSV_FIELDS = ["arch_hash", "architecture", "n_layers", "n_neurons_total",
 H_ARCH_CSV_FIELDS = ["h_arch_hash", "h_hidden", "h_layers"]
 RESULTS_CSV_FIELDS = [
     "combo_id", "f_arch_hash", "h_arch_hash", "strategy", "hp_hash",
-    "gm1_weight", "delta_reg_weight", "epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter",
+    "gm1_weight", "delta_reg_weight", "weight_decay", "epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter",
     "delta_base_epochs", "delta_base_lr", "delta_base_lbfgs_epochs", "seed",
     "n_params_f", "h_hidden", "h_layers",
     "loo_mean_rel_rmse", "loo_n_points", "loo_worst_rel_rmse", "full_fit_mean_rel_rmse",
@@ -304,7 +304,8 @@ def rel_rmse(pred, true):
     return float(np.sqrt(np.mean((pred - true) ** 2)) / (np.abs(true).max() + 1e-30))
 
 
-def fit_theta_base(df, n_params, architecture, epochs, lr, lbfgs_epochs, lbfgs_max_iter, seed):
+def fit_theta_base(df, n_params, architecture, epochs, lr, lbfgs_epochs, lbfgs_max_iter, seed,
+                    weight_decay=0.0):
     """Same idea as train_loo_deltaweights_reg.py's fit_theta_base -- reimplemented here
     (not imported) since this module owns its own self-contained training code."""
     torch.manual_seed(seed)
@@ -314,7 +315,7 @@ def fit_theta_base(df, n_params, architecture, epochs, lr, lbfgs_epochs, lbfgs_m
     norm = (ids.abs().max().item() + 1e-6) ** 2
 
     theta = nn.Parameter(torch.randn(n_params) * 0.3)
-    opt = torch.optim.Adam([theta], lr=lr)
+    opt = torch.optim.AdamW([theta], lr=lr, weight_decay=weight_decay)
     for _ in range(epochs):
         opt.zero_grad()
         pred = main_net_forward(theta, vgs, vds, architecture)
@@ -368,10 +369,14 @@ def _delta_total_loss(hcomp, theta_base, train_keys, tensors, architecture, norm
 
 
 def train_hcomp(train_keys, tensors, theta_base, n_params, architecture, epochs, lr, device,
-                 gm1_weight, delta_reg_weight, lbfgs_epochs, lbfgs_max_iter, h_hidden, h_layers, seed):
+                 gm1_weight, delta_reg_weight, lbfgs_epochs, lbfgs_max_iter, h_hidden, h_layers, seed,
+                 weight_decay=0.0):
     torch.manual_seed(seed)
     hcomp = HyperNetwork(n_params, hidden=h_hidden, n_hidden_layers=h_layers, n_in=2).to(device)
-    opt = torch.optim.Adam(hcomp.parameters(), lr=lr)
+    # AdamW (weight_decay=0.0 default is a no-op, identical to plain Adam) -- see train_loo.py's
+    # train_hypernet for the same reasoning: regularizes H_comp's weights directly, aimed at
+    # the generalization gap, not "escaping local minima".
+    opt = torch.optim.AdamW(hcomp.parameters(), lr=lr, weight_decay=weight_decay)
 
     norm = {k: (np.abs(tensors[k]["ids_np"]).max() + 1e-6) ** 2 for k in train_keys}
     gm1_norm = {}
@@ -413,7 +418,7 @@ def evaluate_delta(hcomp, theta_base, key, tensors, architecture):
 # ============================== fold-level jobs (max parallelism grain) ==============================
 
 def run_fold_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
-                       held_out, data, epochs, lr, gm1_weight, lbfgs_epochs, seed):
+                       held_out, data, epochs, lr, gm1_weight, lbfgs_epochs, seed, weight_decay):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     keys = sorted(data.keys())
@@ -421,14 +426,15 @@ def run_fold_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden
     tensors = build_tensors_full(data, device)
     hyper = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
                             gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
-                            h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed)
+                            h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
+                            weight_decay=weight_decay)
     err, _ = evaluate_original(hyper, held_out, tensors, architecture, device)
     return f_arch_hash, h_arch_hash, "original", held_out, err
 
 
 def run_fold_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
                     held_out, data, theta_base, epochs, lr, gm1_weight, delta_reg_weight,
-                    lbfgs_epochs, seed):
+                    lbfgs_epochs, seed, weight_decay):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     all_keys = sorted(data.keys())
@@ -438,20 +444,21 @@ def run_fold_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h
     hcomp = train_hcomp(train_keys, tensors, theta_base, n_params, architecture, epochs, lr, device,
                          gm1_weight=gm1_weight, delta_reg_weight=delta_reg_weight,
                          lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=200,
-                         h_hidden=h_hidden, h_layers=h_layers, seed=seed)
+                         h_hidden=h_hidden, h_layers=h_layers, seed=seed, weight_decay=weight_decay)
     err, _ = evaluate_delta(hcomp, theta_base, held_out, tensors, architecture)
     return f_arch_hash, h_arch_hash, "delta", held_out, err
 
 
 def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
-                           data, epochs, lr, gm1_weight, lbfgs_epochs, seed, save_dir):
+                           data, epochs, lr, gm1_weight, lbfgs_epochs, seed, weight_decay, save_dir):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     keys = sorted(data.keys())
     tensors = build_tensors_full(data, device)
     hyper = train_hypernet(keys, tensors, n_params, architecture, epochs, lr, device,
                             gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
-                            h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed)
+                            h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
+                            weight_decay=weight_decay)
     errs = {}
     for k in keys:
         err, _ = evaluate_original(hyper, k, tensors, architecture, device)
@@ -459,7 +466,7 @@ def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hi
     os.makedirs(save_dir, exist_ok=True)
     torch.save(hyper.state_dict(), os.path.join(save_dir, "hyper_full.pt"))
     meta = dict(strategy="original", architecture=architecture, h_hidden=h_hidden, h_layers=h_layers,
-                n_params=n_params, gm1_weight=gm1_weight)
+                n_params=n_params, gm1_weight=gm1_weight, weight_decay=weight_decay)
     with open(os.path.join(save_dir, "meta.json"), "w") as f:
         json.dump(meta, f, indent=2)
     return f_arch_hash, h_arch_hash, "original", float(np.mean(list(errs.values())))
@@ -467,7 +474,7 @@ def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hi
 
 def run_full_fit_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
                         data, theta_base, epochs, lr, gm1_weight, delta_reg_weight, lbfgs_epochs,
-                        seed, save_dir):
+                        seed, weight_decay, save_dir):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     keys = sorted(data.keys())
@@ -475,7 +482,7 @@ def run_full_fit_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidde
     hcomp = train_hcomp(keys, tensors, theta_base, n_params, architecture, epochs, lr, device,
                          gm1_weight=gm1_weight, delta_reg_weight=delta_reg_weight,
                          lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=200,
-                         h_hidden=h_hidden, h_layers=h_layers, seed=seed)
+                         h_hidden=h_hidden, h_layers=h_layers, seed=seed, weight_decay=weight_decay)
     errs = {}
     for k in keys:
         err, _ = evaluate_delta(hcomp, theta_base, k, tensors, architecture)
@@ -485,18 +492,19 @@ def run_full_fit_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidde
     torch.save(theta_base, os.path.join(save_dir, "theta_base.pt"))
     meta = dict(strategy="delta", architecture=architecture, h_hidden=h_hidden, h_layers=h_layers,
                 n_params=n_params, gm1_weight=gm1_weight, delta_reg_weight=delta_reg_weight,
-                base_key=list(BASE_KEY))
+                weight_decay=weight_decay, base_key=list(BASE_KEY))
     with open(os.path.join(save_dir, "meta.json"), "w") as f:
         json.dump(meta, f, indent=2)
     return f_arch_hash, h_arch_hash, "delta", float(np.mean(list(errs.values())))
 
 
 def fit_theta_base_job(f_arch_hash, architecture, n_params, data, delta_base_epochs, delta_base_lr,
-                        lbfgs_epochs, lbfgs_max_iter, seed):
+                        lbfgs_epochs, lbfgs_max_iter, seed, weight_decay):
     """Runs in its own process -- one per f-architecture (shared across all 4 H sizes)."""
     torch.set_num_threads(1)
     theta_base, base_err = fit_theta_base(data[BASE_KEY], n_params, architecture, delta_base_epochs,
-                                           delta_base_lr, lbfgs_epochs, lbfgs_max_iter, seed)
+                                           delta_base_lr, lbfgs_epochs, lbfgs_max_iter, seed,
+                                           weight_decay=weight_decay)
     return f_arch_hash, theta_base, base_err
 
 
@@ -508,7 +516,8 @@ def fit_theta_base_job(f_arch_hash, architecture, n_params, data, delta_base_epo
 # here, so adding a new training hyperparameter to `run` later only requires adding its name
 # to this list, not touching the hashing logic itself.
 HYPERPARAM_ARGS = ["epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter", "gm1_weight",
-                   "delta_reg_weight", "delta_base_epochs", "delta_base_lr", "delta_base_lbfgs_epochs", "seed"]
+                   "delta_reg_weight", "weight_decay", "delta_base_epochs", "delta_base_lr",
+                   "delta_base_lbfgs_epochs", "seed"]
 
 
 def hyperparams_hash_of(args):
@@ -553,7 +562,8 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             futs = {
                 ex.submit(fit_theta_base_job, arch_hash, json.loads(f_row["architecture"]),
                           int(f_row["n_params"]), data, args.delta_base_epochs, args.delta_base_lr,
-                          args.delta_base_lbfgs_epochs, args.lbfgs_max_iter, args.seed): arch_hash
+                          args.delta_base_lbfgs_epochs, args.lbfgs_max_iter, args.seed,
+                          args.weight_decay): arch_hash
                 for arch_hash, f_row in f_archs_needing_base.items()
             }
             for fut in as_completed(futs):
@@ -571,7 +581,8 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
                 for held_out in keys:
                     fut = ex.submit(run_fold_original, f_row["arch_hash"], h_row["h_arch_hash"],
                                      architecture, n_params, h_hidden, h_layers, held_out, data,
-                                     args.epochs, args.lr, args.gm1_weight, args.lbfgs_epochs, args.seed)
+                                     args.epochs, args.lr, args.gm1_weight, args.lbfgs_epochs,
+                                     args.seed, args.weight_decay)
                     fold_futures[fut] = None
             else:
                 theta_base = theta_base_by_farch[f_row["arch_hash"]]
@@ -579,7 +590,8 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
                     fut = ex.submit(run_fold_delta, f_row["arch_hash"], h_row["h_arch_hash"],
                                      architecture, n_params, h_hidden, h_layers, held_out, data,
                                      theta_base, args.epochs, args.lr, args.gm1_weight,
-                                     args.delta_reg_weight, args.lbfgs_epochs, args.seed)
+                                     args.delta_reg_weight, args.lbfgs_epochs, args.seed,
+                                     args.weight_decay)
                     fold_futures[fut] = None
 
         per_combo_errs = {}
@@ -601,13 +613,14 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             if strategy == "original":
                 fut = ex.submit(run_full_fit_original, f_row["arch_hash"], h_row["h_arch_hash"],
                                  architecture, n_params, h_hidden, h_layers, data, args.epochs,
-                                 args.lr, args.gm1_weight, args.lbfgs_epochs, args.seed, save_dir)
+                                 args.lr, args.gm1_weight, args.lbfgs_epochs, args.seed,
+                                 args.weight_decay, save_dir)
             else:
                 theta_base = theta_base_by_farch[f_row["arch_hash"]]
                 fut = ex.submit(run_full_fit_delta, f_row["arch_hash"], h_row["h_arch_hash"],
                                  architecture, n_params, h_hidden, h_layers, data, theta_base,
                                  args.epochs, args.lr, args.gm1_weight, args.delta_reg_weight,
-                                 args.lbfgs_epochs, args.seed, save_dir)
+                                 args.lbfgs_epochs, args.seed, args.weight_decay, save_dir)
             futs[fut] = (f_row, h_row, strategy, combo_id, save_dir)
         for fut in as_completed(futs):
             f_row, h_row, strategy, combo_id, save_dir = futs[fut]
@@ -640,6 +653,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             hp_hash=hp_hash,
             gm1_weight=args.gm1_weight,
             delta_reg_weight=args.delta_reg_weight if strategy == "delta" else "",
+            weight_decay=args.weight_decay,
             epochs=args.epochs,
             lr=args.lr,
             lbfgs_epochs=args.lbfgs_epochs,
@@ -817,6 +831,12 @@ def main():
     r.add_argument("--lbfgs_max_iter", type=int, default=200)
     r.add_argument("--gm1_weight", type=float, default=0.075,
                     help="Used by BOTH strategies.")
+    r.add_argument("--weight_decay", type=float, default=0.0,
+                    help="AdamW weight decay, used by BOTH strategies (H/H_comp AND the delta "
+                         "strategy's theta_base fit). 0.0 (default) makes AdamW identical to "
+                         "plain Adam -- fully backward compatible. Regularizes H's own weights "
+                         "directly (aimed at the LOO generalization gap), not a fix for "
+                         "optimization/local-minima issues.")
     r.add_argument("--delta_reg_weight", type=float, default=0.01,
                     help="'delta' strategy only: L2 penalty on delta_theta.")
     r.add_argument("--delta_base_epochs", type=int, default=2000,

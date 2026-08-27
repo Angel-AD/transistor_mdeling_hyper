@@ -233,10 +233,18 @@ def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_
 def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
                     gm1_weight=0.0, ids_region_weight=0.0, lbfgs_epochs=5, lbfgs_max_iter=200,
                     h_hidden=32, h_layers=2, n_in=2, log_every=500, seed=27,
-                    ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1):
+                    ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
+                    weight_decay=0.0):
     torch.manual_seed(seed)
     hyper = HyperNetwork(n_params, hidden=h_hidden, n_hidden_layers=h_layers, n_in=n_in).to(device)
-    opt = torch.optim.Adam(hyper.parameters(), lr=lr)
+    # AdamW, not Adam -- with weight_decay=0.0 (the default) its decoupled-decay term vanishes
+    # and it's identical to plain Adam, so this is a no-op for every existing caller that
+    # doesn't pass weight_decay. Passing a nonzero value regularizes H's own weights directly
+    # (unlike gm1_weight/ids_region_weight, which shape the loss, not the weights themselves) --
+    # aimed at the generalization gap (full-fit vs. LOO) this project has repeatedly run into,
+    # not at "escaping local minima" (the loss surface here is small, smooth, full-batch, and
+    # already gets an L-BFGS polish -- optimization difficulty was never the bottleneck).
+    opt = torch.optim.AdamW(hyper.parameters(), lr=lr, weight_decay=weight_decay)
 
     # per-point normalization so no single quiescent point's current (or gm1) scale dominates the
     # loss -- unused when ids_relative_norm/gm1_relative_norm is on (relative_sq_err normalizes
