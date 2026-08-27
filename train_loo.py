@@ -187,8 +187,28 @@ def relative_sq_err(pred, true, floor_frac=0.1):
     return ((pred - true) / scale) ** 2
 
 
+def smoothness_penalty(hyper, qpoint):
+    """Hutchinson-trick estimate of ||d theta/d qpoint||_F^2 (the squared Frobenius norm of
+    H's own Jacobian at this qpoint) -- ONE extra backward pass instead of one per theta
+    entry (which would cost n_params passes for an exact Jacobian, too slow to use as a loss
+    term for architectures with dozens of params). Encodes directly the assumption LOO
+    generalization actually needs: a held-out qpoint sits near the training ones, so if H
+    varies smoothly, its predicted theta there should be close to its smooth-neighbor
+    predictions too -- unlike gm1_weight/weight_decay, which regularize the CURVE SHAPE or
+    the WEIGHT MAGNITUDES respectively, this regularizes H's own qpoint->theta mapping.
+    Normalized by n_params so the penalty's scale doesn't grow with the main-net's size.
+    See Hoffman et al. 2019, "Robust Learning with Jacobian Regularization"."""
+    qpoint_req = qpoint.clone().requires_grad_(True)
+    theta = hyper(qpoint_req)
+    v = torch.randn_like(theta)
+    proj = (theta * v).sum()
+    jac_grad = torch.autograd.grad(proj, qpoint_req, create_graph=True)[0]
+    return (jac_grad ** 2).sum() / theta.shape[0]
+
+
 def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_norm, ids_region_weight,
-                 ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1):
+                 ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
+                 smoothness_weight=0.0):
     """Sum over train_keys of the (optionally gm1- and cutoff-region-weighted) per-point
     normalized MSE. Shared by the Adam loop and the L-BFGS closure so both optimize the
     exact same objective."""
@@ -226,6 +246,9 @@ def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_
                 loss_gm1 = torch.mean((gm1_pred - t["gm1_true"]) ** 2) / gm1_norm[k]
             loss = loss + gm1_weight * loss_gm1
 
+        if smoothness_weight > 0:
+            loss = loss + smoothness_weight * smoothness_penalty(hyper, t["qpoint"])
+
         total_loss = total_loss + loss
     return total_loss
 
@@ -234,7 +257,7 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
                     gm1_weight=0.0, ids_region_weight=0.0, lbfgs_epochs=5, lbfgs_max_iter=200,
                     h_hidden=32, h_layers=2, n_in=2, log_every=500, seed=27,
                     ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
-                    weight_decay=0.0):
+                    weight_decay=0.0, smoothness_weight=0.0):
     torch.manual_seed(seed)
     hyper = HyperNetwork(n_params, hidden=h_hidden, n_hidden_layers=h_layers, n_in=n_in).to(device)
     # AdamW, not Adam -- with weight_decay=0.0 (the default) its decoupled-decay term vanishes
@@ -258,7 +281,8 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
         opt.zero_grad()
         total_loss = _total_loss(hyper, train_keys, tensors, architecture, norm,
                                   gm1_weight, gm1_norm, ids_region_weight,
-                                  ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac)
+                                  ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac,
+                                  smoothness_weight)
         total_loss.backward()
         opt.step()
         if log_every and (epoch % log_every == 0 or epoch == epochs - 1):
@@ -276,7 +300,8 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
             lbfgs_opt.zero_grad()
             loss = _total_loss(hyper, train_keys, tensors, architecture, norm,
                                 gm1_weight, gm1_norm, ids_region_weight,
-                                ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac)
+                                ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac,
+                                smoothness_weight)
             loss.backward()
             return loss
 
@@ -313,7 +338,7 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
                       ids_region_weight, ids_region_frac, lbfgs_epochs, lbfgs_max_iter,
                       h_hidden, h_layers, h_physics, seed, models_dir, plots_dir,
                       ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
-                      gm_vgs_min=None, gm_vds_min=0.0):
+                      gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0):
     """Runs in its own process: train jointly on all quiescent points, evaluate + plot
     each in-sample, save the model. Independent of the LOO jobs -> safe to parallelize."""
     torch.set_num_threads(1)  # tiny model/data -> intra-op threading only adds overhead;
@@ -331,7 +356,8 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
                             lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=lbfgs_max_iter,
                             h_hidden=h_hidden, h_layers=h_layers, n_in=n_in, log_every=0, seed=seed,
                             ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
-                            relative_norm_floor_frac=relative_norm_floor_frac)
+                            relative_norm_floor_frac=relative_norm_floor_frac,
+                            weight_decay=weight_decay, smoothness_weight=smoothness_weight)
 
     errs = {}
     for k in keys:
@@ -350,7 +376,7 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
                  ids_region_weight, ids_region_frac, lbfgs_epochs, lbfgs_max_iter,
                  h_hidden, h_layers, h_physics, h_physics_oracle, seed, models_dir, plots_dir,
                  ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
-                 gm_vgs_min=None, gm_vds_min=0.0):
+                 gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0):
     """Runs in its own process: train on the other 5 quiescent points, evaluate + plot the
     held-out one, save the model. Each held_out fold is fully independent of the others."""
     torch.set_num_threads(1)
@@ -369,7 +395,8 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
                             lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=lbfgs_max_iter,
                             h_hidden=h_hidden, h_layers=h_layers, n_in=n_in, log_every=0, seed=seed,
                             ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
-                            relative_norm_floor_frac=relative_norm_floor_frac)
+                            relative_norm_floor_frac=relative_norm_floor_frac,
+                            weight_decay=weight_decay, smoothness_weight=smoothness_weight)
 
     err, pred = evaluate(hyper, held_out, tensors, architecture, device)
     tag = qtag(*held_out)
@@ -443,6 +470,16 @@ def main():
                           "(Vds >= 0 always holds). Combined with --gm_vgs_min via logical AND, "
                           "e.g. --gm_vgs_min -3 --gm_vds_min 4 keeps only the gm1 window "
                           "Vgs >= -3V AND Vds >= 4V.")
+    ap.add_argument("--weight_decay", type=float, default=0.0,
+                     help="AdamW weight decay on H's own weights. 0.0 (default) makes AdamW "
+                          "identical to plain Adam (fully backward compatible). Regularizes the "
+                          "weights directly, aimed at the LOO generalization gap.")
+    ap.add_argument("--smoothness_weight", type=float, default=0.0,
+                     help="Weight of a Jacobian-norm penalty on H's own qpoint->theta mapping "
+                          "(Hutchinson-trick estimate of ||d theta/d qpoint||_F^2, one extra "
+                          "backward pass per point). Encourages H to vary smoothly with "
+                          "(Vgsq,Vdsq), which is exactly the property LOO extrapolation to a "
+                          "nearby held-out qpoint needs. 0.0 (default) = off.")
     ap.add_argument("--lbfgs_epochs", type=int, default=5,
                      help="L-BFGS polishing steps run after the Adam phase (outer steps; each runs "
                           "up to --lbfgs_max_iter iterations with a strong-Wolfe line search), same "
@@ -516,7 +553,7 @@ def main():
                                  args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
                                  args.h_physics, args.seed, models_dir, plots_dir,
                                  args.ids_relative_norm, args.gm1_relative_norm, args.relative_norm_floor_frac,
-                                 args.gm_vgs_min, args.gm_vds_min)
+                                 args.gm_vgs_min, args.gm_vds_min, args.weight_decay, args.smoothness_weight)
         loo_futures = {ex.submit(run_loo_job, k, data, n_params, architecture, args.epochs, args.lr,
                                   args.gm1_weight, args.ids_region_weight, args.ids_region_frac,
                                   args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
@@ -524,7 +561,8 @@ def main():
                                   args.seed, models_dir, plots_dir,
                                   args.ids_relative_norm, args.gm1_relative_norm,
                                   args.relative_norm_floor_frac,
-                                  args.gm_vgs_min, args.gm_vds_min): k for k in keys}
+                                  args.gm_vgs_min, args.gm_vds_min,
+                                  args.weight_decay, args.smoothness_weight): k for k in keys}
 
         full_errs_by_key = full_future.result()
         print("\n=== Full-fit sanity check (train on all 6, evaluate in-sample) ===")
@@ -559,6 +597,8 @@ def main():
         "relative_norm_floor_frac": args.relative_norm_floor_frac,
         "gm_vgs_min": args.gm_vgs_min,
         "gm_vds_min": args.gm_vds_min,
+        "weight_decay": args.weight_decay,
+        "smoothness_weight": args.smoothness_weight,
         "lbfgs_epochs": args.lbfgs_epochs,
         "lbfgs_max_iter": args.lbfgs_max_iter,
         "h_hidden": args.h_hidden,
