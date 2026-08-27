@@ -135,6 +135,9 @@ def generate_h_architectures(base_hidden=32, base_layers=1):
 
 
 def write_csv(path, rows, fields):
+    dirname = os.path.dirname(path)
+    if dirname:
+        os.makedirs(dirname, exist_ok=True)
     with open(path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
@@ -542,8 +545,8 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     g = sub.add_parser("generate", help="Write f_architectures.csv and h_architectures.csv")
-    g.add_argument("--f_csv", default="f_architectures.csv")
-    g.add_argument("--h_csv", default="h_architectures.csv")
+    g.add_argument("--f_csv", default="configs/arch_search_1000/f_architectures.csv")
+    g.add_argument("--h_csv", default="configs/arch_search_1000/h_architectures.csv")
     g.add_argument("--n_f_architectures", type=int, default=1000)
     g.add_argument("--n_tanh_only", type=int, default=150)
     g.add_argument("--min_layers", type=int, default=1)
@@ -557,8 +560,8 @@ def main():
 
     r = sub.add_parser("run", help="Run the sweep, appending to results.csv")
     r.add_argument("--csv_dir", default=r"C:\Users\acost\repos\csvs")
-    r.add_argument("--f_csv", default="f_architectures.csv")
-    r.add_argument("--h_csv", default="h_architectures.csv")
+    r.add_argument("--f_csv", default="configs/arch_search_1000/f_architectures.csv")
+    r.add_argument("--h_csv", default="configs/arch_search_1000/h_architectures.csv")
     r.add_argument("--results_csv",
                     default=r"C:\Users\acost\repos\transistor_modeling_hyper_outputs\results.csv",
                     help="Appended to incrementally; safe to re-run/extend. Defaults OUTSIDE "
