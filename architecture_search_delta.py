@@ -102,7 +102,7 @@ H_ARCH_CSV_FIELDS = ["h_arch_hash", "h_hidden", "h_layers"]
 RESULTS_CSV_FIELDS = [
     "combo_id", "f_arch_hash", "h_arch_hash", "strategy", "hp_hash",
     "gm1_weight", "delta_reg_weight", "epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter",
-    "base_epochs", "base_lr", "base_lbfgs_epochs", "seed",
+    "delta_base_epochs", "delta_base_lr", "delta_base_lbfgs_epochs", "seed",
     "n_params_f", "h_hidden", "h_layers",
     "loo_mean_rel_rmse", "loo_n_points", "loo_worst_rel_rmse", "full_fit_mean_rel_rmse",
     "loo_per_point_json", "model_dir", "status", "error_msg", "wall_time_seconds", "timestamp",
@@ -491,12 +491,12 @@ def run_full_fit_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidde
     return f_arch_hash, h_arch_hash, "delta", float(np.mean(list(errs.values())))
 
 
-def fit_theta_base_job(f_arch_hash, architecture, n_params, data, base_epochs, base_lr,
+def fit_theta_base_job(f_arch_hash, architecture, n_params, data, delta_base_epochs, delta_base_lr,
                         lbfgs_epochs, lbfgs_max_iter, seed):
     """Runs in its own process -- one per f-architecture (shared across all 4 H sizes)."""
     torch.set_num_threads(1)
-    theta_base, base_err = fit_theta_base(data[BASE_KEY], n_params, architecture, base_epochs,
-                                           base_lr, lbfgs_epochs, lbfgs_max_iter, seed)
+    theta_base, base_err = fit_theta_base(data[BASE_KEY], n_params, architecture, delta_base_epochs,
+                                           delta_base_lr, lbfgs_epochs, lbfgs_max_iter, seed)
     return f_arch_hash, theta_base, base_err
 
 
@@ -508,7 +508,7 @@ def fit_theta_base_job(f_arch_hash, architecture, n_params, data, base_epochs, b
 # here, so adding a new training hyperparameter to `run` later only requires adding its name
 # to this list, not touching the hashing logic itself.
 HYPERPARAM_ARGS = ["epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter", "gm1_weight",
-                   "delta_reg_weight", "base_epochs", "base_lr", "base_lbfgs_epochs", "seed"]
+                   "delta_reg_weight", "delta_base_epochs", "delta_base_lr", "delta_base_lbfgs_epochs", "seed"]
 
 
 def hyperparams_hash_of(args):
@@ -552,8 +552,8 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
         with ProcessPoolExecutor(max_workers=args.workers) as ex:
             futs = {
                 ex.submit(fit_theta_base_job, arch_hash, json.loads(f_row["architecture"]),
-                          int(f_row["n_params"]), data, args.base_epochs, args.base_lr,
-                          args.base_lbfgs_epochs, args.lbfgs_max_iter, args.seed): arch_hash
+                          int(f_row["n_params"]), data, args.delta_base_epochs, args.delta_base_lr,
+                          args.delta_base_lbfgs_epochs, args.lbfgs_max_iter, args.seed): arch_hash
                 for arch_hash, f_row in f_archs_needing_base.items()
             }
             for fut in as_completed(futs):
@@ -644,9 +644,9 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             lr=args.lr,
             lbfgs_epochs=args.lbfgs_epochs,
             lbfgs_max_iter=args.lbfgs_max_iter,
-            base_epochs=args.base_epochs if strategy == "delta" else "",
-            base_lr=args.base_lr if strategy == "delta" else "",
-            base_lbfgs_epochs=args.base_lbfgs_epochs if strategy == "delta" else "",
+            delta_base_epochs=args.delta_base_epochs if strategy == "delta" else "",
+            delta_base_lr=args.delta_base_lr if strategy == "delta" else "",
+            delta_base_lbfgs_epochs=args.delta_base_lbfgs_epochs if strategy == "delta" else "",
             seed=args.seed,
             n_params_f=f_row["n_params"],
             h_hidden=h_row["h_hidden"],
@@ -815,11 +815,16 @@ def main():
     r.add_argument("--lr", type=float, default=3e-3)
     r.add_argument("--lbfgs_epochs", type=int, default=0)
     r.add_argument("--lbfgs_max_iter", type=int, default=200)
-    r.add_argument("--gm1_weight", type=float, default=0.075)
-    r.add_argument("--delta_reg_weight", type=float, default=0.01)
-    r.add_argument("--base_epochs", type=int, default=2000)
-    r.add_argument("--base_lr", type=float, default=3e-3)
-    r.add_argument("--base_lbfgs_epochs", type=int, default=5)
+    r.add_argument("--gm1_weight", type=float, default=0.075,
+                    help="Used by BOTH strategies.")
+    r.add_argument("--delta_reg_weight", type=float, default=0.01,
+                    help="'delta' strategy only: L2 penalty on delta_theta.")
+    r.add_argument("--delta_base_epochs", type=int, default=2000,
+                    help="'delta' strategy only: epochs to fit theta_base on BASE_KEY's data.")
+    r.add_argument("--delta_base_lr", type=float, default=3e-3,
+                    help="'delta' strategy only: learning rate for the theta_base fit.")
+    r.add_argument("--delta_base_lbfgs_epochs", type=int, default=5,
+                    help="'delta' strategy only: L-BFGS polishing steps for the theta_base fit.")
     r.add_argument("--seed", type=int, default=27)
     r.set_defaults(func=cmd_run)
 
