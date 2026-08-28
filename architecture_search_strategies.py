@@ -93,6 +93,28 @@ from data_loader import load_all
 from model import HyperNetwork, main_net_forward, main_net_n_params
 from train_loo import build_tensors as build_tensors_full, train_hypernet, evaluate as evaluate_original
 
+
+def _worker_warmup():
+    """ProcessPoolExecutor(initializer=...) hook: constructing the FIRST torch.optim.AdamW in a
+    freshly-spawned process lazily imports torch._dynamo -> networkx, which reads every
+    installed package's entry_points.txt via importlib.metadata. With --workers this high,
+    many worker processes hit that at once right after pool startup, and on Windows this has
+    been observed to throw a transient OSError([Errno 22] Invalid argument) reading one of
+    those files -- not a bug in this script, a race in the OS/filesystem layer. Since it's a
+    ONE-TIME cost per process (later AdamW constructions in the same worker don't re-trigger
+    the import), do it once here at pool startup, with retries, so a real training job never
+    eats this race."""
+    import time
+    for attempt in range(6):
+        try:
+            torch.optim.AdamW([torch.zeros(1, requires_grad=True)], lr=1e-3)
+            return
+        except OSError:
+            if attempt == 5:
+                raise
+            time.sleep(0.5 * (attempt + 1))
+
+
 VGS_SCALE = 4.0
 VDS_SCALE = 45.0
 BASE_KEY = (-2.9, 0.0)  # only used by the "delta" strategy -- same reference as
@@ -578,7 +600,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
                              if strategy == "delta"}
     theta_base_by_farch = {}
     if f_archs_needing_base:
-        with ProcessPoolExecutor(max_workers=args.workers) as ex:
+        with ProcessPoolExecutor(max_workers=args.workers, initializer=_worker_warmup) as ex:
             futs = {
                 ex.submit(fit_theta_base_job, arch_hash, json.loads(f_row["architecture"]),
                           int(f_row["n_params"]), data, args.delta_base_epochs, args.delta_base_lr,
@@ -592,7 +614,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
 
     # --- Step 2: submit fold-level jobs (max parallelism) for LOO scoring ---
     fold_futures = {}
-    with ProcessPoolExecutor(max_workers=args.workers) as ex:
+    with ProcessPoolExecutor(max_workers=args.workers, initializer=_worker_warmup) as ex:
         for f_row, h_row, strategy in combos:
             architecture = json.loads(f_row["architecture"])
             n_params = int(f_row["n_params"])
@@ -639,7 +661,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
 
     # --- Step 3: full-fit job per combo (for the saved/reconstructable model) ---
     fullfit_by_combo = {}
-    with ProcessPoolExecutor(max_workers=args.workers) as ex:
+    with ProcessPoolExecutor(max_workers=args.workers, initializer=_worker_warmup) as ex:
         futs = {}
         for f_row, h_row, strategy in combos:
             architecture = json.loads(f_row["architecture"])
