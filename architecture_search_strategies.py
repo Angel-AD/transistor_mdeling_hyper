@@ -944,7 +944,7 @@ def main():
                          "optimization/local-minima issues.")
     r.add_argument("--delta_reg_weight", type=float, default=0.01,
                     help="'delta' strategy only: L2 penalty on delta_theta.")
-    r.add_argument("--delta_base_epochs", type=int, default=2000,
+    r.add_argument("--delta_base_epochs", type=int, default=1000,
                     help="'delta' strategy only: epochs to fit theta_base on BASE_KEY's data.")
     r.add_argument("--delta_base_lr", type=float, default=3e-3,
                     help="'delta' strategy only: learning rate for the theta_base fit.")
