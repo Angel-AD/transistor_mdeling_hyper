@@ -53,9 +53,9 @@ def run_loo_fold_job(combo_id, gm1_weight, ids_region_weight, held_out, data, ar
     keys = sorted(data.keys())
     train_keys = [k for k in keys if k != held_out]
     tensors = build_tensors(data, device, ids_region_frac=ids_region_frac)
-    hyper = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
-                            gm1_weight=gm1_weight, ids_region_weight=ids_region_weight,
-                            lbfgs_epochs=0, log_every=0, seed=27)
+    hyper, _ = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
+                               gm1_weight=gm1_weight, ids_region_weight=ids_region_weight,
+                               lbfgs_epochs=0, log_every=0, seed=27)
     err, _ = evaluate(hyper, held_out, tensors, architecture, device)
     return combo_id, held_out, err
 

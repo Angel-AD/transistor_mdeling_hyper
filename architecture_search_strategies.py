@@ -433,10 +433,10 @@ def run_fold_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden
     keys = sorted(data.keys())
     train_keys = [k for k in keys if k != held_out]
     tensors = build_tensors_full(data, device)
-    hyper = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
-                            gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
-                            h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
-                            weight_decay=weight_decay)
+    hyper, _ = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
+                               gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
+                               h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
+                               weight_decay=weight_decay)
     err, pred = evaluate_original(hyper, held_out, tensors, architecture, device)
     return f_arch_hash, h_arch_hash, "original", held_out, err, pred
 
@@ -464,10 +464,10 @@ def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hi
     device = torch.device("cpu")
     keys = sorted(data.keys())
     tensors = build_tensors_full(data, device)
-    hyper = train_hypernet(keys, tensors, n_params, architecture, epochs, lr, device,
-                            gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
-                            h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
-                            weight_decay=weight_decay)
+    hyper, _ = train_hypernet(keys, tensors, n_params, architecture, epochs, lr, device,
+                               gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
+                               h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
+                               weight_decay=weight_decay)
     errs, preds = {}, {}
     for k in keys:
         err, pred = evaluate_original(hyper, k, tensors, architecture, device)

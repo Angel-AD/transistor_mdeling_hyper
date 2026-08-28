@@ -69,8 +69,8 @@ def run_loo_fold_job(arch_id, architecture, held_out, data, n_params, epochs, lr
     # lbfgs_epochs=0: this is a fast ranking proxy across ~100 candidates -- L-BFGS polishing
     # (added to train_loo.py for the final confirmed run) is skipped here to keep the search
     # fast; re-run the winner through train_loo.py, which polishes by default, to confirm.
-    hyper = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
-                            lbfgs_epochs=0, log_every=0, seed=27)
+    hyper, _ = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
+                               lbfgs_epochs=0, log_every=0, seed=27)
     err, _ = evaluate(hyper, held_out, tensors, architecture, device)
     return arch_id, held_out, err
 
