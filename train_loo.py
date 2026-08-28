@@ -237,11 +237,28 @@ def smoothness_penalty(hyper, qpoint, relative=False):
 def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_norm, ids_region_weight,
                  ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                  smoothness_weight=0.0, smoothness_relative=False,
-                 ipk_weight=0.0, vpk_weight=0.0, ipk_norm=None, vpk_softmax_temp=30.0):
+                 ipk_weight=0.0, vpk_weight=0.0, ipk_norm=None, vpk_softmax_temp=30.0,
+                 log_vars=None):
     """Sum over train_keys of the (optionally gm1- and cutoff-region-weighted) per-point
     normalized MSE. Shared by the Adam loop and the L-BFGS closure so both optimize the
-    exact same objective."""
-    total_loss = 0.0
+    exact same objective.
+
+    log_vars: optional length-2 tensor [log_var_ids, log_var_gm1] -- the learnable
+    homoscedastic task-uncertainty weights of Kendall et al. 2018 ("Multi-Task Learning Using
+    Uncertainty to Weigh Losses"). When given, this REPLACES the fixed gm1_weight scalar with
+    an automatically learned balance:
+        total = exp(-log_var_ids)*ids_loss + log_var_ids
+              + exp(-log_var_gm1)*gm1_loss + log_var_gm1
+    exp(-log_var) is a "precision": pushes the weight down for a noisier/harder task, up for
+    an easier one; the +log_var term is what stops precision from just collapsing to 0. Both
+    are ordinary trainable tensors, updated by the SAME optimizer step as H's own weights --
+    no separate grid search over fixed gm1_weight values needed. ids_region_weight/
+    smoothness_weight/ipk_weight/vpk_weight are unaffected -- only the gm1-vs-Ids balance is
+    auto-learned here, since that's the pair --gm1_auto_weight was built to replace."""
+    total_ids_loss = 0.0
+    total_gm1_loss = 0.0
+    total_other_loss = 0.0
+    compute_gm1 = gm1_weight > 0 or log_vars is not None
     for k in train_keys:
         t = tensors[k]
         theta = hyper(t["qpoint"])
@@ -258,8 +275,9 @@ def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_
             # build_tensors' low_current_mask) directly counteracts that.
             sq_err = sq_err * (1.0 + ids_region_weight * t["low_current_mask"])
         loss = torch.mean(sq_err) if ids_relative_norm else torch.mean(sq_err) / norm[k]
+        total_ids_loss = total_ids_loss + loss
 
-        if gm1_weight > 0:
+        if compute_gm1:
             # gm1 = dIds/dVgs, matched against the real (measured) transconductance --
             # penalizing this shapes the WHOLE Ids(Vgs) curve, not just its value, which
             # discourages the kind of non-monotonic wiggle a mixed tanh/swish net can
@@ -273,10 +291,11 @@ def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_
                 loss_gm1 = torch.mean(relative_sq_err(gm1_pred, t["gm1_true"], relative_norm_floor_frac))
             else:
                 loss_gm1 = torch.mean((gm1_pred - t["gm1_true"]) ** 2) / gm1_norm[k]
-            loss = loss + gm1_weight * loss_gm1
+            total_gm1_loss = total_gm1_loss + loss_gm1
 
         if smoothness_weight > 0:
-            loss = loss + smoothness_weight * smoothness_penalty(hyper, t["qpoint"], relative=smoothness_relative)
+            total_other_loss = total_other_loss + smoothness_weight * smoothness_penalty(
+                hyper, t["qpoint"], relative=smoothness_relative)
 
         if ipk_weight > 0 or vpk_weight > 0:
             # Vpk_pred and Ipk_pred both come from ONE shared gm1-of-the-model computation
@@ -298,15 +317,25 @@ def _total_loss(hyper, train_keys, tensors, architecture, norm, gm1_weight, gm1_
             if vpk_weight > 0:
                 vpk_pred = (weights * curve_vgs_req).sum()
                 loss_vpk = (vpk_pred - t["vpk_real"]) ** 2 / VGS_SCALE ** 2
-                loss = loss + vpk_weight * loss_vpk
+                total_other_loss = total_other_loss + vpk_weight * loss_vpk
 
             if ipk_weight > 0:
                 ipk_pred = (weights * ids_curve).sum()
                 loss_ipk = torch.mean((ipk_pred - t["ipk_real"]) ** 2) / ipk_norm[k]
-                loss = loss + ipk_weight * loss_ipk
+                total_other_loss = total_other_loss + ipk_weight * loss_ipk
 
-        total_loss = total_loss + loss
-    return total_loss
+    if log_vars is not None:
+        precision_ids = torch.exp(-log_vars[0])
+        combined = precision_ids * total_ids_loss + log_vars[0]
+        if compute_gm1:
+            precision_gm1 = torch.exp(-log_vars[1])
+            combined = combined + precision_gm1 * total_gm1_loss + log_vars[1]
+    else:
+        combined = total_ids_loss
+        if compute_gm1:
+            combined = combined + gm1_weight * total_gm1_loss
+
+    return combined + total_other_loss
 
 
 def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
@@ -314,9 +343,17 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
                     h_hidden=32, h_layers=2, n_in=2, log_every=500, seed=27,
                     ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                     weight_decay=0.0, smoothness_weight=0.0, smoothness_relative=False,
-                    ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0):
+                    ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0, gm1_auto_weight=False):
     torch.manual_seed(seed)
     hyper = HyperNetwork(n_params, hidden=h_hidden, n_hidden_layers=h_layers, n_in=n_in).to(device)
+
+    # --gm1_auto_weight: learn the gm1-vs-Ids balance instead of fixing it via --gm1_weight (see
+    # _total_loss's docstring for the Kendall et al. 2018 formulation). log_vars is just two
+    # ordinary trainable scalars, thrown into the SAME optimizer as H's own weights -- no
+    # separate training loop, no separate grid search over fixed gm1_weight values.
+    log_vars = torch.zeros(2, device=device, requires_grad=True) if gm1_auto_weight else None
+    extra_params = [log_vars] if gm1_auto_weight else []
+
     # AdamW, not Adam -- with weight_decay=0.0 (the default) its decoupled-decay term vanishes
     # and it's identical to plain Adam, so this is a no-op for every existing caller that
     # doesn't pass weight_decay. Passing a nonzero value regularizes H's own weights directly
@@ -324,14 +361,14 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
     # aimed at the generalization gap (full-fit vs. LOO) this project has repeatedly run into,
     # not at "escaping local minima" (the loss surface here is small, smooth, full-batch, and
     # already gets an L-BFGS polish -- optimization difficulty was never the bottleneck).
-    opt = torch.optim.AdamW(hyper.parameters(), lr=lr, weight_decay=weight_decay)
+    opt = torch.optim.AdamW(list(hyper.parameters()) + extra_params, lr=lr, weight_decay=weight_decay)
 
     # per-point normalization so no single quiescent point's current (or gm1) scale dominates the
     # loss -- unused when ids_relative_norm/gm1_relative_norm is on (relative_sq_err normalizes
     # pointwise instead), still computed cheaply either way to keep the call sites simple.
     norm = {k: (np.abs(tensors[k]["ids_np"]).max() + 1e-6) ** 2 for k in train_keys}
     gm1_norm = {}
-    if gm1_weight > 0:
+    if gm1_weight > 0 or gm1_auto_weight:
         gm1_norm = {k: (tensors[k]["gm1_true"].abs().max().item() + 1e-6) ** 2 for k in train_keys}
     ipk_norm = {}
     if ipk_weight > 0:
@@ -343,18 +380,23 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
                                   gm1_weight, gm1_norm, ids_region_weight,
                                   ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac,
                                   smoothness_weight, smoothness_relative,
-                                  ipk_weight, vpk_weight, ipk_norm, vpk_softmax_temp)
+                                  ipk_weight, vpk_weight, ipk_norm, vpk_softmax_temp, log_vars)
         total_loss.backward()
         opt.step()
         if log_every and (epoch % log_every == 0 or epoch == epochs - 1):
-            print(f"    epoch {epoch:5d}  train_loss(sum of per-point rel-MSE) = {total_loss.item():.5f}")
+            msg = f"    epoch {epoch:5d}  train_loss(sum of per-point rel-MSE) = {total_loss.item():.5f}"
+            if gm1_auto_weight:
+                with torch.no_grad():
+                    w = (torch.exp(-log_vars[1]) / torch.exp(-log_vars[0])).item()
+                msg += f"  (learned gm1_weight~={w:.4f})"
+            print(msg)
 
     # L-BFGS polishing: Adam's stochastic-ish updates plateau short of a local optimum on a
     # loss this smooth (small net, full-batch, deterministic) -- a few L-BFGS steps with a
     # strong-Wolfe line search reliably sharpen the last stretch, same as the base
     # transistor_modeling repo's per-CSV pipeline (--lbfgs_epochs/--lbfgs_max_iter).
     if lbfgs_epochs > 0:
-        lbfgs_opt = torch.optim.LBFGS(hyper.parameters(), max_iter=lbfgs_max_iter,
+        lbfgs_opt = torch.optim.LBFGS(list(hyper.parameters()) + extra_params, max_iter=lbfgs_max_iter,
                                        line_search_fn="strong_wolfe")
 
         def closure():
@@ -363,7 +405,7 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
                                 gm1_weight, gm1_norm, ids_region_weight,
                                 ids_relative_norm, gm1_relative_norm, relative_norm_floor_frac,
                                 smoothness_weight, smoothness_relative,
-                                ipk_weight, vpk_weight, ipk_norm, vpk_softmax_temp)
+                                ipk_weight, vpk_weight, ipk_norm, vpk_softmax_temp, log_vars)
             loss.backward()
             return loss
 
@@ -372,7 +414,14 @@ def train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, devi
             if log_every:
                 print(f"    L-BFGS step {step + 1}/{lbfgs_epochs}  loss = {loss.item():.5f}")
 
-    return hyper
+    learned_gm1_weight = None
+    if gm1_auto_weight:
+        with torch.no_grad():
+            learned_gm1_weight = (torch.exp(-log_vars[1]) / torch.exp(-log_vars[0])).item()
+        if log_every:
+            print(f"    final learned effective gm1_weight = {learned_gm1_weight:.4f}")
+
+    return hyper, learned_gm1_weight
 
 
 def evaluate(hyper, key, tensors, architecture, device):
@@ -401,7 +450,8 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
                       h_hidden, h_layers, h_physics, seed, models_dir, plots_dir,
                       ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                       gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0,
-                      smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0):
+                      smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0,
+                      gm1_auto_weight=False):
     """Runs in its own process: train jointly on all quiescent points, evaluate + plot
     each in-sample, save the model. Independent of the LOO jobs -> safe to parallelize."""
     torch.set_num_threads(1)  # tiny model/data -> intra-op threading only adds overhead;
@@ -414,16 +464,17 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
     for k in keys:
         tensors[k]["qpoint"] = qpoints[k]
     n_in = 2 + (N_PHYSICS_FEATURES if h_physics else 0)
-    hyper = train_hypernet(keys, tensors, n_params, architecture, epochs, lr, device,
-                            gm1_weight=gm1_weight, ids_region_weight=ids_region_weight,
-                            lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=lbfgs_max_iter,
-                            h_hidden=h_hidden, h_layers=h_layers, n_in=n_in, log_every=0, seed=seed,
-                            ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
-                            relative_norm_floor_frac=relative_norm_floor_frac,
-                            weight_decay=weight_decay, smoothness_weight=smoothness_weight,
-                            smoothness_relative=smoothness_relative,
-                            ipk_weight=ipk_weight, vpk_weight=vpk_weight,
-                            vpk_softmax_temp=vpk_softmax_temp)
+    hyper, learned_gm1_weight = train_hypernet(
+        keys, tensors, n_params, architecture, epochs, lr, device,
+        gm1_weight=gm1_weight, ids_region_weight=ids_region_weight,
+        lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=lbfgs_max_iter,
+        h_hidden=h_hidden, h_layers=h_layers, n_in=n_in, log_every=0, seed=seed,
+        ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
+        relative_norm_floor_frac=relative_norm_floor_frac,
+        weight_decay=weight_decay, smoothness_weight=smoothness_weight,
+        smoothness_relative=smoothness_relative,
+        ipk_weight=ipk_weight, vpk_weight=vpk_weight,
+        vpk_softmax_temp=vpk_softmax_temp, gm1_auto_weight=gm1_auto_weight)
 
     errs = {}
     for k in keys:
@@ -435,7 +486,7 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
                      os.path.join(plots_dir, f"infit_{qtag(*k)}.png"),
                      title_suffix="(in-sample, full-fit)")
     torch.save(hyper.state_dict(), os.path.join(models_dir, "hyper_full.pt"))
-    return errs
+    return errs, learned_gm1_weight
 
 
 def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
@@ -443,7 +494,8 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
                  h_hidden, h_layers, h_physics, h_physics_oracle, seed, models_dir, plots_dir,
                  ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                  gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0,
-                 smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0):
+                 smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0,
+                 gm1_auto_weight=False):
     """Runs in its own process: train on the other 5 quiescent points, evaluate + plot the
     held-out one, save the model. Each held_out fold is fully independent of the others."""
     torch.set_num_threads(1)
@@ -457,16 +509,17 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
     for k, qp in qpoints.items():
         tensors[k]["qpoint"] = qp
     n_in = 2 + (N_PHYSICS_FEATURES if h_physics else 0)
-    hyper = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
-                            gm1_weight=gm1_weight, ids_region_weight=ids_region_weight,
-                            lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=lbfgs_max_iter,
-                            h_hidden=h_hidden, h_layers=h_layers, n_in=n_in, log_every=0, seed=seed,
-                            ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
-                            relative_norm_floor_frac=relative_norm_floor_frac,
-                            weight_decay=weight_decay, smoothness_weight=smoothness_weight,
-                            smoothness_relative=smoothness_relative,
-                            ipk_weight=ipk_weight, vpk_weight=vpk_weight,
-                            vpk_softmax_temp=vpk_softmax_temp)
+    hyper, learned_gm1_weight = train_hypernet(
+        train_keys, tensors, n_params, architecture, epochs, lr, device,
+        gm1_weight=gm1_weight, ids_region_weight=ids_region_weight,
+        lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=lbfgs_max_iter,
+        h_hidden=h_hidden, h_layers=h_layers, n_in=n_in, log_every=0, seed=seed,
+        ids_relative_norm=ids_relative_norm, gm1_relative_norm=gm1_relative_norm,
+        relative_norm_floor_frac=relative_norm_floor_frac,
+        weight_decay=weight_decay, smoothness_weight=smoothness_weight,
+        smoothness_relative=smoothness_relative,
+        ipk_weight=ipk_weight, vpk_weight=vpk_weight,
+        vpk_softmax_temp=vpk_softmax_temp, gm1_auto_weight=gm1_auto_weight)
 
     err, pred = evaluate(hyper, held_out, tensors, architecture, device)
     tag = qtag(*held_out)
@@ -476,7 +529,7 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
     plot_iv_grid(iv_data, held_out[0], held_out[1], err,
                  os.path.join(plots_dir, f"loo_{tag}.png"),
                  title_suffix="(held-out, LOO)")
-    return held_out, err
+    return held_out, err, learned_gm1_weight
 
 
 def main():
@@ -495,7 +548,17 @@ def main():
                           "estimated from real transfer curves assembled via nearest-point matching "
                           "per TN group (see build_gm_targets); gm1_pred comes from autograd through "
                           "the hypernetwork-generated main-net. 0.0 (default) = off, matches the "
-                          "original Ids-only loss. Try e.g. 0.1 (the base repo's default gm1 weight).")
+                          "original Ids-only loss. Try e.g. 0.1 (the base repo's default gm1 weight). "
+                          "Ignored when --gm1_auto_weight is set.")
+    ap.add_argument("--gm1_auto_weight", action="store_true",
+                     help="Learn the gm1-vs-Ids loss balance automatically during training instead "
+                          "of fixing it by hand via --gm1_weight (Kendall et al. 2018 homoscedastic "
+                          "uncertainty weighting: two learnable log-variance scalars, updated by the "
+                          "SAME optimizer step as H's own weights -- see _total_loss's docstring). "
+                          "When set, the gm1 term is always computed and --gm1_weight's fixed value "
+                          "is ignored/replaced by the learned one. Avoids grid-searching --gm1_weight "
+                          "across separate runs. The final learned effective weight (per fold, plus "
+                          "full-fit) is saved to run_info.json under gm1_auto_weight_learned_*.")
     ap.add_argument("--ids_region_weight", type=float, default=0.0,
                      help="Extra weight on the deep-cutoff region of the Ids MSE loss (points where "
                           "|Ids| < ids_region_frac * max(|Ids|) for that quiescent point): squared "
@@ -642,13 +705,14 @@ def main():
 
     full_errs_by_key = {}
     loo_errs_by_key = {}
+    loo_learned_gm1_weight_by_key = {}
     with ProcessPoolExecutor(max_workers=workers) as ex:
         full_future = ex.submit(run_full_fit_job, data, n_params, architecture, args.epochs, args.lr,
                                  args.gm1_weight, args.ids_region_weight, args.ids_region_frac,
                                  args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
                                  args.h_physics, args.seed, models_dir, plots_dir,
                                  args.ids_relative_norm, args.gm1_relative_norm, args.relative_norm_floor_frac,
-                                 args.gm_vgs_min, args.gm_vds_min, args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp)
+                                 args.gm_vgs_min, args.gm_vds_min, args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp, args.gm1_auto_weight)
         loo_futures = {ex.submit(run_loo_job, k, data, n_params, architecture, args.epochs, args.lr,
                                   args.gm1_weight, args.ids_region_weight, args.ids_region_frac,
                                   args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
@@ -657,19 +721,25 @@ def main():
                                   args.ids_relative_norm, args.gm1_relative_norm,
                                   args.relative_norm_floor_frac,
                                   args.gm_vgs_min, args.gm_vds_min,
-                                  args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp): k for k in keys}
+                                  args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp, args.gm1_auto_weight): k for k in keys}
 
-        full_errs_by_key = full_future.result()
+        full_errs_by_key, full_learned_gm1_weight = full_future.result()
         print("\n=== Full-fit sanity check (train on all 6, evaluate in-sample) ===")
         for k in keys:
             print(f"  in-sample Vgsq={k[0]:.1f} Vdsq={k[1]:.1f}: rel.RMSE = {full_errs_by_key[k]*100:.2f}%")
         print(f"  --> mean in-sample rel.RMSE: {np.mean(list(full_errs_by_key.values()))*100:.2f}%")
+        if args.gm1_auto_weight:
+            print(f"  --> full-fit learned effective gm1_weight: {full_learned_gm1_weight:.4f}")
 
         print("\n=== Leave-one-out (train on 5, predict the 6th via H(Vgsq,Vdsq)) ===")
         for fut in as_completed(loo_futures):
-            held_out, err = fut.result()
+            held_out, err, learned_gm1_weight = fut.result()
             loo_errs_by_key[held_out] = err
-            print(f"  held out Vgsq={held_out[0]:.1f} Vdsq={held_out[1]:.1f}: rel.RMSE(Ids) = {err*100:.2f}%")
+            loo_learned_gm1_weight_by_key[held_out] = learned_gm1_weight
+            msg = f"  held out Vgsq={held_out[0]:.1f} Vdsq={held_out[1]:.1f}: rel.RMSE(Ids) = {err*100:.2f}%"
+            if args.gm1_auto_weight:
+                msg += f"  (learned gm1_weight={learned_gm1_weight:.4f})"
+            print(msg)
 
     full_errs = [full_errs_by_key[k] for k in keys]
     loo_errs = [loo_errs_by_key[k] for k in keys]
@@ -685,6 +755,12 @@ def main():
         "architecture": architecture,
         "n_params": n_params,
         "gm1_weight": args.gm1_weight,
+        "gm1_auto_weight": args.gm1_auto_weight,
+        "gm1_auto_weight_learned_full_fit": full_learned_gm1_weight if args.gm1_auto_weight else None,
+        "gm1_auto_weight_learned_loo": (
+            {qtag(*k): loo_learned_gm1_weight_by_key[k] for k in keys} if args.gm1_auto_weight else None),
+        "gm1_auto_weight_learned_loo_mean": (
+            float(np.mean(list(loo_learned_gm1_weight_by_key.values()))) if args.gm1_auto_weight else None),
         "ids_region_weight": args.ids_region_weight,
         "ids_region_frac": args.ids_region_frac,
         "ids_relative_norm": args.ids_relative_norm,
