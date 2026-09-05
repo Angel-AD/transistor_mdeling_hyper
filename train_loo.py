@@ -23,7 +23,7 @@ from data_loader import load_all
 from model import HyperNetwork, main_net_forward, main_net_n_params, ARCHITECTURES
 from physics_features import extract_angelov_features, predict_physics_features, _transfer_curve
 from plotting import qtag, build_iv_curves, plot_iv_grid, build_html_report
-from signal_utils import smooth_derivative
+from signal_utils import gm_derivative, GM_SMOOTHING_METHODS
 
 VGS_SCALE = 4.0
 VDS_SCALE = 45.0
@@ -84,14 +84,17 @@ def build_qpoint_tensors(data, train_keys, held_out, device, use_physics, oracle
     return out
 
 
-def build_gm_targets(df, n_vds_targets=4):
+def build_gm_targets(df, n_vds_targets=4, gm_smoothing="savgol"):
     """Ground-truth gm1 = dIds/dVgs, estimated the same way the base transistor_modeling
     repo does it (create_gms_for_train): build several real transfer curves (Ids vs Vgs
-    at ~fixed Vds) and take smooth_derivative (Savitzky-Golay smoothed, not a raw
-    np.gradient) along Vgs. Our raw data has no ready-made transfer curves (each TN group
-    is the OPPOSITE: ~fixed Vgs, Vds ramping) -- reusing plotting.py's build_iv_curves
-    technique, one transfer curve is assembled per target Vds by taking each TN group's
-    nearest-real-point match, exactly as already done there for the Ids-Vgs plot.
+    at ~fixed Vds) and take a smoothed derivative along Vgs. Our raw data has no
+    ready-made transfer curves (each TN group is the OPPOSITE: ~fixed Vgs, Vds ramping)
+    -- reusing plotting.py's build_iv_curves technique, one transfer curve is assembled
+    per target Vds by taking each TN group's nearest-real-point match, exactly as already
+    done there for the Ids-Vgs plot.
+
+    gm_smoothing selects the derivative estimator (see signal_utils.gm_derivative):
+    "savgol" (default, base-repo port), "cascade" (lighter, keeps gm2/gm3 peaks), "none".
     Returns (vgs_pts, vds_pts, gm1_true) raw 1-D numpy arrays, all real measured values."""
     groups = [g.sort_values("Vds") for _, g in df.groupby("TN")]
     vds_lo, vds_hi = df["Vds"].min(), df["Vds"].max()
@@ -110,7 +113,7 @@ def build_gm_targets(df, n_vds_targets=4):
         vgs_pts, ids_pts, vds_pts = vgs_pts[order], ids_pts[order], vds_pts[order]
         if len(vgs_pts) < 3:
             continue
-        gm1 = smooth_derivative(vgs_pts, ids_pts, order=1)
+        gm1 = gm_derivative(vgs_pts, ids_pts, order=1, method=gm_smoothing)
         vgs_all.append(vgs_pts)
         vds_all.append(vds_pts)
         gm1_all.append(gm1)
@@ -118,7 +121,7 @@ def build_gm_targets(df, n_vds_targets=4):
 
 
 def build_tensors(data, device, gm_n_vds_targets=4, ids_region_frac=0.05,
-                   gm_vgs_min=None, gm_vds_min=0.0):
+                   gm_vgs_min=None, gm_vds_min=0.0, gm_smoothing="savgol"):
     """data: dict (Vgsq,Vdsq)->DataFrame -> dict (Vgsq,Vdsq)-> tensors.
 
     `low_current_mask` flags points where |Ids| < ids_region_frac * max(|Ids|) for that
@@ -148,7 +151,7 @@ def build_tensors(data, device, gm_n_vds_targets=4, ids_region_frac=0.05,
         low_current_np = (np.abs(ids_np) < ids_region_frac * np.abs(ids_np).max()).astype(np.float32)
         low_current_mask = torch.tensor(low_current_np, dtype=torch.float32, device=device)
 
-        gm_vgs_np, gm_vds_np, gm1_true_np = build_gm_targets(df, gm_n_vds_targets)
+        gm_vgs_np, gm_vds_np, gm1_true_np = build_gm_targets(df, gm_n_vds_targets, gm_smoothing)
         if gm_vgs_min is not None or gm_vds_min > 0.0:
             window_mask = np.ones_like(gm_vgs_np, dtype=bool)
             if gm_vgs_min is not None:
@@ -451,7 +454,7 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
                       ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                       gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0,
                       smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0,
-                      gm1_auto_weight=False):
+                      gm1_auto_weight=False, gm_smoothing="savgol"):
     """Runs in its own process: train jointly on all quiescent points, evaluate + plot
     each in-sample, save the model. Independent of the LOO jobs -> safe to parallelize."""
     torch.set_num_threads(1)  # tiny model/data -> intra-op threading only adds overhead;
@@ -459,7 +462,7 @@ def run_full_fit_job(data, n_params, architecture, epochs, lr, gm1_weight,
     device = torch.device("cpu")
     keys = sorted(data.keys())
     tensors = build_tensors(data, device, ids_region_frac=ids_region_frac,
-                             gm_vgs_min=gm_vgs_min, gm_vds_min=gm_vds_min)
+                             gm_vgs_min=gm_vgs_min, gm_vds_min=gm_vds_min, gm_smoothing=gm_smoothing)
     qpoints = build_qpoint_tensors(data, keys, None, device, h_physics)
     for k in keys:
         tensors[k]["qpoint"] = qpoints[k]
@@ -495,7 +498,7 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
                  ids_relative_norm=False, gm1_relative_norm=False, relative_norm_floor_frac=0.1,
                  gm_vgs_min=None, gm_vds_min=0.0, weight_decay=0.0, smoothness_weight=0.0,
                  smoothness_relative=False, ipk_weight=0.0, vpk_weight=0.0, vpk_softmax_temp=30.0,
-                 gm1_auto_weight=False):
+                 gm1_auto_weight=False, gm_smoothing="savgol"):
     """Runs in its own process: train on the other 5 quiescent points, evaluate + plot the
     held-out one, save the model. Each held_out fold is fully independent of the others."""
     torch.set_num_threads(1)
@@ -503,7 +506,7 @@ def run_loo_job(held_out, data, n_params, architecture, epochs, lr, gm1_weight,
     keys = sorted(data.keys())
     train_keys = [k for k in keys if k != held_out]
     tensors = build_tensors(data, device, ids_region_frac=ids_region_frac,
-                             gm_vgs_min=gm_vgs_min, gm_vds_min=gm_vds_min)
+                             gm_vgs_min=gm_vgs_min, gm_vds_min=gm_vds_min, gm_smoothing=gm_smoothing)
     qpoints = build_qpoint_tensors(data, train_keys, held_out, device, h_physics,
                                     oracle_held_out=h_physics_oracle)
     for k, qp in qpoints.items():
@@ -603,6 +606,15 @@ def main():
                           "(Vds >= 0 always holds). Combined with --gm_vgs_min via logical AND, "
                           "e.g. --gm_vgs_min -3 --gm_vds_min 4 keeps only the gm1 window "
                           "Vgs >= -3V AND Vds >= 4V.")
+    ap.add_argument("--gm_smoothing", choices=GM_SMOOTHING_METHODS, default="savgol",
+                     help="How the gm1 (dIds/dVgs) training target is estimated from each real "
+                          "transfer curve (see signal_utils.gm_derivative). 'savgol' (default): "
+                          "the base transistor_modeling port -- SG pre-smooth, iterated np.gradient, "
+                          "SG post-smooth (poly=2). 'cascade': lighter -- per order, np.gradient -> "
+                          "median-3 despike -> SG(5, poly 3); tracks the real gm2/gm3 peak far "
+                          "better and does not shift it, at the cost of a little more ripple in "
+                          "the near-zero parts (for the gm1 target the two are ~identical wherever "
+                          "a real gm1 peak exists). 'none': raw iterated np.gradient, no filtering.")
     ap.add_argument("--weight_decay", type=float, default=0.0,
                      help="AdamW weight decay on H's own weights. 0.0 (default) makes AdamW "
                           "identical to plain Adam (fully backward compatible). Regularizes the "
@@ -712,7 +724,7 @@ def main():
                                  args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
                                  args.h_physics, args.seed, models_dir, plots_dir,
                                  args.ids_relative_norm, args.gm1_relative_norm, args.relative_norm_floor_frac,
-                                 args.gm_vgs_min, args.gm_vds_min, args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp, args.gm1_auto_weight)
+                                 args.gm_vgs_min, args.gm_vds_min, args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp, args.gm1_auto_weight, args.gm_smoothing)
         loo_futures = {ex.submit(run_loo_job, k, data, n_params, architecture, args.epochs, args.lr,
                                   args.gm1_weight, args.ids_region_weight, args.ids_region_frac,
                                   args.lbfgs_epochs, args.lbfgs_max_iter, args.h_hidden, args.h_layers,
@@ -721,7 +733,7 @@ def main():
                                   args.ids_relative_norm, args.gm1_relative_norm,
                                   args.relative_norm_floor_frac,
                                   args.gm_vgs_min, args.gm_vds_min,
-                                  args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp, args.gm1_auto_weight): k for k in keys}
+                                  args.weight_decay, args.smoothness_weight, args.smoothness_relative, args.ipk_weight, args.vpk_weight, args.vpk_softmax_temp, args.gm1_auto_weight, args.gm_smoothing): k for k in keys}
 
         full_errs_by_key, full_learned_gm1_weight = full_future.result()
         print("\n=== Full-fit sanity check (train on all 6, evaluate in-sample) ===")
@@ -768,6 +780,7 @@ def main():
         "relative_norm_floor_frac": args.relative_norm_floor_frac,
         "gm_vgs_min": args.gm_vgs_min,
         "gm_vds_min": args.gm_vds_min,
+        "gm_smoothing": args.gm_smoothing,
         "weight_decay": args.weight_decay,
         "smoothness_weight": args.smoothness_weight,
         "smoothness_relative": args.smoothness_relative,
