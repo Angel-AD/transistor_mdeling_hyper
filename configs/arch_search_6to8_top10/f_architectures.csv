@@ -1,0 +1,11 @@
+arch_hash,architecture,n_layers,n_neurons_total,n_params,tanh_only
+ca3c8cbc6e06,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,6,23,False
+e355ff8e8659,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,8,35,True
+3b01719ee4f3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,8,37,True
+ae4fca952029,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,8,31,False
+c15b75a3d4e0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,6,25,True
+dd45c43d3ca1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,8,35,False
+9ad2b34bb4b0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",2,8,35,False
+f035630540fb,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,8,37,False
+74baedf64c35,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",2,6,25,False
+ecb19f9ece54,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",2,7,30,False

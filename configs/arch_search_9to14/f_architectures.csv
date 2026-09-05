@@ -1,0 +1,620 @@
+arch_hash,architecture,n_layers,n_neurons_total,n_params,tanh_only
+c700f0d1742e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,9,37,True
+b98b112b2887,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",1,9,37,False
+0c0a24762eb1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",1,9,37,False
+34d82b50437f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,10,41,True
+fe6ac7ec2a86,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",1,10,41,False
+f8ca0426a716,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",1,10,41,False
+8219418cf274,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,11,45,True
+0ccea393a49e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",1,11,45,False
+04d4cc0f6970,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",1,11,45,False
+04bd7b1a3f17,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,12,49,True
+9e97453395dc,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",1,12,49,False
+9d937e79f6a9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",1,12,49,False
+274eb7e16336,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,13,53,True
+b3d64303f341,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""swish"", ""linear""]]",1,13,53,False
+0a3a19d0376a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear"", ""linear""]]",1,13,53,False
+0a2d7dbd60ee,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,14,57,True
+3c37bc0f2f70,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""swish"", ""linear""]]",1,14,57,False
+1988e3220b8d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear"", ""linear""]]",1,14,57,False
+5cf3b268c908,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,9,35,True
+228b7eef39e5,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,9,35,False
+05254292a2ed,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,9,35,False
+affad4b642a0,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,10,39,True
+8f0184247886,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,10,39,False
+bc8c95216ff4,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,10,39,False
+e8e25eea5555,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,11,43,True
+3fffbfeb09a0,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,11,43,False
+f23ff0091d4c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,11,43,False
+212a7dfa284d,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,12,47,True
+716c648d1b92,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",2,12,47,False
+89bae8d24bec,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",2,12,47,False
+b95027969962,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,51,True
+5a4ab50ffa19,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",2,13,51,False
+92ba0479644e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",2,13,51,False
+08a3328cf36f,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,55,True
+469217079d59,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",2,14,55,False
+0312153a5c1d,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",2,14,55,False
+edeb99aa6321,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,9,40,True
+0a38ceb97bf6,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,9,40,False
+9b2c288e48bc,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,9,40,False
+b07a6a571f17,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,10,45,True
+04e834da63cd,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,10,45,False
+16ad13f7c05c,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,10,45,False
+53d7e67b7ff7,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,11,50,True
+016435bf68d8,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,11,50,False
+680b0a56dba3,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,11,50,False
+f1a7a85c3d19,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,12,55,True
+41f964b488f6,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,12,55,False
+d38aeae85dc5,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,12,55,False
+7b9893491237,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,60,True
+745952066d94,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",2,13,60,False
+a400a7966ac9,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",2,13,60,False
+d5343d4660df,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,65,True
+48603f8cbf29,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",2,14,65,False
+608efeef84ce,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",2,14,65,False
+222c0e05afca,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,9,43,True
+64c3ed052ddb,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,9,43,False
+8fab8fc4c831,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,9,43,False
+f1ef1fe15e75,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,10,49,True
+f4811adb72b4,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,10,49,False
+cc1cdbb4b29f,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,10,49,False
+a9b8753650c8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,11,55,True
+5272500164e2,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,11,55,False
+f0eee49a3fd2,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,11,55,False
+bfc4e78d09ec,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,12,61,True
+49fcb54562e4,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,12,61,False
+2e7506b0377a,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,12,61,False
+8174b525604e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,67,True
+bca74cf7e578,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,13,67,False
+fe3e3a40a879,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,13,67,False
+81d7b30f1572,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,73,True
+15980ec748ab,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",2,14,73,False
+755547801f3e,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",2,14,73,False
+0312181c37f7,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,9,44,True
+db24ce137075,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,9,44,False
+2dded26a32b2,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,9,44,False
+2c0da24ecc98,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,10,51,True
+f303de96ebea,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,10,51,False
+201e82981e3e,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,10,51,False
+86058723eeee,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,11,58,True
+615d3009f8b2,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,11,58,False
+221e7209133f,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,11,58,False
+66c73b8fec99,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,12,65,True
+1387d8537417,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,12,65,False
+630f0e22f931,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,12,65,False
+dc9d032f8d13,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,72,True
+a2c72a2b5f5d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,13,72,False
+6d6e5e059295,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,13,72,False
+51ea219f47c5,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,79,True
+d4fd9da037b3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,14,79,False
+3300f60c972f,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,14,79,False
+eb37836190f9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",2,9,43,True
+ea5538380569,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",2,9,43,False
+a549919606d8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,9,43,False
+38ed0afd4833,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,10,51,True
+df5ca2d359ee,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,10,51,False
+995c2ff1fdbf,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,10,51,False
+da2f251dcaeb,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,11,59,True
+0f59f68c9c7a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,11,59,False
+ef3ce278804a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,11,59,False
+74673dc34444,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,12,67,True
+08c21391ce12,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,12,67,False
+f8e5a539e17d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,12,67,False
+84ec1a6b7d53,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,75,True
+1f53e77ac345,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,13,75,False
+c3475b9fe09a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,13,75,False
+e01ddd815f13,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,83,True
+ce23d1411e52,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",2,14,83,False
+8d3b5956f546,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",2,14,83,False
+58321944b597,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,9,40,True
+2b5d7ce524db,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",2,9,40,False
+2a897aa358db,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,9,40,False
+fb22cda21f95,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",2,10,49,True
+c8c0d689edf9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",2,10,49,False
+572c7e527e9d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,10,49,False
+deb5b0d4f4ba,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,11,58,True
+ae9277a82dd6,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,11,58,False
+0635ccb90527,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,11,58,False
+c645d021b4b8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,12,67,True
+036497a46998,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,12,67,False
+47c9cd5a78cf,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,12,67,False
+768fd5f062dd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,76,True
+b617d7fc3e83,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,13,76,False
+bf973d85f7ea,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,13,76,False
+1f4ae738c214,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,85,True
+82e331ac3490,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,14,85,False
+6b6a51b6e812,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,14,85,False
+06d92afece8f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,10,45,True
+6ebc868993f6,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",2,10,45,False
+3b088ed4769e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,10,45,False
+7e472f749bfa,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",2,11,55,True
+a7121f378edc,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",2,11,55,False
+2eb75f207e23,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,11,55,False
+d95d2b629fdb,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,12,65,True
+e6713fb26037,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,12,65,False
+9c1bb4b6d4ba,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,12,65,False
+e86c4d08de0d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,75,True
+f7a54a0e43a1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,13,75,False
+9e14b69ceeea,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,13,75,False
+8a9f25448d12,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,85,True
+6a9850cbf87a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",2,14,85,False
+9b65558a68fd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,14,85,False
+c9c12d20f2ed,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,11,50,True
+f5c262689692,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",2,11,50,False
+4f2892712c26,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,11,50,False
+f4b6d212f3ef,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",2,12,61,True
+d8d761e3d085,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",2,12,61,False
+c937c87aa6f4,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,12,61,False
+b5014b6a3189,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,13,72,True
+18c3d21f62fe,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,13,72,False
+e85110ecdb7e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,13,72,False
+6b47cde8efe3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,83,True
+ecf5484e8582,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,14,83,False
+66427bf627fb,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",2,14,83,False
+71c402904900,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,12,55,True
+f4e04f650531,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,12,55,False
+1f507c700ec3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh""]]",2,12,55,False
+1b3bdfe0cf45,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",2,13,67,True
+bc89c16f1191,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,13,67,False
+d32256d5e5de,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,13,67,False
+031b7b3c602d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,14,79,True
+f966081c604f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,14,79,False
+6478e9342979,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,14,79,False
+461094f700e5,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,13,60,True
+c444af6b4224,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,13,60,False
+8659c7d83cb2,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh""]]",2,13,60,False
+1490e1faa5f9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",2,14,73,True
+67ecc0cb5c3c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,14,73,False
+60b4e5b6cc1d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",2,14,73,False
+0c955bf183ce,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,14,65,True
+7756f03e94e7,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,14,65,False
+ef9ab8cad8bd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh""]]",2,14,65,False
+a51e1f7a2efd,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,9,33,True
+872fef5358f2,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,9,33,False
+f04374d5a3fd,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,9,33,False
+97913c2e349e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,10,37,True
+7a4f40227777,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,10,37,False
+bca368909c3f,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,10,37,False
+cdb9f73c602f,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,41,True
+c097e2bcf0d8,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,11,41,False
+465322b1a78c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,11,41,False
+d6ecd8753bd1,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,45,True
+6b3f4928d8c3,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,12,45,False
+72d108992908,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,12,45,False
+9e7cf2531f15,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,49,True
+052896323a4c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,13,49,False
+f6b4c87e1a13,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,13,49,False
+e7c86c39bb17,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,53,True
+cb493dc6f18f,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""]]",3,14,53,False
+70861ba0a7ad,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""]]",3,14,53,False
+8cb65b783776,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,9,36,True
+fb391666007c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,9,36,False
+9d22fe24b963,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,10,41,True
+a19081fbfe27,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,10,41,False
+d3d445ee22b0,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,10,41,False
+2151a523604e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,46,True
+f96deff6bbe4,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,11,46,False
+1c5ec7516bd9,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,11,46,False
+0ea374b0a261,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,51,True
+37a7ca0ad586,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,12,51,False
+cb9c14ebcf84,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,51,False
+b1b370408781,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,56,True
+8e6b60623e72,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,13,56,False
+d0452a8810f7,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,13,56,False
+b7cb2cf77f1e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,61,True
+1b6a7346beeb,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,14,61,False
+03911013bb7d,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,14,61,False
+eaef3294f5e8,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,9,37,True
+05bfc8683e8a,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,9,37,False
+5cbb984d991c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,10,43,True
+3604a9cdf662,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,10,43,False
+b1c013799bb8,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,49,True
+d93e77761d0c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,49,False
+838db5d87a47,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,11,49,False
+b3823b0f07f2,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,55,True
+42ea5b5ee505,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,12,55,False
+fe888aa82635,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,55,False
+29516ae8f403,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,61,True
+74be0bd7797f,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,13,61,False
+d6e6403439d8,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,61,False
+70f553573c5e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,67,True
+f2b98283aa90,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,14,67,False
+d48825d8d62d,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,14,67,False
+e2a507e1a3d0,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,9,36,True
+c4e71e95b498,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,9,36,False
+c49496e6b0fd,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,9,36,False
+4d2f6fa9c1b0,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,10,43,True
+ed5e398177f4,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,10,43,False
+59cb8ba969d7,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,10,43,False
+2bffe6d5a121,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,50,True
+8c827b0384fb,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,50,False
+058cdf5e64c3,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,50,False
+2760ee17e9d7,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,57,True
+80e1cd5dc210,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,57,False
+05387c768a71,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,57,False
+8d0a006dc274,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,64,True
+20942fa3b104,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,13,64,False
+6cc4592fb2cf,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,64,False
+b21a5c5e0d2f,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,71,True
+58b331fbc8fe,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,71,False
+3d99d11a2277,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,71,False
+22cd94ace61d,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,10,41,True
+bf751faa09c6,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,10,41,False
+02d913504d7c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,10,41,False
+fe56b2da3305,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,11,49,True
+15d181d2ec05,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,11,49,False
+6764e992b5bb,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,11,49,False
+16ee0c60fe76,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,57,True
+88b7d752f8f0,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,57,False
+f0c09d9b361f,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,57,False
+a2a7de3bcd95,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,65,True
+8590028ad880,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,65,False
+df32f4244d41,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,65,False
+c1caebad7ce5,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,73,True
+a27f4ec797cc,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,73,False
+17a99548ce97,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,73,False
+37f53a6a8fcd,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,46,True
+032da148af50,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,11,46,False
+6d4aee3e8061,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,11,46,False
+c6b5bf7b98e3,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,12,55,True
+478eff183000,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,12,55,False
+d46311b046c3,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,12,55,False
+a146ddce284c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,64,True
+08f5a4065e65,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,64,False
+88b2388c8f45,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,64,False
+de3587cce562,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,73,True
+d5d63e575165,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,73,False
+2808e6c3cfeb,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,73,False
+f978148ef8a1,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,51,True
+56f7c25766bb,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,12,51,False
+2d7fe90907ed,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,12,51,False
+47487a97b72e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,13,61,True
+a47181210dc8,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,61,False
+0dd036c4dfd7,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,13,61,False
+1dea81ad1a0e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,71,True
+e2e0872aef5b,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,71,False
+ee8831e0330a,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,71,False
+a6b96ca32f43,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,56,True
+32b94695c4a4,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,13,56,False
+2d9aceaed127,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,13,56,False
+8fc8ee81cb0c,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,67,True
+edc1657b3bb1,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,67,False
+0bed9f414be3,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,14,67,False
+a8beb75d9fda,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,61,True
+fdd0edd2aecd,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,14,61,False
+cbf503aefd3a,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh""]]",3,14,61,False
+aad40450285a,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,9,34,True
+d2ce363d8a21,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,9,34,False
+4c88ffb9541c,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,10,38,True
+fedbc9e50e1f,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,10,38,False
+997821a8bb4c,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,10,38,False
+6502ac8c86d5,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,42,True
+4e3937cf1a72,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,11,42,False
+443e8f7a1a1d,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,11,42,False
+f1fddfe4c8a1,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,46,True
+1de8da94f698,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,12,46,False
+c70a5ab6d6a1,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,46,False
+015bc3aeff45,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,50,True
+14c6309a28f2,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,13,50,False
+37a7e12babbe,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,13,50,False
+4ae60476a2a9,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,54,True
+ad0ab863935f,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,14,54,False
+bbc380ec1989,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,14,54,False
+d50dba1734ea,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,9,37,True
+076c539c6a85,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,9,37,False
+e93a3a1e6730,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,10,42,True
+bfa5bb7040b2,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,10,42,False
+32a74d58a8b4,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,47,True
+278f146268fc,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,47,False
+4ca6eed81ab1,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,11,47,False
+a4bda233d48a,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,52,True
+752bfc66bf8d,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,12,52,False
+408e09c652e6,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,52,False
+f83867786200,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,57,True
+8e39c0e67f4f,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,13,57,False
+443a451914f2,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,57,False
+5778d26a9329,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,62,True
+0ef8bfb78794,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,14,62,False
+d834aebc589a,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,14,62,False
+9b68a9025c2e,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,9,38,True
+a3d83951ae90,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,9,38,False
+54c5403f882e,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,10,44,True
+75ea3b4bea37,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,10,44,False
+1d441bd48b8a,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,50,True
+2464bafa9380,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,50,False
+fafe1687fe13,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,56,True
+42237c84f654,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,56,False
+d76642eba2ec,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,56,False
+7356f9421d46,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,62,True
+4cd4b2ca1e84,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,13,62,False
+687d9fb2d0d2,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,62,False
+89ad76c4d5a6,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,68,True
+1b0f7e0e72e0,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,68,False
+5ed17b989e73,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,68,False
+a33a37c95d16,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,10,44,True
+24453f035278,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,10,44,False
+26ebdc54ef3e,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,10,44,False
+853b53e12409,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,11,51,True
+47daaf8b9b9f,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,11,51,False
+2cd268adb31c,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,11,51,False
+ce9ad8db1cd2,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,58,True
+bbd84a194f6f,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,58,False
+b9d8e78171ab,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,58,False
+d6c742dd4304,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,65,True
+3f94ce285d58,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,65,False
+0c82f68a3cbd,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,65,False
+614e784e39fe,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,72,True
+fa8471f47bd6,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,72,False
+c20b0811b7d4,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,72,False
+eaa1d111ff1d,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,50,True
+e0ef30cdb906,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,11,50,False
+0853fb5d5414,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,11,50,False
+313084827c23,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,12,58,True
+23169164bee6,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,12,58,False
+924038e5d2da,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,12,58,False
+0413159ceb3c,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,66,True
+d380b1427642,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,66,False
+2a7c0d7fecd5,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,66,False
+d5e7faa85a31,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,74,True
+ae012b52ae12,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,74,False
+73c99bcae949,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,74,False
+ee764fa632d4,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,56,True
+2919f942a277,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,12,56,False
+0a576be9c153,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,12,56,False
+f8394a69a256,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,13,65,True
+ccc7cb4f6e47,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,65,False
+f7b1b29c0812,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,13,65,False
+627db354b8c0,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,74,True
+ab9eabba0aaf,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,74,False
+710feb446ed3,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,74,False
+60f91efcd3df,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,62,True
+3675e4a83329,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,13,62,False
+c852a2931eed,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,13,62,False
+2012104d61bf,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,72,True
+9fcb26b13800,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,72,False
+48ee38b0e5bc,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,14,72,False
+ba46b1943ebf,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,68,True
+92d6a9ee0463,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,14,68,False
+b23e40e6572e,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,14,68,False
+d29fd7720b92,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,9,35,True
+7f8925cb6dbd,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,9,35,False
+a3564c47281a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,10,39,True
+569242d919e4,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,10,39,False
+c5596e73f434,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,43,True
+82b99e7ae846,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,43,False
+c578b19b151c,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,11,43,False
+4757ec116ab4,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,47,True
+5795f0f33b5b,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,12,47,False
+0d97aff8c515,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,47,False
+84a374017c19,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,51,True
+999503f41bde,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,13,51,False
+faf7101fa90e,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,51,False
+f1998b0d222d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,55,True
+38158c1973ea,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""]]",3,14,55,False
+09127087b886,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""]]",3,14,55,False
+ebaaaccfc1d7,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,9,38,True
+58dee088d012,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,9,38,False
+f9f089f1e69f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,10,43,True
+e015197a4e4e,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,10,43,False
+f4b2b27c8ec3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,48,True
+2de6e8c4494c,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,48,False
+5c081b376997,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,53,True
+690826f5b130,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,53,False
+119c66f94e71,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,53,False
+f6e84c421c86,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,58,True
+1b19974276c1,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,13,58,False
+684da524814c,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,58,False
+148c302afa7d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,63,True
+d7ce24b0f851,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,63,False
+911e16b317d3,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,63,False
+2c1c44746199,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,10,45,True
+ccd52d59f55d,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,10,45,False
+45685fc772ac,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,11,51,True
+28096fead87a,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,11,51,False
+39a364151d61,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,57,True
+f81bbbe735f0,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,57,False
+9ef245de71a7,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,63,True
+7253fb1de69d,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,63,False
+5b31cb70cab7,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,63,False
+6969536f3888,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,69,True
+4eb29bf99607,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,69,False
+ea8b4f3c490d,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,69,False
+8ec5bcabe4e3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,52,True
+ea4880a1f970,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,11,52,False
+f7d66c36cf39,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,11,52,False
+2687a6fd9018,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,12,59,True
+f25d9aa9ec83,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,12,59,False
+741cc8076930,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,12,59,False
+4da0efdd8bb0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,66,True
+f880e977c486,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,66,False
+5dd73b03664c,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,66,False
+e0f99a3ff9ad,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,73,True
+fed152878e11,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,73,False
+3c41bba548d4,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,73,False
+cc9afbdd3252,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,59,True
+08b87bc5b883,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,12,59,False
+e976852e9fd4,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,12,59,False
+824f2e122986,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,13,67,True
+efe1e31a70e7,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,67,False
+961a0aeeb191,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,13,67,False
+814f98cde67b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,75,True
+340e2e6ee1eb,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,75,False
+223bcb11be3d,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,75,False
+f92c3acddee5,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,66,True
+f3ec680444fe,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,13,66,False
+905f9ed3b4e5,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,13,66,False
+c617950a2a54,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,75,True
+74df6c349b91,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,75,False
+f0d04bcdf5b0,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,14,75,False
+eb2682a7ff23,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,73,True
+7dd554c4c9d2,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,14,73,False
+d1f335e9ae56,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,14,73,False
+5e7d8411cb15,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,9,36,True
+29d8739a9ec0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,9,36,False
+66fb43709aa1,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,9,36,False
+05abc1296a75,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,10,40,True
+fff18a4fe94f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,10,40,False
+40f612770a19,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,10,40,False
+577e8866f486,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,11,44,True
+555da405ed20,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,44,False
+0056492ace2f,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,11,44,False
+dade793c85ee,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,48,True
+861aef468373,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,48,False
+ca3454d99c26,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,12,48,False
+0009ebb877a5,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,52,True
+b35f1ef1da9f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,13,52,False
+1a040afc0933,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,52,False
+d86eeec9bbca,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,56,True
+28417e9b4511,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,56,False
+89896da1e5c2,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,56,False
+6cdea11b1b06,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,10,44,True
+66cee15acecb,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,10,44,False
+123e6a5e57a2,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,10,44,False
+f0bbbff51d02,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,11,49,True
+5df263420c6c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,11,49,False
+85deac6bd19c,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,11,49,False
+3b29b2484e61,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,54,True
+ce47e233b1bf,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,54,False
+67f3ac6898d4,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,54,False
+0d1f4727b385,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,59,True
+f0b614497df9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,59,False
+e6704db3a460,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,59,False
+3a43d08998af,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,64,True
+2c2407f44b93,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,64,False
+0725daab7fc1,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,64,False
+1ac524cea3d1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,52,True
+4ceb0780474c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,11,52,False
+2206d8f54b32,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,11,52,False
+618fc1147f5e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,12,58,True
+65b25f04fc4b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,12,58,False
+3d24af481023,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,12,58,False
+030a0a762753,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,64,True
+176dcf64ef7b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,64,False
+626bd15e65f3,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,64,False
+935b8c16e712,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,70,True
+1c20d0a60757,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,70,False
+57210db3fd08,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,70,False
+31f2d533bccb,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,60,True
+f1f7faa24190,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,12,60,False
+134c915cf9ef,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,12,60,False
+25dcc25cb7e7,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,13,67,True
+c6e29d73e847,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,67,False
+9493caaf775e,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,13,67,False
+a522cf8817b1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,74,True
+230ac89e2277,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,74,False
+f1f007d6c3c2,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,74,False
+e5d77ebc4874,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,68,True
+5350ef136e30,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,13,68,False
+b72bc28a6c55,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,13,68,False
+54bc9611a67c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,76,True
+c7b8472973e6,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,76,False
+00b4a264248c,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,14,76,False
+f4c928be5f30,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,76,True
+b347ff7b9d79,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,14,76,False
+3abe90243f7c,"[[""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,14,76,False
+9d634c185a6a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,10,41,True
+68833fe9ccac,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,10,41,False
+462eac318b9b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,10,41,False
+76e3d5092498,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,11,45,True
+f6b3b1f2b9ff,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,11,45,False
+7eaa54d900df,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,11,45,False
+0a9be431085d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,12,49,True
+144669ef0318,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,49,False
+39c1424a383c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,12,49,False
+9235ded44ef7,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,53,True
+6a3d8388aecf,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,53,False
+0bdb5a5b28a7,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,13,53,False
+8a9941b01abd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,57,True
+2b32c7fd2d62,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",3,14,57,False
+e914fadb6d47,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,57,False
+5c2931483ba5,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,50,True
+65a1f0d389bf,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,11,50,False
+1020aaa6a3d4,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,11,50,False
+31588bfebb47,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,12,55,True
+de6a9511434a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,12,55,False
+83b888fa615a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,12,55,False
+bc5bef39a2b4,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,60,True
+4a1065578496,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,60,False
+debc41bd53ed,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,60,False
+f4def719e649,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,65,True
+2f5300f5c8bd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,65,False
+655adc6aa8a5,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,65,False
+ddd87f0208e6,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,59,True
+431061c885a9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,12,59,False
+c6700081ee88,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,12,59,False
+28c0599e3e79,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,13,65,True
+31d3a8f3f9b1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,65,False
+21ab1e8be9fa,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,65,False
+52a2e014ff74,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,71,True
+583ee5bfe35c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,71,False
+466920e83392,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,71,False
+3cd3d0bc44b0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,68,True
+402b52d1517d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,13,68,False
+649797997e14,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,13,68,False
+a55679e50d6a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,75,True
+a79169efbb8b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,75,False
+fcbbf1ecb0e2,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""]]",3,14,75,False
+d1b04461e8fd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,77,True
+ad9cc3b5a505,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",3,14,77,False
+c01b76d3d12a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,14,77,False
+445b1feafd34,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,46,True
+c49c6e638fbd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,46,False
+43998a46269c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,11,46,False
+3dcb303c776a,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,12,50,True
+2694f124e0b8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,12,50,False
+b7042dd9ae73,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,12,50,False
+eec7011dbf63,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,13,54,True
+5de2928a7cd9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,54,False
+7eeab05b0f71,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,13,54,False
+a4dbbb206617,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,58,True
+9b3aa12ff19b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,58,False
+31950127d211,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""]]",3,14,58,False
+2a9512c4177c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,56,True
+7d2219836d09,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,12,56,False
+76dfa9bda7f1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,12,56,False
+816313e2b788,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,13,61,True
+3b8910a35da9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,61,False
+e886d79bfa6d,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,13,61,False
+087a40efaa19,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,66,True
+f48634112d6c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,66,False
+d9b462eaa51b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,66,False
+c1e83d5cdb8f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,66,True
+f04c7f8a6202,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,13,66,False
+659d60640f53,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,13,66,False
+b95923eb78bc,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,72,True
+d9a14ee366e9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,72,False
+d59613f9a43f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,72,False
+d79db03df991,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,76,True
+8e571ddfa5ef,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,14,76,False
+dfd143cb0b17,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",3,14,76,False
+2d4ae8a45003,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,51,True
+75bcb4bc9dea,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,51,False
+05dc7e811ec5,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,12,51,False
+e6c715b57ef8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,13,55,True
+dbfdbcb4b4cd,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,13,55,False
+87d04d9889e2,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,13,55,False
+1225e42688a2,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",3,14,59,True
+916b57ab5a25,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,59,False
+fc2ea8609c6b,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",3,14,59,False
+6e5ae9633ed3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,62,True
+81e5f274adaa,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,13,62,False
+c463290a8039,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,13,62,False
+cfb26071817c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,67,True
+5f142a9f5360,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,67,False
+af4eeb319336,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",3,14,67,False
+dac024e5a3ba,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,73,True
+d7afd944e20f,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,14,73,False
+a3dca9add8d8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,14,73,False
+269441aa2121,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,56,True
+ddc104305ee6,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,56,False
+8522953ca3c8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,13,56,False
+f5c475f40a80,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,14,60,True
+8c932088612e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,14,60,False
+fe72ff30efd4,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""swish""]]",3,14,60,False
+07428aca9fe0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,68,True
+9b311cff4941,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,14,68,False
+e3ebef6a71d8,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,14,68,False
+d1f7a9c0025e,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,61,True
+d619ec9d301c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""swish"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,61,False
+c9a9681976d2,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish"", ""linear"", ""linear""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,14,61,False

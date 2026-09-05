@@ -62,6 +62,9 @@ Training and result-aggregation are deliberately TWO SEPARATE steps/subcommands,
            combos finish -- it is a fast, read-only aggregation pass, no PyTorch/training
            involved. model_dir in the output CSV is just each combo's directory name (relative
            to --models_dir), so the CSV stays correct regardless of where --models_dir lives.
+           With --with_gm it ALSO reloads each combo's full-fit model to score gm1/gm2/gm3
+           (and combined_gm) rel-RMSE into the same CSV, cached per combo in
+           <combo_id>/gm_metrics.json -- that opt-in pass does load PyTorch + the CSVs.
 
 Usage:
   # 1. generate the two config files (1000 f-architectures, 4 H sizes)
@@ -91,6 +94,7 @@ import torch.nn as nn
 
 from data_loader import load_all
 from model import HyperNetwork, main_net_forward, main_net_n_params
+from signal_utils import smooth_derivative
 from train_loo import build_tensors as build_tensors_full, train_hypernet, evaluate as evaluate_original
 
 
@@ -136,6 +140,12 @@ RESULTS_CSV_FIELDS = [
     "delta_base_epochs", "delta_base_lr", "delta_base_lbfgs_epochs", "seed",
     "n_params_f", "h_hidden", "h_layers",
     "loo_mean_rel_rmse", "loo_n_points", "loo_worst_rel_rmse", "full_fit_mean_rel_rmse",
+    # gm1/gm2/gm3 = 1st/2nd/3rd d/dVgs of Ids; combined_gm = equal-weight mean of the three.
+    # gm*_rel_rmse: full-fit model, filled by `populate --with_gm` (blank otherwise).
+    # loo_gm*_rel_rmse: held-out folds -- native in metrics.json when `run` produced this combo,
+    # else filled by `populate --with_loo_gm` (top-N retrain). See run_gm_metrics_pass / run_loo_gm_pass.
+    "gm1_rel_rmse", "gm2_rel_rmse", "gm3_rel_rmse", "combined_gm_rel_rmse",
+    "loo_gm1_rel_rmse", "loo_gm2_rel_rmse", "loo_gm3_rel_rmse", "loo_combined_gm_rel_rmse",
     "loo_per_point_json", "model_dir", "status", "error_msg", "wall_time_seconds", "timestamp",
 ]
 
@@ -171,17 +181,28 @@ FALLBACK_ACTIVATION_WEIGHTS = (0.6, 0.2, 0.2)  # (tanh, swish, linear) -- used o
 # still-unique architectures instead of duplicates.
 
 
-def enumerate_size_tuples(min_layers, max_layers, min_neurons, max_neurons):
+def enumerate_size_tuples(min_layers, max_layers, min_neurons, max_neurons,
+                           min_neurons_total=None, max_neurons_total=None):
     """Every distinct (n1, n2, ..., n_k) neuron-count-per-layer combination, k from min_layers
     to max_layers, order-sensitive (layer 1's size differs positionally from layer 2's -- a
     network is sequential, so (6,10) and (10,6) are genuinely different architectures).
     Returned GROUPED by depth ({n_layers: [tuple, ...]}), not flattened -- the possible-tuple
     count grows combinatorially with depth (11 for 1 layer, 121 for 2, 1331 for 3 at the
     default 6-16 neuron range), so a flat pooled shuffle statistically drowns the shallow
-    depths out; callers should sample depth-stratified (see round_robin_size_tuples)."""
+    depths out; callers should sample depth-stratified (see round_robin_size_tuples).
+
+    min_neurons/max_neurons bound EACH layer; the optional min_neurons_total/max_neurons_total
+    bound sum(tuple) (the whole main-net's neuron count). Depths left with no surviving tuple
+    are dropped from the returned dict."""
+    lo = min_neurons_total if min_neurons_total is not None else 0
+    hi = max_neurons_total if max_neurons_total is not None else float("inf")
     sizes = list(range(min_neurons, max_neurons + 1))
-    return {n_layers: list(itertools.product(sizes, repeat=n_layers))
-            for n_layers in range(min_layers, max_layers + 1)}
+    out = {}
+    for n_layers in range(min_layers, max_layers + 1):
+        tuples = [t for t in itertools.product(sizes, repeat=n_layers) if lo <= sum(t) <= hi]
+        if tuples:
+            out[n_layers] = tuples
+    return out
 
 
 def round_robin_size_tuples(by_depth, rng):
@@ -219,9 +240,42 @@ def build_arch(sizes, tanh_only, activation_weights=None):
     return arch
 
 
+def enumerate_f_architectures(min_layers, max_layers, min_neurons, max_neurons,
+                               min_neurons_total, max_neurons_total,
+                               weight_variants=(DEFAULT_ACTIVATION_WEIGHTS, FALLBACK_ACTIVATION_WEIGHTS)):
+    """FULL enumeration (no sampling, no `n`): every surviving size-tuple emitted as 100% tanh
+    plus one arch per triple in weight_variants, collapsed by arch_hash. Small layers whose
+    composition is identical across variants (e.g. a 3-neuron layer is (2,1,0) under both
+    (0.6,0.3,0.1) and (0.6,0.2,0.2)) therefore contribute only their distinct architectures --
+    so you get "<=3 per size-tuple", not exactly 3. Deterministic, order = shallow depths then
+    lexicographic size-tuple."""
+    by_depth = enumerate_size_tuples(min_layers, max_layers, min_neurons, max_neurons,
+                                      min_neurons_total, max_neurons_total)
+    rows, seen = [], set()
+
+    def add(arch):
+        h = arch_hash_of(arch)
+        if h in seen:
+            return
+        seen.add(h)
+        rows.append(dict(
+            arch_hash=h, architecture=json.dumps(arch), n_layers=len(arch),
+            n_neurons_total=sum(len(layer) for layer in arch), n_params=main_net_n_params(arch),
+            tanh_only=all(a == "tanh" for layer in arch for a in layer),
+        ))
+
+    for depth in sorted(by_depth):
+        for sizes in sorted(by_depth[depth]):
+            add(build_arch(sizes, tanh_only=True))
+            for w in weight_variants:
+                add(build_arch(sizes, tanh_only=False, activation_weights=w))
+    return rows
+
+
 def generate_f_architectures(n, n_tanh_only, seed, min_layers=1, max_layers=3, min_neurons=6,
                               max_neurons=16, primary_weights=DEFAULT_ACTIVATION_WEIGHTS,
-                              fallback_weights=FALLBACK_ACTIVATION_WEIGHTS):
+                              fallback_weights=FALLBACK_ACTIVATION_WEIGHTS,
+                              min_neurons_total=None, max_neurons_total=None):
     """Builds n architectures (n_tanh_only of them 100% tanh, the rest mixed) via depth-
     stratified round-robin over every distinct layer-size combination (see
     enumerate_size_tuples/round_robin_size_tuples) -- NOT independent random sampling with
@@ -237,7 +291,8 @@ def generate_f_architectures(n, n_tanh_only, seed, min_layers=1, max_layers=3, m
     weight triple gives the SAME sizes a different, still-deterministic composition, so this
     yields genuinely new architectures rather than duplicates."""
     rng = np.random.default_rng(seed)
-    by_depth = enumerate_size_tuples(min_layers, max_layers, min_neurons, max_neurons)
+    by_depth = enumerate_size_tuples(min_layers, max_layers, min_neurons, max_neurons,
+                                      min_neurons_total, max_neurons_total)
 
     rows, seen = [], set()
 
@@ -316,11 +371,22 @@ def read_csv(path):
 
 
 def cmd_generate(args):
-    f_rows = generate_f_architectures(args.n_f_architectures, args.n_tanh_only, args.seed,
-                                       args.min_layers, args.max_layers, args.min_neurons, args.max_neurons)
+    if args.enumerate_all:
+        f_rows = enumerate_f_architectures(args.min_layers, args.max_layers, args.min_neurons,
+                                            args.max_neurons, args.min_neurons_total,
+                                            args.max_neurons_total)
+        if not f_rows:
+            raise SystemExit("no size-tuples satisfy the given per-layer / total constraints")
+    else:
+        f_rows = generate_f_architectures(args.n_f_architectures, args.n_tanh_only, args.seed,
+                                           args.min_layers, args.max_layers, args.min_neurons,
+                                           args.max_neurons, min_neurons_total=args.min_neurons_total,
+                                           max_neurons_total=args.max_neurons_total)
     write_csv(args.f_csv, f_rows, F_ARCH_CSV_FIELDS)
     n_tanh_actual = sum(1 for r in f_rows if r["tanh_only"])
-    print(f"Wrote {len(f_rows)} f-architectures to {args.f_csv} ({n_tanh_actual} tanh-only)")
+    tot = [r["n_neurons_total"] for r in f_rows]
+    print(f"Wrote {len(f_rows)} f-architectures to {args.f_csv} ({n_tanh_actual} tanh-only, "
+          f"{len(f_rows) - n_tanh_actual} mixed; total-neuron range {min(tot)}-{max(tot)})")
 
     h_rows = generate_h_architectures(args.h_base_hidden, args.h_base_layers)
     write_csv(args.h_csv, h_rows, H_ARCH_CSV_FIELDS)
@@ -448,6 +514,17 @@ def evaluate_delta(hcomp, theta_base, key, tensors, architecture):
 
 # ============================== fold-level jobs (max parallelism grain) ==============================
 
+def _fold_gm_safe(data, held_out, net, architecture, theta_base=None):
+    """gm1/gm2/gm3 (+combined) rel-RMSE on the HELD-OUT point for a just-trained fold model,
+    computed while the model is still in memory (Option C -- see the gm-metrics section).
+    Returns the 4-field dict or None; never raises (a gm hiccup must not fail a training fold)."""
+    try:
+        predict = _predict_ids_fn(net, architecture, held_out[0], held_out[1], theta_base)
+        return _gm_rel_rmses_one_qpoint(data[held_out], predict, GM_N_VDS_TARGETS)
+    except Exception:
+        return None
+
+
 def run_fold_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
                        held_out, data, epochs, lr, gm1_weight, lbfgs_epochs, seed, weight_decay):
     torch.set_num_threads(1)
@@ -460,7 +537,8 @@ def run_fold_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden
                                h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
                                weight_decay=weight_decay)
     err, pred = evaluate_original(hyper, held_out, tensors, architecture, device)
-    return f_arch_hash, h_arch_hash, "original", held_out, err, pred
+    gm = _fold_gm_safe(data, held_out, hyper, architecture)
+    return f_arch_hash, h_arch_hash, "original", held_out, err, pred, gm
 
 
 def run_fold_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
@@ -477,7 +555,8 @@ def run_fold_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h
                          lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=200,
                          h_hidden=h_hidden, h_layers=h_layers, seed=seed, weight_decay=weight_decay)
     err, pred = evaluate_delta(hcomp, theta_base, held_out, tensors, architecture)
-    return f_arch_hash, h_arch_hash, "delta", held_out, err, pred
+    gm = _fold_gm_safe(data, held_out, hcomp, architecture, theta_base)
+    return f_arch_hash, h_arch_hash, "delta", held_out, err, pred, gm
 
 
 def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
@@ -638,10 +717,14 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
 
         per_combo_errs = {}
         per_combo_preds = {}
+        per_combo_gm = {}  # (f_arch, h_arch, strategy) -> {held_out: 4-field gm dict}
         for fut in as_completed(fold_futures):
-            f_arch_hash, h_arch_hash, strategy, held_out, err, pred = fut.result()
-            per_combo_errs.setdefault((f_arch_hash, h_arch_hash, strategy), {})[held_out] = err
-            per_combo_preds.setdefault((f_arch_hash, h_arch_hash, strategy), {})[held_out] = pred
+            f_arch_hash, h_arch_hash, strategy, held_out, err, pred, gm = fut.result()
+            key = (f_arch_hash, h_arch_hash, strategy)
+            per_combo_errs.setdefault(key, {})[held_out] = err
+            per_combo_preds.setdefault(key, {})[held_out] = pred
+            if gm is not None:
+                per_combo_gm.setdefault(key, {})[held_out] = gm
         print(f"  {len(fold_futures)} LOO folds done ({time.time()-t0:.0f}s)")
 
     # --- Step 2b: derive "ensemble" LOO scores wherever a (f_arch,h_arch) pair has BOTH
@@ -653,11 +736,16 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
         key_delta = (f_arch_hash, h_arch_hash, "delta")
         if key_orig in per_combo_preds and key_delta in per_combo_preds:
             shared = set(per_combo_preds[key_orig]) & set(per_combo_preds[key_delta])
-            ens_errs = {}
+            ens_errs, ens_gm = {}, {}
             for held_out in shared:
                 pred_ens = (per_combo_preds[key_orig][held_out] + per_combo_preds[key_delta][held_out]) / 2.0
                 ens_errs[held_out] = rel_rmse(pred_ens, data[held_out]["Ids"].values.astype(float))
+                gm_ens = _gm_rel_rmses_from_pred(data[held_out], pred_ens, GM_N_VDS_TARGETS)
+                if gm_ens is not None:
+                    ens_gm[held_out] = gm_ens
             per_combo_errs[(f_arch_hash, h_arch_hash, "ensemble")] = ens_errs
+            if ens_gm:
+                per_combo_gm[(f_arch_hash, h_arch_hash, "ensemble")] = ens_gm
 
     # --- Step 3: full-fit job per combo (for the saved/reconstructable model) ---
     fullfit_by_combo = {}
@@ -745,6 +833,9 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             loo_n_points=len(errs),
             loo_worst_rel_rmse=float(np.max(errs)) if errs else None,
             full_fit_mean_rel_rmse=full_fit_mean,
+            # LOO gm1/gm2/gm3 (+combined), mean over held-out folds -- {} (-> blank) if no fold
+            # scored gm. Computed at fold time while each fold model was still in memory.
+            **_mean_gm_over_points(per_combo_gm.get(key, {}), prefix="loo_"),
             loo_per_point=({qtag_local(*k): v for k, v in errs_by_point.items()}),
             status=status if err_msg is None else "error",
             error_msg=err_msg or "",
@@ -795,6 +886,9 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             loo_n_points=len(errs),
             loo_worst_rel_rmse=float(np.max(errs)) if errs else None,
             full_fit_mean_rel_rmse=ensemble_fullfit_mean.get((f_arch_hash, h_arch_hash), float("nan")),
+            # LOO gm of the ENSEMBLE = gm of the averaged (original+delta) held-out Ids curve
+            # per fold, mean over folds (Step 2b). {} -> blank if unavailable.
+            **_mean_gm_over_points(per_combo_gm.get(key, {}), prefix="loo_"),
             loo_per_point=({qtag_local(*k): v for k, v in errs_by_point.items()}),
             status="ok" if len(errs_by_point) == len(other_keys) else "incomplete",
             error_msg="",
@@ -878,36 +972,447 @@ def qtag_local(vgsq, vdsq):
     return f"Vgsq{vgsq:g}_Vdsq{vdsq:g}"
 
 
+# ====================== gm1/gm2/gm3 metrics (optional `populate --with_gm` add-on) ======================
+#
+# The sweep's metrics.json only scores Ids (rel_rmse of predicted vs measured drain current).
+# `populate --with_gm` ALSO reloads each combo's saved FULL-FIT model and scores the
+# transconductance derivatives against the measured data:
+#     gm1 = dIds/dVgs,  gm2 = d2Ids/dVgs2,  gm3 = d3Ids/dVgs3
+# plus combined_gm = equal-weight mean of the three per-order rel-RMSEs.
+#
+# Only the full-fit model is scored -- it's the only set of weights saved per combo (the LOO
+# folds aren't kept). Derivatives use the SAME Savitzky-Golay estimator as the gm1 training
+# target (signal_utils.smooth_derivative), taken on transfer curves (Ids vs Vgs at ~fixed Vds)
+# assembled exactly like train_loo.build_gm_targets. The model is evaluated at the SAME
+# (Vgs, Vds) sample points as the measurement, so measured/predicted derivatives share one grid
+# and rel_rmse compares equal-length vectors. Each per-order rel-RMSE is concatenated across the
+# transfer curves, then averaged over the 6 quiescent points (same as full_fit_mean_rel_rmse).
+#
+# Each combo's result is cached in --models_dir/<combo_id>/gm_metrics.json so re-running populate
+# is cheap; pass --recompute_gm to force a refresh. gm2/gm3 in particular are noisier than gm1
+# (2nd/3rd numerical derivative of ~35 matched points), so treat them as coarse indicators.
+
+GM_METRICS_FIELDS = ["gm1_rel_rmse", "gm2_rel_rmse", "gm3_rel_rmse", "combined_gm_rel_rmse"]
+# LOO counterparts (held-out points, mean over folds). Written natively into metrics.json at
+# fold time by `run` (Option C), and/or into a loo_gm_metrics.json sidecar by
+# `populate --with_loo_gm` retraining the folds of the top-N combos (Option A).
+LOO_GM_METRICS_FIELDS = ["loo_" + f for f in GM_METRICS_FIELDS]
+GM_N_VDS_TARGETS = 4  # transfer curves per quiescent point for the gm derivatives (fold-time default)
+
+_GM_DATA = None  # per-process measurement-data cache, set by _gm_worker_init
+
+
+def _gm_worker_init(csv_dir):
+    global _GM_DATA
+    torch.set_num_threads(1)
+    _GM_DATA = load_all(csv_dir)
+
+
+def _assemble_transfer_curves(df, n_vds_targets):
+    """One (vgs, vds, ids, row_pos) transfer curve (Ids vs Vgs at ~fixed Vds) per target Vds --
+    nearest real point per TN group, same construction as train_loo.build_gm_targets. Arrays
+    are Vgs-sorted; values are raw (volts / amps). row_pos = positional index into df of each
+    picked point, so a prediction array aligned 1:1 with df rows (a saved fold pred, an
+    averaged ensemble pred) can be sampled at exactly the same points."""
+    df = df.reset_index(drop=True)  # -> label == position, so idxmin() gives a positional index
+    groups = [g.sort_values("Vds") for _, g in df.groupby("TN")]
+    vds_lo, vds_hi = df["Vds"].min(), df["Vds"].max()
+    curves = []
+    for t_vds in np.linspace(vds_lo, vds_hi, n_vds_targets):
+        vgs_pts, vds_pts, ids_pts, pos = [], [], [], []
+        for g in groups:
+            idx = (g["Vds"] - t_vds).abs().idxmin()
+            vgs_pts.append(g.loc[idx, "Vgs"])
+            vds_pts.append(g.loc[idx, "Vds"])
+            ids_pts.append(g.loc[idx, "Ids"])
+            pos.append(int(idx))
+        vgs_pts, vds_pts, ids_pts, pos = (np.array(vgs_pts), np.array(vds_pts),
+                                          np.array(ids_pts), np.array(pos))
+        order = np.argsort(vgs_pts)
+        curves.append((vgs_pts[order], vds_pts[order], ids_pts[order], pos[order]))
+    return curves
+
+
+def _gm_rel_rmses_core(df, n_vds_targets, ids_model_getter):
+    """ids_model_getter(vgs_pts, vds_pts, row_pos) -> predicted Ids at those transfer-curve
+    points. Returns the 4 gm rel-RMSE fields for ONE quiescent point (each per-order value
+    concatenated across all transfer curves), or None if no curve had enough points."""
+    true_c, pred_c = {1: [], 2: [], 3: []}, {1: [], 2: [], 3: []}
+    for vgs_pts, vds_pts, ids_pts, pos in _assemble_transfer_curves(df, n_vds_targets):
+        if len(vgs_pts) < 5:
+            continue
+        ids_model = np.asarray(ids_model_getter(vgs_pts, vds_pts, pos), dtype=float)
+        for o in (1, 2, 3):
+            true_c[o].append(smooth_derivative(vgs_pts, ids_pts, order=o))
+            pred_c[o].append(smooth_derivative(vgs_pts, ids_model, order=o))
+    if not true_c[1]:
+        return None
+    out = {}
+    for o in (1, 2, 3):
+        out[f"gm{o}_rel_rmse"] = rel_rmse(np.concatenate(pred_c[o]), np.concatenate(true_c[o]))
+    out["combined_gm_rel_rmse"] = float(np.mean([out[f"gm{o}_rel_rmse"] for o in (1, 2, 3)]))
+    return out
+
+
+def _gm_rel_rmses_one_qpoint(df, predict_ids, n_vds_targets):
+    """gm rel-RMSEs for ONE quiescent point from a model callable: predict_ids(vgs_raw_np,
+    vds_raw_np) -> ids_np (raw volts in, amps out)."""
+    return _gm_rel_rmses_core(df, n_vds_targets, lambda vg, vd, pos: predict_ids(vg, vd))
+
+
+def _gm_rel_rmses_from_pred(df, ids_pred_full, n_vds_targets):
+    """gm rel-RMSEs for ONE quiescent point from a prediction array aligned 1:1 with df rows
+    (a saved LOO fold prediction, or an averaged ensemble prediction) -- no model needed."""
+    ids_pred_full = np.asarray(ids_pred_full, dtype=float)
+    return _gm_rel_rmses_core(df, n_vds_targets, lambda vg, vd, pos: ids_pred_full[pos])
+
+
+def _mean_gm_over_points(gm_by_point, prefix=""):
+    """gm_by_point: {held_out_key: <4-field gm dict>}. -> {prefix+field: mean over points},
+    or {} if empty. NaNs propagate (np.mean of a NaN-containing list is NaN)."""
+    if not gm_by_point:
+        return {}
+    vals = list(gm_by_point.values())
+    return {prefix + f: float(np.mean([v[f] for v in vals])) for f in GM_METRICS_FIELDS}
+
+
+def _predict_ids_fn(net, architecture, vgsq, vdsq, theta_base=None):
+    """Ids(vgs_raw_np, vds_raw_np) -> ids_np for a fixed quiescent point, from a HyperNetwork
+    (or H_comp + theta_base) already in memory. Same normalization as the training code."""
+    net.eval()
+    qpoint = torch.tensor([vgsq / VGS_SCALE, vdsq / VDS_SCALE], dtype=torch.float32)
+
+    def predict(vgs_raw_np, vds_raw_np):
+        vgs_t = torch.tensor(np.asarray(vgs_raw_np) / VGS_SCALE, dtype=torch.float32)
+        vds_t = torch.tensor(np.asarray(vds_raw_np) / VDS_SCALE, dtype=torch.float32)
+        with torch.no_grad():
+            theta = net(qpoint)
+            if theta_base is not None:
+                theta = theta_base + theta
+            return main_net_forward(theta, vgs_t, vds_t, architecture).numpy()
+    return predict
+
+
+def _make_combo_predictor(models_dir, combo_id):
+    """-> predict(vgsq, vdsq, vgs_raw_np, vds_raw_np) -> ids_np for this combo's FULL-FIT model.
+    'ensemble' combos have no weights of their own -- they recurse into their two source combos
+    (from metrics.json) and average the two Ids predictions, exactly as the sweep scored them."""
+    d = os.path.join(models_dir, combo_id)
+    metrics = json.load(open(os.path.join(d, "metrics.json")))
+    strategy = metrics["strategy"]
+
+    if strategy == "ensemble":
+        orig_pred = _make_combo_predictor(models_dir, metrics["source_original_combo_id"])
+        delta_pred = _make_combo_predictor(models_dir, metrics["source_delta_combo_id"])
+        return lambda vgsq, vdsq, vgs, vds: 0.5 * (orig_pred(vgsq, vdsq, vgs, vds)
+                                                    + delta_pred(vgsq, vdsq, vgs, vds))
+
+    meta = json.load(open(os.path.join(d, "meta.json")))
+    architecture = meta["architecture"]
+    n_params = int(meta["n_params"])
+    net = HyperNetwork(n_params, hidden=int(meta["h_hidden"]),
+                        n_hidden_layers=int(meta["h_layers"]), n_in=2)
+    theta_base = None
+    if strategy == "original":
+        net.load_state_dict(torch.load(os.path.join(d, "hyper_full.pt"), map_location="cpu",
+                                        weights_only=True))
+    else:  # delta: theta_total = theta_base + H_comp(qpoint)
+        net.load_state_dict(torch.load(os.path.join(d, "hcomp_full.pt"), map_location="cpu",
+                                        weights_only=True))
+        theta_base = torch.load(os.path.join(d, "theta_base.pt"), map_location="cpu",
+                                 weights_only=True)
+    net.eval()
+
+    def predict(vgsq, vdsq, vgs_raw_np, vds_raw_np):
+        qpoint = torch.tensor([vgsq / VGS_SCALE, vdsq / VDS_SCALE], dtype=torch.float32)
+        vgs_t = torch.tensor(np.asarray(vgs_raw_np) / VGS_SCALE, dtype=torch.float32)
+        vds_t = torch.tensor(np.asarray(vds_raw_np) / VDS_SCALE, dtype=torch.float32)
+        with torch.no_grad():
+            theta = net(qpoint)
+            if theta_base is not None:
+                theta = theta_base + theta
+            return main_net_forward(theta, vgs_t, vds_t, architecture).numpy()
+    return predict
+
+
+def _gm_metrics_for_combo(models_dir, combo_id, data, n_vds_targets):
+    """Mean over the 6 quiescent points of each per-order gm rel-RMSE. NaN if no point scored."""
+    predict = _make_combo_predictor(models_dir, combo_id)
+    per_q = []
+    for (vgsq, vdsq), df in data.items():
+        r = _gm_rel_rmses_one_qpoint(
+            df, lambda vg, vd, _q=(vgsq, vdsq): predict(_q[0], _q[1], vg, vd), n_vds_targets)
+        if r is not None:
+            per_q.append(r)
+    return {f: (float(np.mean([r[f] for r in per_q])) if per_q else float("nan"))
+            for f in GM_METRICS_FIELDS}
+
+
+def _gm_job(task):
+    models_dir, combo_id, n_vds_targets = task
+    try:
+        agg = _gm_metrics_for_combo(models_dir, combo_id, _GM_DATA, n_vds_targets)
+        with open(os.path.join(models_dir, combo_id, "gm_metrics.json"), "w") as f:
+            json.dump(agg, f, indent=2)
+        return combo_id, None
+    except Exception as e:  # one bad combo shouldn't abort the whole pass
+        return combo_id, repr(e)
+
+
+def run_gm_metrics_pass(models_dir, combo_ids, csv_dir, workers, n_vds_targets, recompute):
+    """Fill --models_dir/<combo_id>/gm_metrics.json for every combo that lacks one (or all, with
+    recompute=True). This is the ONLY part of `populate` that touches PyTorch / the measurement
+    data -- guarded behind --with_gm precisely so the plain `populate` stays torch-free."""
+    todo = [(models_dir, c, n_vds_targets) for c in combo_ids
+            if recompute or not os.path.exists(os.path.join(models_dir, c, "gm_metrics.json"))]
+    n_cached = len(combo_ids) - len(todo)
+    if not todo:
+        print(f"  gm metrics: all {len(combo_ids)} combos already cached "
+              f"(pass --recompute_gm to refresh)")
+        return
+    print(f"  gm metrics: computing {len(todo)} combos ({n_cached} cached) with {workers} worker(s)...")
+    t0, n_err, shown = time.time(), 0, 0
+    def report(i, cid, err):
+        nonlocal n_err, shown
+        if err:
+            n_err += 1
+            if shown < 10:
+                print(f"    ERROR [{cid}]: {err}")
+                shown += 1
+        if i % 500 == 0:
+            print(f"    {i}/{len(todo)} ({time.time() - t0:.0f}s)")
+    if workers <= 1:
+        _gm_worker_init(csv_dir)
+        for i, task in enumerate(todo, 1):
+            cid, err = _gm_job(task)
+            report(i, cid, err)
+    else:
+        with ProcessPoolExecutor(max_workers=workers, initializer=_gm_worker_init,
+                                  initargs=(csv_dir,)) as ex:
+            futs = [ex.submit(_gm_job, task) for task in todo]
+            for i, fut in enumerate(as_completed(futs), 1):
+                cid, err = fut.result()
+                report(i, cid, err)
+    print(f"  gm metrics: done ({time.time() - t0:.0f}s, {n_err} error(s))")
+
+
+# ---------------------- LOO gm (Option A: retrain the top-N combos' folds) ----------------------
+#
+# The sweep never saved the per-fold LOO models (only the full-fit weights), so LOO gm cannot be
+# recovered from disk -- the folds have to be retrained. `populate --with_loo_gm` does that for
+# the top-N combos by loo_mean_rel_rmse only (retraining all 12000 would ~= re-running the sweep),
+# reusing run_fold_original / run_fold_delta with each combo's own saved hyperparameters. The
+# per-order rel-RMSE on each held-out point is averaged over folds into loo_gm*_rel_rmse and
+# cached in <combo_id>/loo_gm_metrics.json. 'ensemble' targets retrain BOTH their source combos'
+# folds and score gm on the averaged held-out Ids curve (same as the sweep's ensemble Ids score).
+
+def _loo_gm_fold_spec(models_dir, combo_id, m):
+    """Everything run_fold_{original,delta} needs to re-run ONE fold of `combo_id` exactly as
+    `run` did: architecture from meta.json, hyperparameters from its own metrics.json (`m`)."""
+    meta = json.load(open(os.path.join(models_dir, combo_id, "meta.json")))
+    strat = m["strategy"]
+    spec = dict(kind=strat, architecture=meta["architecture"], n_params=int(meta["n_params"]),
+                h_hidden=int(meta["h_hidden"]), h_layers=int(meta["h_layers"]),
+                f_arch_hash=m["f_arch_hash"], h_arch_hash=m["h_arch_hash"],
+                epochs=int(m["epochs"]), lr=float(m["lr"]), gm1_weight=float(m["gm1_weight"]),
+                lbfgs_epochs=int(m["lbfgs_epochs"]), seed=int(m["seed"]),
+                weight_decay=float(m["weight_decay"]))
+    if strat == "delta":
+        spec["delta_reg_weight"] = float(m["delta_reg_weight"])
+        spec["theta_base_path"] = os.path.join(models_dir, combo_id, "theta_base.pt")
+    return spec
+
+
+def _loo_gm_worker_init(csv_dir):
+    _worker_warmup()       # same AdamW-import warm-up the sweep's fold pool uses
+    _gm_worker_init(csv_dir)
+
+
+def _loo_gm_fold_job(spec):
+    """Retrain one fold and return (weights_combo_id, held_out, held_out_pred, gm_dict_or_None)."""
+    held_out = tuple(spec["held_out"])
+    if spec["kind"] == "original":
+        res = run_fold_original(spec["f_arch_hash"], spec["h_arch_hash"], spec["architecture"],
+                                 spec["n_params"], spec["h_hidden"], spec["h_layers"], held_out,
+                                 _GM_DATA, spec["epochs"], spec["lr"], spec["gm1_weight"],
+                                 spec["lbfgs_epochs"], spec["seed"], spec["weight_decay"])
+    else:
+        theta_base = torch.load(spec["theta_base_path"], map_location="cpu", weights_only=True)
+        res = run_fold_delta(spec["f_arch_hash"], spec["h_arch_hash"], spec["architecture"],
+                              spec["n_params"], spec["h_hidden"], spec["h_layers"], held_out,
+                              _GM_DATA, theta_base, spec["epochs"], spec["lr"], spec["gm1_weight"],
+                              spec["delta_reg_weight"], spec["lbfgs_epochs"], spec["seed"],
+                              spec["weight_decay"])
+    _, _, _, _, _err, pred, gm = res
+    return spec["weights_combo_id"], held_out, pred, gm
+
+
+def run_loo_gm_pass(models_dir, target_combo_ids, metrics_by_combo, csv_dir, workers,
+                     n_vds_targets, recompute):
+    """Retrain LOO folds for `target_combo_ids` and write each a <combo_id>/loo_gm_metrics.json."""
+    pending = [c for c in target_combo_ids
+               if recompute or not os.path.exists(os.path.join(models_dir, c, "loo_gm_metrics.json"))]
+    n_cached = len(target_combo_ids) - len(pending)
+    if not pending:
+        print(f"  loo gm: all {len(target_combo_ids)} target combos already cached "
+              f"(pass --recompute_gm to refresh)")
+        return
+
+    data = load_all(csv_dir)
+    keys = sorted(data.keys())
+    other_keys = [k for k in keys if k != BASE_KEY]
+
+    specs, target_plan, skipped = {}, {}, []
+    for c in pending:
+        m = metrics_by_combo[c]
+        try:
+            if m["strategy"] in ("original", "delta"):
+                base = _loo_gm_fold_spec(models_dir, c, m)
+                for ho in (keys if m["strategy"] == "original" else other_keys):
+                    specs.setdefault((c, ho), {**base, "weights_combo_id": c, "held_out": ho})
+                target_plan[c] = ("simple", c)
+            else:  # ensemble
+                oid, did = m["source_original_combo_id"], m["source_delta_combo_id"]
+                if oid not in metrics_by_combo or did not in metrics_by_combo:
+                    skipped.append((c, "source original/delta combo not present"))
+                    continue
+                ospec = _loo_gm_fold_spec(models_dir, oid, metrics_by_combo[oid])
+                dspec = _loo_gm_fold_spec(models_dir, did, metrics_by_combo[did])
+                for ho in keys:
+                    specs.setdefault((oid, ho), {**ospec, "weights_combo_id": oid, "held_out": ho})
+                for ho in other_keys:
+                    specs.setdefault((did, ho), {**dspec, "weights_combo_id": did, "held_out": ho})
+                target_plan[c] = ("ensemble", oid, did)
+        except Exception as e:
+            skipped.append((c, repr(e)))
+
+    spec_list = list(specs.values())
+    print(f"  loo gm: {len(target_plan)} target combos ({n_cached} cached, {len(skipped)} skipped) "
+          f"-> {len(spec_list)} fold retrains with {workers} worker(s)...")
+    t0 = time.time()
+    preds, gms = {}, {}
+
+    def stash(wc, ho, pred, gm):
+        preds.setdefault(wc, {})[ho] = pred
+        if gm is not None:
+            gms.setdefault(wc, {})[ho] = gm
+
+    if workers <= 1:
+        _loo_gm_worker_init(csv_dir)
+        for i, spec in enumerate(spec_list, 1):
+            wc, ho, pred, gm = _loo_gm_fold_job(spec)
+            stash(wc, ho, pred, gm)
+            if i % 50 == 0:
+                print(f"    {i}/{len(spec_list)} folds ({time.time() - t0:.0f}s)")
+    else:
+        with ProcessPoolExecutor(max_workers=workers, initializer=_loo_gm_worker_init,
+                                  initargs=(csv_dir,)) as ex:
+            futs = [ex.submit(_loo_gm_fold_job, spec) for spec in spec_list]
+            for i, fut in enumerate(as_completed(futs), 1):
+                wc, ho, pred, gm = fut.result()
+                stash(wc, ho, pred, gm)
+                if i % 50 == 0:
+                    print(f"    {i}/{len(spec_list)} folds ({time.time() - t0:.0f}s)")
+
+    n_written = 0
+    for c, plan in target_plan.items():
+        if plan[0] == "simple":
+            agg = _mean_gm_over_points(gms.get(plan[1], {}), prefix="loo_")
+        else:
+            _, oid, did = plan
+            po, pd = preds.get(oid, {}), preds.get(did, {})
+            per_point = {}
+            for ho in set(po) & set(pd):
+                r = _gm_rel_rmses_from_pred(data[ho], (po[ho] + pd[ho]) / 2.0, n_vds_targets)
+                if r is not None:
+                    per_point[ho] = r
+            agg = _mean_gm_over_points(per_point, prefix="loo_")
+        if agg:
+            with open(os.path.join(models_dir, c, "loo_gm_metrics.json"), "w") as f:
+                json.dump(agg, f, indent=2)
+            n_written += 1
+
+    print(f"  loo gm: done ({time.time() - t0:.0f}s) -- wrote {n_written} loo_gm_metrics.json")
+    for c, why in skipped[:10]:
+        print(f"    skipped {c}: {why}")
+
+
 def cmd_populate(args):
     """Read-only aggregation pass, no training: scans every --models_dir/<combo_id>/
     metrics.json it can find and (re)builds results.csv from scratch (one row per combo that
     has a metrics.json -- combos still mid-training or never started are simply absent, not
     an error). Safe to run at any time, as many times as you like, from any machine that has
-    --models_dir available (moved/copied or original location) -- it never touches PyTorch or
-    the measurement data, so it doesn't need --csv_dir at all."""
+    --models_dir available (moved/copied or original location).
+
+    Plain `populate` never touches PyTorch or the measurement data (doesn't need --csv_dir).
+    Two opt-in add-ons DO load torch + the CSVs (--csv_dir):
+      --with_gm      score gm1/gm2/gm3 (+combined_gm) rel-RMSE of each combo's FULL-FIT model,
+                     cached in <combo_id>/gm_metrics.json.
+      --with_loo_gm  the LOO counterpart (loo_gm*_rel_rmse) -- but the per-fold models weren't
+                     saved, so this RETRAINS the folds of the top --loo_gm_top combos (by
+                     loo_mean_rel_rmse) only, caching in <combo_id>/loo_gm_metrics.json.
+    Combos that `run` produced after this change already carry loo_gm* natively in metrics.json."""
     if not os.path.isdir(args.models_dir):
         print(f"{args.models_dir} does not exist -- nothing to populate.")
         return
 
     combo_dirs = sorted(d for d in os.listdir(args.models_dir)
                          if os.path.isdir(os.path.join(args.models_dir, d)))
-    rows = []
-    for combo_id in combo_dirs:
-        metrics_path = os.path.join(args.models_dir, combo_id, "metrics.json")
-        if not os.path.exists(metrics_path):
+    done, metrics_by_combo = [], {}
+    for c in combo_dirs:
+        mp = os.path.join(args.models_dir, c, "metrics.json")
+        if not os.path.exists(mp):
             continue  # directory exists (training started) but didn't finish -- not an error
-        with open(metrics_path) as f:
-            m = json.load(f)
+        with open(mp) as f:
+            metrics_by_combo[c] = json.load(f)
+        done.append(c)
+
+    if args.with_gm:
+        run_gm_metrics_pass(args.models_dir, done, args.csv_dir, args.gm_workers,
+                             args.gm_n_vds_targets, args.recompute_gm)
+
+    if args.with_loo_gm:
+        ranked = sorted((c for c in done
+                          if isinstance(metrics_by_combo[c].get("loo_mean_rel_rmse"), (int, float))),
+                         key=lambda c: metrics_by_combo[c]["loo_mean_rel_rmse"])
+        run_loo_gm_pass(args.models_dir, ranked[:args.loo_gm_top], metrics_by_combo, args.csv_dir,
+                         args.gm_workers, args.gm_n_vds_targets, args.recompute_gm)
+
+    def _clean(v):
+        return "" if v == "" or v is None or (isinstance(v, float) and np.isnan(v)) else v
+
+    rows = []
+    for combo_id in done:
+        m = metrics_by_combo[combo_id]
         row = {field: m.get(field, "") for field in RESULTS_CSV_FIELDS}
         row["loo_per_point_json"] = json.dumps(m.get("loo_per_point", {}))
         row["model_dir"] = combo_id  # relative to --models_dir itself -- always portable
+
+        for sidecar, sc_fields in (("gm_metrics.json", GM_METRICS_FIELDS),
+                                    ("loo_gm_metrics.json", LOO_GM_METRICS_FIELDS)):
+            sp = os.path.join(args.models_dir, combo_id, sidecar)
+            if os.path.exists(sp):
+                with open(sp) as f:
+                    sc = json.load(f)
+                for field in sc_fields:
+                    if field in sc:
+                        row[field] = _clean(sc[field])
+        for field in RESULTS_CSV_FIELDS:  # normalise NaN/None coming straight from metrics.json
+            row[field] = _clean(row[field])
         rows.append(row)
 
     dirname = os.path.dirname(os.path.abspath(args.results_csv))
     os.makedirs(dirname, exist_ok=True)
     write_csv(args.results_csv, rows, RESULTS_CSV_FIELDS)
+    n_gm = sum(1 for r in rows if r.get("gm1_rel_rmse") not in ("", None))
+    n_loo_gm = sum(1 for r in rows if r.get("loo_gm1_rel_rmse") not in ("", None))
     print(f"Scanned {len(combo_dirs)} combo directories under {args.models_dir} "
           f"({len(rows)} had a complete metrics.json) -> wrote {len(rows)} rows to {args.results_csv}")
+    print(f"  gm* (full-fit) filled for {n_gm}/{len(rows)} rows; "
+          f"loo_gm* (held-out) filled for {n_loo_gm}/{len(rows)} rows.")
+    if not n_gm:
+        print("  -> pass `--with_gm --csv_dir <dir>` for full-fit gm; "
+              "`--with_loo_gm` (retrains top-N folds) for LOO gm.")
 
 
 # ============================== CLI ==============================
@@ -919,12 +1424,24 @@ def main():
     g = sub.add_parser("generate", help="Write f_architectures.csv and h_architectures.csv")
     g.add_argument("--f_csv", default="configs/arch_search_1000/f_architectures.csv")
     g.add_argument("--h_csv", default="configs/arch_search_1000/h_architectures.csv")
-    g.add_argument("--n_f_architectures", type=int, default=1000)
-    g.add_argument("--n_tanh_only", type=int, default=150)
+    g.add_argument("--n_f_architectures", type=int, default=1000,
+                    help="Ignored with --enumerate_all.")
+    g.add_argument("--n_tanh_only", type=int, default=150,
+                    help="Ignored with --enumerate_all.")
     g.add_argument("--min_layers", type=int, default=1)
     g.add_argument("--max_layers", type=int, default=3)
-    g.add_argument("--min_neurons", type=int, default=6)
-    g.add_argument("--max_neurons", type=int, default=16)
+    g.add_argument("--min_neurons", type=int, default=6, help="Neurons per LAYER (lower bound).")
+    g.add_argument("--max_neurons", type=int, default=16, help="Neurons per LAYER (upper bound).")
+    g.add_argument("--min_neurons_total", type=int, default=None,
+                    help="Optional lower bound on the WHOLE main-net's neuron count (sum over layers).")
+    g.add_argument("--max_neurons_total", type=int, default=None,
+                    help="Optional upper bound on the whole main-net's neuron count.")
+    g.add_argument("--enumerate_all", action="store_true",
+                    help="Full enumeration instead of sampling: every size-tuple satisfying the "
+                         "per-layer AND total bounds, each as 100%% tanh + one arch per weight "
+                         f"triple {DEFAULT_ACTIVATION_WEIGHTS} and {FALLBACK_ACTIVATION_WEIGHTS} "
+                         "(collapsed by hash -- small layers give identical compositions). "
+                         "Ignores --n_f_architectures/--n_tanh_only/--seed.")
     g.add_argument("--h_base_hidden", type=int, default=32)
     g.add_argument("--h_base_layers", type=int, default=1)
     g.add_argument("--seed", type=int, default=42)
@@ -986,6 +1503,31 @@ def main():
                     default=r"C:\Users\acost\repos\transistor_modeling_hyper_outputs\results.csv",
                     help="Rewritten from scratch each time this is run (one row per combo with "
                          "a complete metrics.json). Defaults OUTSIDE this repo (sibling folder).")
+    p.add_argument("--with_gm", action="store_true",
+                    help="Also score gm1/gm2/gm3 (and combined_gm = equal-weight mean) rel-RMSE "
+                         "for each combo's FULL-FIT model, into the same results.csv. Reloads "
+                         "every saved model and reads the measurement CSVs (needs --csv_dir); "
+                         "per-combo results are cached in <combo_id>/gm_metrics.json.")
+    p.add_argument("--with_loo_gm", action="store_true",
+                    help="Fill the loo_gm* columns (held-out folds). The fold models weren't "
+                         "saved, so this RETRAINS the folds of the top --loo_gm_top combos only "
+                         "(by loo_mean_rel_rmse), caching in <combo_id>/loo_gm_metrics.json. "
+                         "Needs --csv_dir. Combos trained after this feature already have loo_gm* "
+                         "natively in metrics.json.")
+    p.add_argument("--loo_gm_top", type=int, default=50,
+                    help="--with_loo_gm: how many combos (best loo_mean_rel_rmse first) to "
+                         "retrain folds for. Retraining all of them would ~= re-running the sweep.")
+    p.add_argument("--csv_dir", default=r"C:\Users\acost\repos\csvs",
+                    help="Measurement CSVs, used only by --with_gm / --with_loo_gm.")
+    p.add_argument("--gm_workers", type=int, default=8,
+                    help="--with_gm / --with_loo_gm parallelism (ProcessPoolExecutor). "
+                         "1 = in-process, no pool.")
+    p.add_argument("--gm_n_vds_targets", type=int, default=GM_N_VDS_TARGETS,
+                    help="Transfer curves (Ids vs Vgs at ~fixed Vds) per quiescent point to build "
+                         "the gm derivatives on. Matches build_gm_targets' default.")
+    p.add_argument("--recompute_gm", action="store_true",
+                    help="Recompute every <combo_id>/gm_metrics.json and loo_gm_metrics.json "
+                         "instead of reusing cached ones.")
     p.set_defaults(func=cmd_populate)
 
     args = ap.parse_args()

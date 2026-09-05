@@ -1,0 +1,21 @@
+arch_hash,architecture,n_layers,n_neurons_total,n_params,tanh_only
+ca3c8cbc6e06,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,6,23,False
+e355ff8e8659,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,8,35,True
+3b01719ee4f3,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""]]",2,8,37,True
+ae4fca952029,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",3,8,31,False
+c15b75a3d4e0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,6,25,True
+dd45c43d3ca1,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""linear""], [""tanh"", ""tanh""]]",2,8,35,False
+9ad2b34bb4b0,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""], [""tanh"", ""tanh""]]",2,8,35,False
+f035630540fb,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""tanh"", ""swish""]]",2,8,37,False
+74baedf64c35,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",2,6,25,False
+ecb19f9ece54,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""]]",2,7,30,False
+dfe31f906644,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",2,7,30,True
+09ce7a62c79e,"[[""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,8,31,True
+48c51060fd0e,"[[""tanh"", ""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,8,30,True
+5ef03222416f,"[[""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",2,7,31,False
+a4624186c423,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,8,33,True
+bfc849f508e6,"[[""tanh"", ""tanh""], [""tanh"", ""tanh""], [""tanh"", ""tanh"", ""tanh""]]",3,7,25,True
+38279752f267,"[[""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh""], [""tanh"", ""tanh""]]",3,7,26,False
+0cce37d01da9,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish"", ""swish""]]",1,6,25,False
+a1d76d23c82c,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""swish""], [""tanh"", ""tanh"", ""swish""]]",2,8,37,False
+9b20c5238869,"[[""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh"", ""tanh""]]",1,6,25,True
