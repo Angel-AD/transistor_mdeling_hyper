@@ -23,7 +23,7 @@ from data_loader import load_all
 from model import HyperNetwork, main_net_forward, main_net_n_params, ARCHITECTURES
 from physics_features import extract_angelov_features, predict_physics_features, _transfer_curve
 from plotting import qtag, build_iv_curves, plot_iv_grid, build_html_report
-from signal_utils import gm_derivative, GM_SMOOTHING_METHODS
+from signal_utils import gm_derivative, GM_SMOOTHING_METHODS, gm_vds_target_list, GM_VDS_STEP
 
 VGS_SCALE = 4.0
 VDS_SCALE = 45.0
@@ -84,7 +84,7 @@ def build_qpoint_tensors(data, train_keys, held_out, device, use_physics, oracle
     return out
 
 
-def build_gm_targets(df, n_vds_targets=4, gm_smoothing="savgol"):
+def build_gm_targets(df, vds_step=GM_VDS_STEP, gm_smoothing="savgol"):
     """Ground-truth gm1 = dIds/dVgs, estimated the same way the base transistor_modeling
     repo does it (create_gms_for_train): build several real transfer curves (Ids vs Vgs
     at ~fixed Vds) and take a smoothed derivative along Vgs. Our raw data has no
@@ -93,12 +93,16 @@ def build_gm_targets(df, n_vds_targets=4, gm_smoothing="savgol"):
     per target Vds by taking each TN group's nearest-real-point match, exactly as already
     done there for the Ids-Vgs plot.
 
+    The target Vds levels are gm_vds_target_list(vds_lo, vds_hi, vds_step): multiples of
+    vds_step strictly inside the sweep (excludes Vds=0 and the compliance-limited top) --
+    [3, 6, ..., 27] for our 0-30 V data.
+
     gm_smoothing selects the derivative estimator (see signal_utils.gm_derivative):
     "savgol" (default, base-repo port), "cascade" (lighter, keeps gm2/gm3 peaks), "none".
     Returns (vgs_pts, vds_pts, gm1_true) raw 1-D numpy arrays, all real measured values."""
     groups = [g.sort_values("Vds") for _, g in df.groupby("TN")]
     vds_lo, vds_hi = df["Vds"].min(), df["Vds"].max()
-    target_vds_list = np.linspace(vds_lo, vds_hi, n_vds_targets)
+    target_vds_list = gm_vds_target_list(vds_lo, vds_hi, vds_step)
 
     vgs_all, vds_all, gm1_all = [], [], []
     for t_vds in target_vds_list:
@@ -120,7 +124,7 @@ def build_gm_targets(df, n_vds_targets=4, gm_smoothing="savgol"):
     return np.concatenate(vgs_all), np.concatenate(vds_all), np.concatenate(gm1_all)
 
 
-def build_tensors(data, device, gm_n_vds_targets=4, ids_region_frac=0.05,
+def build_tensors(data, device, gm_vds_step=GM_VDS_STEP, ids_region_frac=0.05,
                    gm_vgs_min=None, gm_vds_min=0.0, gm_smoothing="savgol"):
     """data: dict (Vgsq,Vdsq)->DataFrame -> dict (Vgsq,Vdsq)-> tensors.
 
@@ -151,7 +155,7 @@ def build_tensors(data, device, gm_n_vds_targets=4, ids_region_frac=0.05,
         low_current_np = (np.abs(ids_np) < ids_region_frac * np.abs(ids_np).max()).astype(np.float32)
         low_current_mask = torch.tensor(low_current_np, dtype=torch.float32, device=device)
 
-        gm_vgs_np, gm_vds_np, gm1_true_np = build_gm_targets(df, gm_n_vds_targets, gm_smoothing)
+        gm_vgs_np, gm_vds_np, gm1_true_np = build_gm_targets(df, gm_vds_step, gm_smoothing)
         if gm_vgs_min is not None or gm_vds_min > 0.0:
             window_mask = np.ones_like(gm_vgs_np, dtype=bool)
             if gm_vgs_min is not None:

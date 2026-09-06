@@ -16,7 +16,7 @@ matplotlib.use("Agg")  # no GUI backend -> avoids blocking/hanging on Windows
 import matplotlib.pyplot as plt
 import numpy as np
 
-from signal_utils import smooth_derivative
+from signal_utils import smooth_derivative, gm_vds_target_list
 
 
 def qtag(vgsq, vdsq):
@@ -60,9 +60,17 @@ def build_iv_curves(df, predict_fn, n_vgs_curves=5, n_vds_curves=4, n_fine=200):
                                 vds_pred=vds_fine, ids_pred=ids_pred))
 
     # --- Ids vs Vgs, for several fixed-Vds targets (nearest real point per TN group) ---
+    # Levels are drawn from gm_vds_target_list -- the SAME grid the gm1 training target
+    # uses (multiples of GM_VDS_STEP strictly inside the sweep) -- evenly subsampled to
+    # n_vds_curves, so the gm1/gm2/gm3 panels show curves the model was actually trained
+    # on, not the raw-range endpoints (Vds~0 knee, Vds~30 compliance).
     vds_lo, vds_hi = df["Vds"].min(), df["Vds"].max()
-    target_vds_list = (np.linspace(vds_lo, vds_hi, n_vds_curves) if n_vds_curves > 1
-                        else [0.5 * (vds_lo + vds_hi)])
+    grid = gm_vds_target_list(vds_lo, vds_hi)
+    if n_vds_curves > 1 and len(grid):
+        sel = np.unique(np.linspace(0, len(grid) - 1, min(n_vds_curves, len(grid))).round().astype(int))
+        target_vds_list = grid[sel]
+    else:
+        target_vds_list = [0.5 * (vds_lo + vds_hi)]
 
     vds_sweeps = []
     for t_vds in target_vds_list:

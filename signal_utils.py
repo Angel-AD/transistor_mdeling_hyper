@@ -16,6 +16,12 @@ from scipy.signal import savgol_filter, medfilt
 
 GM_SMOOTHING_METHODS = ("savgol", "cascade", "none")
 
+# Default spacing (V) of the Vds levels the gm transfer curves are built on -- see
+# gm_vds_target_list. Shared by train_loo.build_gm_targets (training target) and
+# architecture_search_strategies._assemble_transfer_curves (gm rel-RMSE metric) so the
+# two stay in lockstep.
+GM_VDS_STEP = 3.0
+
 
 def _odd_win(win, n, floor=3):
     """Largest odd window <= min(win, n), never below `floor`."""
@@ -23,6 +29,21 @@ def _odd_win(win, n, floor=3):
     if win % 2 == 0:
         win += 1
     return max(win, floor)
+
+
+def gm_vds_target_list(vds_lo, vds_hi, step=GM_VDS_STEP):
+    """Vds levels at which to assemble transfer curves (Ids vs Vgs at ~fixed Vds) for the
+    gm derivatives: the multiples of `step` strictly inside the measured sweep, i.e.
+    np.arange(0, vds_hi, step) with BOTH ends dropped -- Vds=0 (knee/bias region, gm barely
+    defined) and the topmost multiple (the sweep ceiling: compliance-limited, not every TN
+    group reaches it, so that curve is the noisiest). For our 0-30 V pulsed-IV data this is
+    [3, 6, 9, 12, 15, 18, 21, 24, 27]. Replaces the old np.linspace(vds_lo, vds_hi, n)
+    which included both endpoints."""
+    targets = np.arange(0.0, vds_hi, step)[1:-1]
+    targets = targets[targets > vds_lo]
+    if len(targets) == 0:  # sweep too short for even one interior multiple -> use the midpoint
+        return np.array([0.5 * (vds_lo + vds_hi)])
+    return targets
 
 
 def smooth_derivative(x, y, order=1, win_pre=11, win_post=13, poly=2):

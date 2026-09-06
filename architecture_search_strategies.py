@@ -94,7 +94,7 @@ import torch.nn as nn
 
 from data_loader import load_all
 from model import HyperNetwork, main_net_forward, main_net_n_params
-from signal_utils import smooth_derivative
+from signal_utils import smooth_derivative, gm_vds_target_list, GM_VDS_STEP
 from train_loo import build_tensors as build_tensors_full, train_hypernet, evaluate as evaluate_original
 
 
@@ -520,7 +520,7 @@ def _fold_gm_safe(data, held_out, net, architecture, theta_base=None):
     Returns the 4-field dict or None; never raises (a gm hiccup must not fail a training fold)."""
     try:
         predict = _predict_ids_fn(net, architecture, held_out[0], held_out[1], theta_base)
-        return _gm_rel_rmses_one_qpoint(data[held_out], predict, GM_N_VDS_TARGETS)
+        return _gm_rel_rmses_one_qpoint(data[held_out], predict, GM_VDS_STEP)
     except Exception:
         return None
 
@@ -740,7 +740,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             for held_out in shared:
                 pred_ens = (per_combo_preds[key_orig][held_out] + per_combo_preds[key_delta][held_out]) / 2.0
                 ens_errs[held_out] = rel_rmse(pred_ens, data[held_out]["Ids"].values.astype(float))
-                gm_ens = _gm_rel_rmses_from_pred(data[held_out], pred_ens, GM_N_VDS_TARGETS)
+                gm_ens = _gm_rel_rmses_from_pred(data[held_out], pred_ens, GM_VDS_STEP)
                 if gm_ens is not None:
                     ens_gm[held_out] = gm_ens
             per_combo_errs[(f_arch_hash, h_arch_hash, "ensemble")] = ens_errs
@@ -997,7 +997,8 @@ GM_METRICS_FIELDS = ["gm1_rel_rmse", "gm2_rel_rmse", "gm3_rel_rmse", "combined_g
 # fold time by `run` (Option C), and/or into a loo_gm_metrics.json sidecar by
 # `populate --with_loo_gm` retraining the folds of the top-N combos (Option A).
 LOO_GM_METRICS_FIELDS = ["loo_" + f for f in GM_METRICS_FIELDS]
-GM_N_VDS_TARGETS = 4  # transfer curves per quiescent point for the gm derivatives (fold-time default)
+# GM_VDS_STEP (spacing in V of the transfer-curve Vds levels) is imported from signal_utils
+# so this metric and the gm1 training target build their curves on the exact same grid.
 
 _GM_DATA = None  # per-process measurement-data cache, set by _gm_worker_init
 
@@ -1008,17 +1009,18 @@ def _gm_worker_init(csv_dir):
     _GM_DATA = load_all(csv_dir)
 
 
-def _assemble_transfer_curves(df, n_vds_targets):
+def _assemble_transfer_curves(df, vds_step=GM_VDS_STEP):
     """One (vgs, vds, ids, row_pos) transfer curve (Ids vs Vgs at ~fixed Vds) per target Vds --
-    nearest real point per TN group, same construction as train_loo.build_gm_targets. Arrays
-    are Vgs-sorted; values are raw (volts / amps). row_pos = positional index into df of each
-    picked point, so a prediction array aligned 1:1 with df rows (a saved fold pred, an
-    averaged ensemble pred) can be sampled at exactly the same points."""
+    nearest real point per TN group, same construction as train_loo.build_gm_targets (target
+    Vds levels = gm_vds_target_list(vds_lo, vds_hi, vds_step)). Arrays are Vgs-sorted; values
+    are raw (volts / amps). row_pos = positional index into df of each picked point, so a
+    prediction array aligned 1:1 with df rows (a saved fold pred, an averaged ensemble pred)
+    can be sampled at exactly the same points."""
     df = df.reset_index(drop=True)  # -> label == position, so idxmin() gives a positional index
     groups = [g.sort_values("Vds") for _, g in df.groupby("TN")]
     vds_lo, vds_hi = df["Vds"].min(), df["Vds"].max()
     curves = []
-    for t_vds in np.linspace(vds_lo, vds_hi, n_vds_targets):
+    for t_vds in gm_vds_target_list(vds_lo, vds_hi, vds_step):
         vgs_pts, vds_pts, ids_pts, pos = [], [], [], []
         for g in groups:
             idx = (g["Vds"] - t_vds).abs().idxmin()
@@ -1033,12 +1035,12 @@ def _assemble_transfer_curves(df, n_vds_targets):
     return curves
 
 
-def _gm_rel_rmses_core(df, n_vds_targets, ids_model_getter):
+def _gm_rel_rmses_core(df, vds_step, ids_model_getter):
     """ids_model_getter(vgs_pts, vds_pts, row_pos) -> predicted Ids at those transfer-curve
     points. Returns the 4 gm rel-RMSE fields for ONE quiescent point (each per-order value
     concatenated across all transfer curves), or None if no curve had enough points."""
     true_c, pred_c = {1: [], 2: [], 3: []}, {1: [], 2: [], 3: []}
-    for vgs_pts, vds_pts, ids_pts, pos in _assemble_transfer_curves(df, n_vds_targets):
+    for vgs_pts, vds_pts, ids_pts, pos in _assemble_transfer_curves(df, vds_step):
         if len(vgs_pts) < 5:
             continue
         ids_model = np.asarray(ids_model_getter(vgs_pts, vds_pts, pos), dtype=float)
@@ -1054,17 +1056,17 @@ def _gm_rel_rmses_core(df, n_vds_targets, ids_model_getter):
     return out
 
 
-def _gm_rel_rmses_one_qpoint(df, predict_ids, n_vds_targets):
+def _gm_rel_rmses_one_qpoint(df, predict_ids, vds_step):
     """gm rel-RMSEs for ONE quiescent point from a model callable: predict_ids(vgs_raw_np,
     vds_raw_np) -> ids_np (raw volts in, amps out)."""
-    return _gm_rel_rmses_core(df, n_vds_targets, lambda vg, vd, pos: predict_ids(vg, vd))
+    return _gm_rel_rmses_core(df, vds_step, lambda vg, vd, pos: predict_ids(vg, vd))
 
 
-def _gm_rel_rmses_from_pred(df, ids_pred_full, n_vds_targets):
+def _gm_rel_rmses_from_pred(df, ids_pred_full, vds_step):
     """gm rel-RMSEs for ONE quiescent point from a prediction array aligned 1:1 with df rows
     (a saved LOO fold prediction, or an averaged ensemble prediction) -- no model needed."""
     ids_pred_full = np.asarray(ids_pred_full, dtype=float)
-    return _gm_rel_rmses_core(df, n_vds_targets, lambda vg, vd, pos: ids_pred_full[pos])
+    return _gm_rel_rmses_core(df, vds_step, lambda vg, vd, pos: ids_pred_full[pos])
 
 
 def _mean_gm_over_points(gm_by_point, prefix=""):
@@ -1135,13 +1137,13 @@ def _make_combo_predictor(models_dir, combo_id):
     return predict
 
 
-def _gm_metrics_for_combo(models_dir, combo_id, data, n_vds_targets):
+def _gm_metrics_for_combo(models_dir, combo_id, data, vds_step):
     """Mean over the 6 quiescent points of each per-order gm rel-RMSE. NaN if no point scored."""
     predict = _make_combo_predictor(models_dir, combo_id)
     per_q = []
     for (vgsq, vdsq), df in data.items():
         r = _gm_rel_rmses_one_qpoint(
-            df, lambda vg, vd, _q=(vgsq, vdsq): predict(_q[0], _q[1], vg, vd), n_vds_targets)
+            df, lambda vg, vd, _q=(vgsq, vdsq): predict(_q[0], _q[1], vg, vd), vds_step)
         if r is not None:
             per_q.append(r)
     return {f: (float(np.mean([r[f] for r in per_q])) if per_q else float("nan"))
@@ -1149,9 +1151,9 @@ def _gm_metrics_for_combo(models_dir, combo_id, data, n_vds_targets):
 
 
 def _gm_job(task):
-    models_dir, combo_id, n_vds_targets = task
+    models_dir, combo_id, vds_step = task
     try:
-        agg = _gm_metrics_for_combo(models_dir, combo_id, _GM_DATA, n_vds_targets)
+        agg = _gm_metrics_for_combo(models_dir, combo_id, _GM_DATA, vds_step)
         with open(os.path.join(models_dir, combo_id, "gm_metrics.json"), "w") as f:
             json.dump(agg, f, indent=2)
         return combo_id, None
@@ -1159,11 +1161,11 @@ def _gm_job(task):
         return combo_id, repr(e)
 
 
-def run_gm_metrics_pass(models_dir, combo_ids, csv_dir, workers, n_vds_targets, recompute):
+def run_gm_metrics_pass(models_dir, combo_ids, csv_dir, workers, vds_step, recompute):
     """Fill --models_dir/<combo_id>/gm_metrics.json for every combo that lacks one (or all, with
     recompute=True). This is the ONLY part of `populate` that touches PyTorch / the measurement
     data -- guarded behind --with_gm precisely so the plain `populate` stays torch-free."""
-    todo = [(models_dir, c, n_vds_targets) for c in combo_ids
+    todo = [(models_dir, c, vds_step) for c in combo_ids
             if recompute or not os.path.exists(os.path.join(models_dir, c, "gm_metrics.json"))]
     n_cached = len(combo_ids) - len(todo)
     if not todo:
@@ -1248,7 +1250,7 @@ def _loo_gm_fold_job(spec):
 
 
 def run_loo_gm_pass(models_dir, target_combo_ids, metrics_by_combo, csv_dir, workers,
-                     n_vds_targets, recompute):
+                     vds_step, recompute):
     """Retrain LOO folds for `target_combo_ids` and write each a <combo_id>/loo_gm_metrics.json."""
     pending = [c for c in target_combo_ids
                if recompute or not os.path.exists(os.path.join(models_dir, c, "loo_gm_metrics.json"))]
@@ -1323,7 +1325,7 @@ def run_loo_gm_pass(models_dir, target_combo_ids, metrics_by_combo, csv_dir, wor
             po, pd = preds.get(oid, {}), preds.get(did, {})
             per_point = {}
             for ho in set(po) & set(pd):
-                r = _gm_rel_rmses_from_pred(data[ho], (po[ho] + pd[ho]) / 2.0, n_vds_targets)
+                r = _gm_rel_rmses_from_pred(data[ho], (po[ho] + pd[ho]) / 2.0, vds_step)
                 if r is not None:
                     per_point[ho] = r
             agg = _mean_gm_over_points(per_point, prefix="loo_")
@@ -1369,14 +1371,14 @@ def cmd_populate(args):
 
     if args.with_gm:
         run_gm_metrics_pass(args.models_dir, done, args.csv_dir, args.gm_workers,
-                             args.gm_n_vds_targets, args.recompute_gm)
+                             args.gm_vds_step, args.recompute_gm)
 
     if args.with_loo_gm:
         ranked = sorted((c for c in done
                           if isinstance(metrics_by_combo[c].get("loo_mean_rel_rmse"), (int, float))),
                          key=lambda c: metrics_by_combo[c]["loo_mean_rel_rmse"])
         run_loo_gm_pass(args.models_dir, ranked[:args.loo_gm_top], metrics_by_combo, args.csv_dir,
-                         args.gm_workers, args.gm_n_vds_targets, args.recompute_gm)
+                         args.gm_workers, args.gm_vds_step, args.recompute_gm)
 
     def _clean(v):
         return "" if v == "" or v is None or (isinstance(v, float) and np.isnan(v)) else v
@@ -1522,9 +1524,11 @@ def main():
     p.add_argument("--gm_workers", type=int, default=8,
                     help="--with_gm / --with_loo_gm parallelism (ProcessPoolExecutor). "
                          "1 = in-process, no pool.")
-    p.add_argument("--gm_n_vds_targets", type=int, default=GM_N_VDS_TARGETS,
-                    help="Transfer curves (Ids vs Vgs at ~fixed Vds) per quiescent point to build "
-                         "the gm derivatives on. Matches build_gm_targets' default.")
+    p.add_argument("--gm_vds_step", type=float, default=GM_VDS_STEP,
+                    help="Spacing (V) of the Vds levels the transfer curves (Ids vs Vgs at ~fixed "
+                         "Vds) are built on: multiples of this strictly inside the measured sweep "
+                         f"(default {GM_VDS_STEP} -> [3, 6, ..., 27] for 0-30 V data). Matches "
+                         "build_gm_targets' default so the metric mirrors the training target.")
     p.add_argument("--recompute_gm", action="store_true",
                     help="Recompute every <combo_id>/gm_metrics.json and loo_gm_metrics.json "
                          "instead of reusing cached ones.")
