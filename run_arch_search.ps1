@@ -19,6 +19,11 @@
 .EXAMPLE
   .\run_arch_search.ps1 -Populate -LooGmTop 50
       # runs both configs, then rebuilds results.csv (with gm) + search_report.html
+
+.EXAMPLE
+  .\run_arch_search.ps1 -GmSmoothing none -ModelsDir C:\...\archsearch_models_gmnone -Gm1Weight 0.075
+      # gm1 target with NO smoothing -> hp_hash differs from savgol, so use a fresh -ModelsDir
+      # (loop this over your gm1_weight values). -GmSmoothing savgol (default) keeps the old hash.
 #>
 [CmdletBinding()]
 param(
@@ -27,6 +32,8 @@ param(
     [int]      $Epochs         = 1000,
     [int]      $DeltaBaseEpochs = 1000,
     [double]   $Gm1Weight      = 0.0,
+    [ValidateSet('savgol', 'cascade', 'none')]
+    [string]   $GmSmoothing    = 'savgol',
     [string]   $ConfigRoot     = 'configs',
     [string]   $ModelsDir      = 'C:\Users\acost\repos\transistor_modeling_hyper_outputs\archsearch_models',
     [string]   $CsvDir         = 'C:\Users\acost\repos\csvs',
@@ -52,7 +59,7 @@ $runs = foreach ($c in $Configs) {
 
 Write-Host "models_dir : $ModelsDir"
 Write-Host "configs    : $($runs.Name -join ', ')"
-Write-Host "hyperparams: --epochs $Epochs --delta_base_epochs $DeltaBaseEpochs --gm1_weight $Gm1Weight  (--workers $Workers)"
+Write-Host "hyperparams: --epochs $Epochs --delta_base_epochs $DeltaBaseEpochs --gm1_weight $Gm1Weight --gm_smoothing $GmSmoothing  (--workers $Workers)"
 Write-Host ''
 
 $overall = [System.Diagnostics.Stopwatch]::StartNew()
@@ -65,6 +72,7 @@ foreach ($r in $runs) {
         '--epochs', $Epochs,
         '--delta_base_epochs', $DeltaBaseEpochs,
         '--gm1_weight', $Gm1Weight,
+        '--gm_smoothing', $GmSmoothing,
         '--models_dir', $ModelsDir,
         '--csv_dir', $CsvDir,
         '--f_csv', $r.FCsv,

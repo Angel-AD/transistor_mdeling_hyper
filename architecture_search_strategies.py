@@ -94,7 +94,7 @@ import torch.nn as nn
 
 from data_loader import load_all
 from model import HyperNetwork, main_net_forward, main_net_n_params
-from signal_utils import smooth_derivative, gm_vds_target_list, GM_VDS_STEP
+from signal_utils import smooth_derivative, gm_vds_target_list, GM_VDS_STEP, GM_SMOOTHING_METHODS
 from train_loo import build_tensors as build_tensors_full, train_hypernet, evaluate as evaluate_original
 
 
@@ -136,8 +136,8 @@ H_ARCH_CSV_FIELDS = ["h_arch_hash", "h_hidden", "h_layers"]
 RESULTS_CSV_FIELDS = [
     "combo_id", "f_arch_hash", "h_arch_hash", "strategy", "hp_hash",
     "source_original_combo_id", "source_delta_combo_id",  # only populated for strategy="ensemble"
-    "gm1_weight", "delta_reg_weight", "weight_decay", "epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter",
-    "delta_base_epochs", "delta_base_lr", "delta_base_lbfgs_epochs", "seed",
+    "gm1_weight", "gm_smoothing", "delta_reg_weight", "weight_decay", "epochs", "lr", "lbfgs_epochs",
+    "lbfgs_max_iter", "delta_base_epochs", "delta_base_lr", "delta_base_lbfgs_epochs", "seed",
     "n_params_f", "h_hidden", "h_layers",
     "loo_mean_rel_rmse", "loo_n_points", "loo_worst_rel_rmse", "full_fit_mean_rel_rmse",
     # gm1/gm2/gm3 = 1st/2nd/3rd d/dVgs of Ids; combined_gm = equal-weight mean of the three.
@@ -526,12 +526,13 @@ def _fold_gm_safe(data, held_out, net, architecture, theta_base=None):
 
 
 def run_fold_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
-                       held_out, data, epochs, lr, gm1_weight, lbfgs_epochs, seed, weight_decay):
+                       held_out, data, epochs, lr, gm1_weight, lbfgs_epochs, seed, weight_decay,
+                       gm_smoothing="savgol"):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     keys = sorted(data.keys())
     train_keys = [k for k in keys if k != held_out]
-    tensors = build_tensors_full(data, device)
+    tensors = build_tensors_full(data, device, gm_smoothing=gm_smoothing)
     hyper, _ = train_hypernet(train_keys, tensors, n_params, architecture, epochs, lr, device,
                                gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
                                h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
@@ -543,13 +544,13 @@ def run_fold_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden
 
 def run_fold_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
                     held_out, data, theta_base, epochs, lr, gm1_weight, delta_reg_weight,
-                    lbfgs_epochs, seed, weight_decay):
+                    lbfgs_epochs, seed, weight_decay, gm_smoothing="savgol"):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     all_keys = sorted(data.keys())
     other_keys = [k for k in all_keys if k != BASE_KEY]
     train_keys = [BASE_KEY] + [k for k in other_keys if k != held_out]
-    tensors = build_tensors_full(data, device)
+    tensors = build_tensors_full(data, device, gm_smoothing=gm_smoothing)
     hcomp = train_hcomp(train_keys, tensors, theta_base, n_params, architecture, epochs, lr, device,
                          gm1_weight=gm1_weight, delta_reg_weight=delta_reg_weight,
                          lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=200,
@@ -560,11 +561,12 @@ def run_fold_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h
 
 
 def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
-                           data, epochs, lr, gm1_weight, lbfgs_epochs, seed, weight_decay, save_dir):
+                           data, epochs, lr, gm1_weight, lbfgs_epochs, seed, weight_decay, save_dir,
+                           gm_smoothing="savgol"):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     keys = sorted(data.keys())
-    tensors = build_tensors_full(data, device)
+    tensors = build_tensors_full(data, device, gm_smoothing=gm_smoothing)
     hyper, _ = train_hypernet(keys, tensors, n_params, architecture, epochs, lr, device,
                                gm1_weight=gm1_weight, lbfgs_epochs=lbfgs_epochs,
                                h_hidden=h_hidden, h_layers=h_layers, n_in=2, log_every=0, seed=seed,
@@ -577,7 +579,8 @@ def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hi
     os.makedirs(save_dir, exist_ok=True)
     torch.save(hyper.state_dict(), os.path.join(save_dir, "hyper_full.pt"))
     meta = dict(strategy="original", architecture=architecture, h_hidden=h_hidden, h_layers=h_layers,
-                n_params=n_params, gm1_weight=gm1_weight, weight_decay=weight_decay)
+                n_params=n_params, gm1_weight=gm1_weight, weight_decay=weight_decay,
+                gm_smoothing=gm_smoothing)
     with open(os.path.join(save_dir, "meta.json"), "w") as f:
         json.dump(meta, f, indent=2)
     return f_arch_hash, h_arch_hash, "original", float(np.mean(list(errs.values()))), preds
@@ -585,11 +588,11 @@ def run_full_fit_original(f_arch_hash, h_arch_hash, architecture, n_params, h_hi
 
 def run_full_fit_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidden, h_layers,
                         data, theta_base, epochs, lr, gm1_weight, delta_reg_weight, lbfgs_epochs,
-                        seed, weight_decay, save_dir):
+                        seed, weight_decay, save_dir, gm_smoothing="savgol"):
     torch.set_num_threads(1)
     device = torch.device("cpu")
     keys = sorted(data.keys())
-    tensors = build_tensors_full(data, device)
+    tensors = build_tensors_full(data, device, gm_smoothing=gm_smoothing)
     hcomp = train_hcomp(keys, tensors, theta_base, n_params, architecture, epochs, lr, device,
                          gm1_weight=gm1_weight, delta_reg_weight=delta_reg_weight,
                          lbfgs_epochs=lbfgs_epochs, lbfgs_max_iter=200,
@@ -604,7 +607,7 @@ def run_full_fit_delta(f_arch_hash, h_arch_hash, architecture, n_params, h_hidde
     torch.save(theta_base, os.path.join(save_dir, "theta_base.pt"))
     meta = dict(strategy="delta", architecture=architecture, h_hidden=h_hidden, h_layers=h_layers,
                 n_params=n_params, gm1_weight=gm1_weight, delta_reg_weight=delta_reg_weight,
-                weight_decay=weight_decay, base_key=list(BASE_KEY))
+                weight_decay=weight_decay, base_key=list(BASE_KEY), gm_smoothing=gm_smoothing)
     with open(os.path.join(save_dir, "meta.json"), "w") as f:
         json.dump(meta, f, indent=2)
     return f_arch_hash, h_arch_hash, "delta", float(np.mean(list(errs.values()))), preds
@@ -629,7 +632,13 @@ def fit_theta_base_job(f_arch_hash, architecture, n_params, data, delta_base_epo
 # to this list, not touching the hashing logic itself.
 HYPERPARAM_ARGS = ["epochs", "lr", "lbfgs_epochs", "lbfgs_max_iter", "gm1_weight",
                    "delta_reg_weight", "weight_decay", "delta_base_epochs", "delta_base_lr",
-                   "delta_base_lbfgs_epochs", "seed"]
+                   "delta_base_lbfgs_epochs", "seed", "gm_smoothing"]
+
+# HYPERPARAM_ARGS entries left OUT of the hash when they hold this value -- so adding a new
+# training knob whose default reproduces the old behaviour does NOT rehash (and thus orphan)
+# every combo trained before the knob existed. gm_smoothing="savgol" is exactly what
+# build_gm_targets did unconditionally before commit 1760ca2.
+HYPERPARAM_HASH_OMIT_DEFAULTS = {"gm_smoothing": "savgol"}
 
 
 def hyperparams_hash_of(args):
@@ -637,8 +646,12 @@ def hyperparams_hash_of(args):
     combo_id so that re-running with different hyperparameters against the SAME --models_dir
     gets its OWN separate combo directories, instead of combo_is_done silently treating the
     old run's (now stale, different-hyperparameter) metrics.json as still valid and skipping
-    the new one entirely (see the gm1_weight=0.075 vs 0.2 test that motivated this)."""
-    hp = {name: getattr(args, name) for name in HYPERPARAM_ARGS}
+    the new one entirely (see the gm1_weight=0.075 vs 0.2 test that motivated this).
+
+    HYPERPARAM_HASH_OMIT_DEFAULTS values are dropped so a knob at its backward-compatible
+    default hashes identically to a run from before that knob existed."""
+    hp = {name: getattr(args, name) for name in HYPERPARAM_ARGS
+          if getattr(args, name) != HYPERPARAM_HASH_OMIT_DEFAULTS.get(name, object())}
     s = json.dumps(hp, sort_keys=True)
     return hashlib.sha1(s.encode()).hexdigest()[:8]
 
@@ -703,7 +716,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
                     fut = ex.submit(run_fold_original, f_row["arch_hash"], h_row["h_arch_hash"],
                                      architecture, n_params, h_hidden, h_layers, held_out, data,
                                      args.epochs, args.lr, args.gm1_weight, args.lbfgs_epochs,
-                                     args.seed, args.weight_decay)
+                                     args.seed, args.weight_decay, args.gm_smoothing)
                     fold_futures[fut] = None
             else:
                 theta_base = theta_base_by_farch[f_row["arch_hash"]]
@@ -712,7 +725,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
                                      architecture, n_params, h_hidden, h_layers, held_out, data,
                                      theta_base, args.epochs, args.lr, args.gm1_weight,
                                      args.delta_reg_weight, args.lbfgs_epochs, args.seed,
-                                     args.weight_decay)
+                                     args.weight_decay, args.gm_smoothing)
                     fold_futures[fut] = None
 
         per_combo_errs = {}
@@ -761,13 +774,14 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
                 fut = ex.submit(run_full_fit_original, f_row["arch_hash"], h_row["h_arch_hash"],
                                  architecture, n_params, h_hidden, h_layers, data, args.epochs,
                                  args.lr, args.gm1_weight, args.lbfgs_epochs, args.seed,
-                                 args.weight_decay, save_dir)
+                                 args.weight_decay, save_dir, args.gm_smoothing)
             else:
                 theta_base = theta_base_by_farch[f_row["arch_hash"]]
                 fut = ex.submit(run_full_fit_delta, f_row["arch_hash"], h_row["h_arch_hash"],
                                  architecture, n_params, h_hidden, h_layers, data, theta_base,
                                  args.epochs, args.lr, args.gm1_weight, args.delta_reg_weight,
-                                 args.lbfgs_epochs, args.seed, args.weight_decay, save_dir)
+                                 args.lbfgs_epochs, args.seed, args.weight_decay, save_dir,
+                                 args.gm_smoothing)
             futs[fut] = (f_row, h_row, strategy, combo_id, save_dir)
         fullfit_preds_by_key = {}  # (f_arch_hash, h_arch_hash, strategy) -> {qpoint: pred}
         for fut in as_completed(futs):
@@ -816,6 +830,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             strategy=strategy,
             hp_hash=hp_hash,
             gm1_weight=args.gm1_weight,
+            gm_smoothing=args.gm_smoothing,
             delta_reg_weight=args.delta_reg_weight if strategy == "delta" else "",
             weight_decay=args.weight_decay,
             epochs=args.epochs,
@@ -869,6 +884,7 @@ def _run_combo_batch(combos, data, keys, other_keys, args, hp_hash):
             source_original_combo_id=combo_id_of(f_row, h_row, "original", hp_hash),
             source_delta_combo_id=combo_id_of(f_row, h_row, "delta", hp_hash),
             gm1_weight=args.gm1_weight,
+            gm_smoothing=args.gm_smoothing,
             delta_reg_weight=args.delta_reg_weight,
             weight_decay=args.weight_decay,
             epochs=args.epochs,
@@ -1218,7 +1234,8 @@ def _loo_gm_fold_spec(models_dir, combo_id, m):
                 f_arch_hash=m["f_arch_hash"], h_arch_hash=m["h_arch_hash"],
                 epochs=int(m["epochs"]), lr=float(m["lr"]), gm1_weight=float(m["gm1_weight"]),
                 lbfgs_epochs=int(m["lbfgs_epochs"]), seed=int(m["seed"]),
-                weight_decay=float(m["weight_decay"]))
+                weight_decay=float(m["weight_decay"]),
+                gm_smoothing=m.get("gm_smoothing", "savgol"))
     if strat == "delta":
         spec["delta_reg_weight"] = float(m["delta_reg_weight"])
         spec["theta_base_path"] = os.path.join(models_dir, combo_id, "theta_base.pt")
@@ -1237,14 +1254,15 @@ def _loo_gm_fold_job(spec):
         res = run_fold_original(spec["f_arch_hash"], spec["h_arch_hash"], spec["architecture"],
                                  spec["n_params"], spec["h_hidden"], spec["h_layers"], held_out,
                                  _GM_DATA, spec["epochs"], spec["lr"], spec["gm1_weight"],
-                                 spec["lbfgs_epochs"], spec["seed"], spec["weight_decay"])
+                                 spec["lbfgs_epochs"], spec["seed"], spec["weight_decay"],
+                                 spec["gm_smoothing"])
     else:
         theta_base = torch.load(spec["theta_base_path"], map_location="cpu", weights_only=True)
         res = run_fold_delta(spec["f_arch_hash"], spec["h_arch_hash"], spec["architecture"],
                               spec["n_params"], spec["h_hidden"], spec["h_layers"], held_out,
                               _GM_DATA, theta_base, spec["epochs"], spec["lr"], spec["gm1_weight"],
                               spec["delta_reg_weight"], spec["lbfgs_epochs"], spec["seed"],
-                              spec["weight_decay"])
+                              spec["weight_decay"], spec["gm_smoothing"])
     _, _, _, _, _err, pred, gm = res
     return spec["weights_combo_id"], held_out, pred, gm
 
@@ -1477,6 +1495,13 @@ def main():
     r.add_argument("--lbfgs_max_iter", type=int, default=200)
     r.add_argument("--gm1_weight", type=float, default=0.075,
                     help="Used by BOTH strategies.")
+    r.add_argument("--gm_smoothing", choices=GM_SMOOTHING_METHODS, default="savgol",
+                    help="Derivative estimator for the gm1 training target (see "
+                         "signal_utils.gm_derivative / train_loo.py --gm_smoothing): 'savgol' "
+                         "(default, base-repo port), 'cascade' (lighter, keeps gm2/gm3 peaks), "
+                         "'none' (raw np.gradient). Folded into hp_hash EXCEPT at the default "
+                         "'savgol', which hashes identically to pre-1760ca2 runs. Only affects "
+                         "the training target -- the gm rel-RMSE metric stays on savgol.")
     r.add_argument("--weight_decay", type=float, default=0.0,
                     help="AdamW weight decay, used by BOTH strategies (H/H_comp AND the delta "
                          "strategy's theta_base fit). 0.0 (default) makes AdamW identical to "
