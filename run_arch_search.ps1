@@ -5,9 +5,13 @@
 
 .DESCRIPTION
   Every config folder under -ConfigRoot must contain f_architectures.csv and h_architectures.csv.
-  All runs share the SAME --models_dir, so combos already trained (same f/h/strategy AND same
+  All runs share the SAME -ModelsDir, so combos already trained (same f/h/strategy AND same
   hyperparameters -> same hp_hash) are skipped and reused. Keep the hyperparameter flags equal
   to the previous sweep (defaults below == hp_hash e42bf99b) or the reuse won't kick in.
+
+  -Populate writes -ResultsCsv (default <ModelsDir>\results.csv) and the HTML/JSON report to
+  -OutDir (default <ModelsDir>) -- both derived from -ModelsDir, so pointing -ModelsDir at a
+  new directory keeps that run's results self-contained and never touches another run's CSV.
 
 .EXAMPLE
   .\run_arch_search.ps1
@@ -21,9 +25,12 @@
       # runs both configs, then rebuilds results.csv (with gm) + search_report.html
 
 .EXAMPLE
-  .\run_arch_search.ps1 -GmSmoothing none -ModelsDir C:\...\archsearch_models_gmnone -Gm1Weight 0.075
-      # gm1 target with NO smoothing -> hp_hash differs from savgol, so use a fresh -ModelsDir
-      # (loop this over your gm1_weight values). -GmSmoothing savgol (default) keeps the old hash.
+  foreach ($w in 0.01, 0.025, 0.05, 0.075, 0.1) {
+      .\run_arch_search.ps1 -GmSmoothing none -ModelsDir 'D:\Angel\hyper_output_1' -Gm1Weight $w
+  }
+  .\run_arch_search.ps1 -GmSmoothing none -ModelsDir 'D:\Angel\hyper_output_1' -Populate
+      # gm1 target with NO smoothing -> hp_hash differs from savgol, so a fresh -ModelsDir.
+      # -Populate then writes D:\Angel\hyper_output_1\results.csv + report there (savgol CSV untouched).
 #>
 [CmdletBinding()]
 param(
@@ -36,12 +43,17 @@ param(
     [string]   $GmSmoothing    = 'savgol',
     [string]   $ConfigRoot     = 'configs',
     [string]   $ModelsDir      = 'C:\Users\acost\repos\transistor_modeling_hyper_outputs\archsearch_models',
+    [string]   $ResultsCsv     = '',   # -Populate target; default: <ModelsDir>\results.csv
+    [string]   $OutDir         = '',   # build_search_report.py output; default: <ModelsDir>
     [string]   $CsvDir         = 'C:\Users\acost\repos\csvs',
     [string]   $Python         = 'python',
     [string[]] $ExtraRunArgs   = @(),
     [switch]   $Populate,
     [int]      $LooGmTop       = 50
 )
+
+if (-not $ResultsCsv) { $ResultsCsv = Join-Path $ModelsDir 'results.csv' }
+if (-not $OutDir)     { $OutDir     = $ModelsDir }
 
 $ErrorActionPreference = 'Stop'
 $script = Join-Path $PSScriptRoot 'architecture_search_strategies.py'
@@ -84,15 +96,15 @@ foreach ($r in $runs) {
 }
 
 if ($Populate) {
-    Write-Host "==== populate (+gm, +loo_gm top $LooGmTop) ====" -ForegroundColor Cyan
+    Write-Host "==== populate (+gm, +loo_gm top $LooGmTop) -> $ResultsCsv ====" -ForegroundColor Cyan
     & $Python $script 'populate' '--with_gm' '--with_loo_gm' '--loo_gm_top' $LooGmTop `
-        '--models_dir' $ModelsDir '--csv_dir' $CsvDir '--gm_workers' $Workers
+        '--models_dir' $ModelsDir '--results_csv' $ResultsCsv '--csv_dir' $CsvDir '--gm_workers' $Workers
     if ($LASTEXITCODE -ne 0) { throw "populate exited with code $LASTEXITCODE" }
 
     $report = Join-Path $PSScriptRoot 'build_search_report.py'
     if (Test-Path $report) {
-        Write-Host "==== build_search_report ====" -ForegroundColor Cyan
-        & $Python $report
+        Write-Host "==== build_search_report -> $OutDir ====" -ForegroundColor Cyan
+        & $Python $report '--results_csv' $ResultsCsv '--out_dir' $OutDir
         if ($LASTEXITCODE -ne 0) { throw "build_search_report exited with code $LASTEXITCODE" }
     }
 }
